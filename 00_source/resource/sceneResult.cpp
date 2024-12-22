@@ -1,31 +1,30 @@
 //============================================================
 //
-//	タイトル画面処理 [sceneTitle.cpp]
+//	リザルト画面処理 [sceneResult.cpp]
 //	Author：藤田勇一
 //
 //============================================================
 //************************************************************
 //	インクルードファイル
 //************************************************************
-#include "sceneTitle.h"
+#include "sceneResult.h"
 #include "manager.h"
-#include "texture.h"
 #include "sound.h"
 #include "camera.h"
-#include "titleManager.h"
+#include "resultManager.h"
 
 //************************************************************
 //	静的メンバ変数宣言
 //************************************************************
-CTitleManager* CSceneTitle::m_pTitleManager = nullptr;	// タイトルマネージャー
+CResultManager* CSceneResult::m_pResultManager = nullptr;	// リザルトマネージャー
 
 //************************************************************
-//	子クラス [CSceneTitle] のメンバ関数
+//	子クラス [CSceneResult] のメンバ関数
 //************************************************************
 //============================================================
 //	コンストラクタ
 //============================================================
-CSceneTitle::CSceneTitle(const EMode mode) : CScene(mode)
+CSceneResult::CSceneResult(const EMode mode) : CScene(mode)
 {
 
 }
@@ -33,7 +32,7 @@ CSceneTitle::CSceneTitle(const EMode mode) : CScene(mode)
 //============================================================
 //	デストラクタ
 //============================================================
-CSceneTitle::~CSceneTitle()
+CSceneResult::~CSceneResult()
 {
 
 }
@@ -41,7 +40,7 @@ CSceneTitle::~CSceneTitle()
 //============================================================
 //	初期化処理
 //============================================================
-HRESULT CSceneTitle::Init()
+HRESULT CSceneResult::Init()
 {
 	// シーンの初期化
 	if (FAILED(CScene::Init()))
@@ -51,9 +50,9 @@ HRESULT CSceneTitle::Init()
 		return E_FAIL;
 	}
 
-	// タイトルマネージャーの生成
-	m_pTitleManager = CTitleManager::Create();
-	if (m_pTitleManager == nullptr)
+	// リザルトマネージャーの生成
+	m_pResultManager = CResultManager::Create();
+	if (m_pResultManager == nullptr)
 	{ // 生成に失敗した場合
 
 		assert(false);
@@ -76,10 +75,10 @@ HRESULT CSceneTitle::Init()
 //============================================================
 //	終了処理
 //============================================================
-void CSceneTitle::Uninit()
+void CSceneResult::Uninit()
 {
-	// タイトルマネージャーの破棄
-	SAFE_REF_RELEASE(m_pTitleManager);
+	// リザルトマネージャーの破棄
+	SAFE_REF_RELEASE(m_pResultManager);
 
 	// シーンの終了
 	CScene::Uninit();
@@ -88,24 +87,21 @@ void CSceneTitle::Uninit()
 //============================================================
 //	更新処理
 //============================================================
-void CSceneTitle::Update(const float fDeltaTime)
+void CSceneResult::Update(const float fDeltaTime)
 {
-	// タイトルマネージャーの更新
-	assert(m_pTitleManager != nullptr);
-	m_pTitleManager->Update(fDeltaTime);
-
-	// シーンの更新
-	CScene::Update(fDeltaTime);
+	// リザルトマネージャーの更新
+	assert(m_pResultManager != nullptr);
+	m_pResultManager->Update(fDeltaTime);
 }
 
 //============================================================
-//	タイトルマネージャー取得処理
+//	リザルトマネージャー取得処理
 //============================================================
-CTitleManager* CSceneTitle::GetTitleManager()
+CResultManager* CSceneResult::GetResultManager()
 {
 	// インスタンス未使用
-	assert(m_pTitleManager != nullptr);
+	assert(m_pResultManager != nullptr);
 
-	// タイトルマネージャーを返す
-	return m_pTitleManager;
+	// リザルトマネージャーのポインタを返す
+	return m_pResultManager;
 }

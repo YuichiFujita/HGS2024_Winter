@@ -36,12 +36,10 @@ namespace
 #define NAME_FILLMODE		("F3")		// 塗りつぶしモード変更表示
 #define KEY_2D_DISP			(DIK_F4)	// 2Dオブジェクト表示ON/OFFキー
 #define NAME_2D_DISP		("F4")		// 2Dオブジェクト表示ON/OFF表示
-#define KEY_EDITMODE		(DIK_F5)	// エディターモードON/OFFキー
-#define NAME_EDITMODE		("F5")		// エディターモードON/OFF表示
-#define KEY_PAUSE_DISP		(DIK_F6)	// ポーズ表示ON/OFFキー
-#define NAME_PAUSE_DISP		("F6")		// ポーズ表示ON/OFF表示
-#define KEY_RESULT_TRANS	(DIK_F7)	// リザルト遷移キー
-#define NAME_RESULT_TRANS	("F7")		// リザルト遷移表示
+#define KEY_PAUSE_DISP		(DIK_F5)	// ポーズ表示ON/OFFキー
+#define NAME_PAUSE_DISP		("F5")		// ポーズ表示ON/OFF表示
+#define KEY_RESULT_TRANS	(DIK_F6)	// リザルト遷移キー
+#define NAME_RESULT_TRANS	("F6")		// リザルト遷移表示
 
 //************************************************************
 //	親クラス [CDebug] のメンバ関数
@@ -233,12 +231,14 @@ void CDebug::UpdateDebugControl()
 
 	case CScene::MODE_GAME:
 
-		// エディターモード変更
-		ChangeEditMode();
-
 		// ポーズ表示変更
 		ChangeDispPause();
+		break;
 
+	case CScene::MODE_RESULT:
+		break;
+
+	case CScene::MODE_RANKING:
 		break;
 
 	default:
@@ -277,10 +277,14 @@ void CDebug::DrawDebugControl()
 
 	case CScene::MODE_GAME:
 
-		pDebugProc->Print(CDebugProc::POINT_LEFT, "[%s]：エディットモードのON/OFF\n", NAME_EDITMODE);
 		pDebugProc->Print(CDebugProc::POINT_LEFT, "[%s]：ポーズ描画のON/OFF\n", NAME_PAUSE_DISP);
 		pDebugProc->Print(CDebugProc::POINT_LEFT, "[%s]：リザルト遷移\n", NAME_RESULT_TRANS);
+		break;
 
+	case CScene::MODE_RESULT:
+		break;
+
+	case CScene::MODE_RANKING:
 		break;
 
 	default:
@@ -428,18 +432,6 @@ void CDebug::ChangeDisp2D()
 
 		// オブジェクトの表示状況を設定
 		CObject::SetEnableDebugDispAll(m_bDisp2D, m_bDisp3D);
-	}
-}
-
-//============================================================
-//	エディターモード変更処理
-//============================================================
-void CDebug::ChangeEditMode()
-{
-	if (GET_INPUTKEY->IsTrigger(KEY_EDITMODE))
-	{
-		// エディット状況のフラグを反転
-		//CGameManager::GetEditStage()->SetEnableEdit(!CGameManager::GetEditStage()->IsEdit());
 	}
 }
 

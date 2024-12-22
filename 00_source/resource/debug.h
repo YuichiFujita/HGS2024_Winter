@@ -52,7 +52,6 @@ private:
 	void ChangeControlCamera();	// カメラ操作変更
 	void ChangeFillMode();		// 塗りつぶしモード変更
 	void ChangeDisp2D();		// 2Dオブジェクト表示変更
-	void ChangeEditMode();		// エディターモード変更
 	void ChangeDispPause();		// ポーズ表示変更
 
 	// メンバ変数

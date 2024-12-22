@@ -14,6 +14,8 @@
 #include "camera.h"
 #include "sceneTitle.h"
 #include "sceneGame.h"
+#include "sceneResult.h"
+#include "sceneRanking.h"
 
 //************************************************************
 //	親クラス [CScene] のメンバ関数
@@ -76,7 +78,7 @@ void CScene::Update(const float fDeltaTime)
 //============================================================
 //	生成処理
 //============================================================
-CScene* CScene::Create(EMode mode)
+CScene* CScene::Create(const EMode mode)
 {
 	// シーンの生成
 	CScene* pScene = nullptr;	// シーン情報
@@ -90,7 +92,15 @@ CScene* CScene::Create(EMode mode)
 		pScene = new CSceneGame(mode);
 		break;
 
-	default:	// 例外処理
+	case MODE_RESULT:
+		pScene = new CSceneResult(mode);
+		break;
+
+	case MODE_RANKING:
+		pScene = new CSceneRanking(mode);
+		break;
+
+	default:
 		assert(false);
 		break;
 	}

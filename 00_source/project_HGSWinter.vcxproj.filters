@@ -64,6 +64,18 @@
     <Filter Include="state\title">
       <UniqueIdentifier>{70b8fcbd-b32f-41af-bf19-557e9afd870b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="scene\result">
+      <UniqueIdentifier>{aee4618f-ad9d-4ae5-8356-79644a80dd32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scene\ranking">
+      <UniqueIdentifier>{b32fa81a-cce0-4c6a-a17e-dfb30dd37e52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="state\result">
+      <UniqueIdentifier>{efd8f35e-1442-44b5-9a9e-d009d5035f1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="state\ranking">
+      <UniqueIdentifier>{3f62ecf1-dfcf-46c2-81b4-38f65e09d338}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="resource\camera.cpp">
@@ -332,6 +344,18 @@
     </ClCompile>
     <ClCompile Include="resource\gameStateNormal.cpp">
       <Filter>state\game</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\sceneResult.cpp">
+      <Filter>scene\result</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\resultManager.cpp">
+      <Filter>scene\result</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\resultState.cpp">
+      <Filter>state\result</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\resultStateNormal.cpp">
+      <Filter>state\result</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -604,6 +628,18 @@
     </ClInclude>
     <ClInclude Include="resource\gameStateNormal.h">
       <Filter>state\game</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\sceneResult.h">
+      <Filter>scene\result</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\resultManager.h">
+      <Filter>scene\result</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\resultState.h">
+      <Filter>state\result</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\resultStateNormal.h">
+      <Filter>state\result</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
