@@ -13,13 +13,15 @@
 #include "camera.h"
 #include "gameManager.h"
 #include "pause.h"
+#include "hitStop.h"
 
 //************************************************************
 //	静的メンバ変数宣言
 //************************************************************
 CGameManager* CSceneGame::m_pGameManager = nullptr;	// ゲームマネージャー
-CPause* CSceneGame::m_pPause = nullptr;	// ポーズ情報
-CStage* CSceneGame::m_pStage = nullptr;	// ステージ情報
+CPause* CSceneGame::m_pPause = nullptr;		// ポーズ情報
+CHitStop* CSceneGame::m_pHitStop = nullptr;	// ヒットストップ情報
+CStage* CSceneGame::m_pStage = nullptr;		// ステージ情報
 
 //************************************************************
 //	子クラス [CSceneGame] のメンバ関数
@@ -74,6 +76,15 @@ HRESULT CSceneGame::Init()
 		return E_FAIL;
 	}
 
+	// ヒットストップの生成
+	m_pHitStop = CHitStop::Create();
+	if (m_pHitStop == nullptr)
+	{ // 生成に失敗した場合
+
+		assert(false);
+		return E_FAIL;
+	}
+
 	// TODO：ステージ追加時に修正
 #if 0
 	// ステージの生成
@@ -110,6 +121,9 @@ void CSceneGame::Uninit()
 	// ポーズの破棄
 	SAFE_REF_RELEASE(m_pPause);
 
+	// ヒットストップの破棄
+	SAFE_REF_RELEASE(m_pHitStop);
+
 	// TODO：ステージ追加時に修正
 #if 0
 	// ステージの破棄
@@ -132,6 +146,10 @@ void CSceneGame::Update(const float fDeltaTime)
 	assert(m_pGameManager != nullptr);
 	m_pGameManager->Update(fDeltaTime);
 
+	// ヒットストップの更新
+	assert(m_pHitStop != nullptr);
+	m_pHitStop->Update(fDeltaTime);
+
 	if (m_pGameManager->IsNormal())
 	{ // ゲームが通常状態の場合
 
@@ -140,11 +158,18 @@ void CSceneGame::Update(const float fDeltaTime)
 		m_pPause->Update(fDeltaTime);
 	}
 
-	if (!m_pPause->IsPause())
-	{ // ポーズ中ではない場合
+	if (!m_pPause->IsPause()
+	&&  !m_pHitStop->IsStop())
+	{ // ポーズ中・ヒットストップ中ではない場合
 
 		// シーンの更新
 		CScene::Update(fDeltaTime);
+	}
+	else if (m_pHitStop->IsStop())
+	{ // ヒットストップ中の場合
+
+		// カメラの更新
+		GET_MANAGER->GetCamera()->Update(fDeltaTime);
 	}
 
 #ifdef _DEBUG
@@ -183,6 +208,18 @@ CPause* CSceneGame::GetPause()
 
 	// ポーズのポインタを返す
 	return m_pPause;
+}
+
+//============================================================
+//	ヒットストップ取得処理
+//============================================================
+CHitStop* CSceneGame::GetHitStop()
+{
+	// インスタンス未使用
+	assert(m_pHitStop != nullptr);
+
+	// ヒットストップのポインタを返す
+	return m_pHitStop;
 }
 
 //============================================================

@@ -20,6 +20,7 @@
 //************************************************************
 class CGameManager;	// ゲームマネージャークラス
 class CPause;		// ポーズクラス
+class CHitStop;		// ヒットストップクラス
 class CStage;		// ステージクラス
 class CPlayer;		// プレイヤークラス
 
@@ -44,14 +45,16 @@ public:
 	// 静的メンバ関数
 	static CGameManager* GetGameManager();	// ゲームマネージャー取得
 	static CPause* GetPause();		// ポーズ取得
+	static CHitStop* GetHitStop();	// ヒットストップ取得
 	static CStage* GetStage();		// ステージ取得
 	static CPlayer* GetPlayer();	// プレイヤー取得
 
 private:
 	// 静的メンバ変数
 	static CGameManager* m_pGameManager;	// ゲームマネージャー
-	static CPause* m_pPause;	// ポーズ情報
-	static CStage* m_pStage;	// ステージ情報
+	static CPause* m_pPause;		// ポーズ情報
+	static CHitStop* m_pHitStop;	// ヒットストップ情報
+	static CStage* m_pStage;		// ステージ情報
 };
 
 #endif	// _SCENE_GAME_H_

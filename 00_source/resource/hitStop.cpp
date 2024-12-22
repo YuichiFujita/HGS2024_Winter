@@ -62,7 +62,7 @@ void CHitStop::Update(const float fDeltaTime)
 
 	// カウンター減算
 	m_fCurTime -= fDeltaTime;
-	if (m_fCurTime <= 0)
+	if (m_fCurTime <= 0.0f)
 	{ // 計測終了した場合
 
 		// ヒットストップを解除
