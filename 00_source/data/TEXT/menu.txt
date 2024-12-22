@@ -1,0 +1,28 @@
+#==============================================================================
+#
+#	フィールドメニューテキスト [menu.txt]
+#	Author : 藤田 勇一
+#
+#==============================================================================
+
+TEXT_0
+	STR = LV
+	STR = HP
+	STR = G
+END_TEXT
+
+TEXT_1
+	STR = ITEM
+END_TEXT
+
+TEXT_2
+	STR = STAT
+END_TEXT
+
+TEXT_3
+	STR = PHONE
+END_TEXT
+
+TEXT_ELSE
+	STR = 読込エラー
+END_TEXT
