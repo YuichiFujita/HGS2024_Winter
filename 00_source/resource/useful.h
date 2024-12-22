@@ -863,10 +863,12 @@ namespace useful
 	std::wstring SandString(const std::wstring& rTop, const std::wstring& rMain, const std::wstring& rCur);	// 文字列の左右追加 (ワイド文字列)
 	std::wstring MultiByteToWide(const std::string& rSrcStr);	// マルチバイト文字列のワイド文字列変換
 	std::string WideToMultiByte(const std::wstring& rSrcStr);	// ワイド文字列のマルチバイト文字列変換
-	void VecToRot(const VECTOR3& rVec, float* pPhi, float* pTheta);			// ベクトルの向き変換
-	void RotToVec(const float fPhi, const float fTheta, VECTOR3* pVec);		// 向きのベクトル変換
-	float GetTexWidthFromAspect(const float fHeight, const int nTexIdx);	// 縦幅からアスペクト比を考慮した横幅取得
-	float GetTexHeightFromAspect(const float fWidth, const int nTexIdx);	// 横幅からアスペクト比を考慮した縦幅取得
+	void VecToRot(const VECTOR3& rVec, float* pPhi, float* pTheta);		// ベクトルの向き変換
+	void RotToVec(const float fPhi, const float fTheta, VECTOR3* pVec);	// 向きのベクトル変換
+	float GetTexWidthFromAspect(const float fHeight, const char* pTexturePath);	// 縦幅からアスペクト比を考慮した横幅取得
+	float GetTexWidthFromAspect(const float fHeight, const int nTexIdx);		// 縦幅からアスペクト比を考慮した横幅取得
+	float GetTexHeightFromAspect(const float fWidth, const char* pTexturePath);	// 横幅からアスペクト比を考慮した縦幅取得
+	float GetTexHeightFromAspect(const float fWidth, const int nTexIdx);		// 横幅からアスペクト比を考慮した縦幅取得
 
 	// テンプレート関数
 	template<class T> T* ZeroClear(T* pClear);	// ゼロクリア

@@ -20,16 +20,15 @@ namespace
 {
 #ifdef _DEBUG
 
-	const CScene::EMode INIT_SCENE = CScene::MODE_GAME;	// 初期シーン
+	const CScene::EMode INIT_SCENE = CScene::MODE_TITLE;	// 初期シーン
 
 #else	// NDEBUG
 
-	const CScene::EMode INIT_SCENE = CScene::MODE_INTRO;	// 初期シーン
+	const CScene::EMode INIT_SCENE = CScene::MODE_TITLE;	// 初期シーン
 
 #endif	// _DEBUG
 
-	const int	PRIORITY		= 7;	// フェードの優先順位
-	const float	LEVEL_ROOMTRANS	= 2.5f;	// ルーム遷移時のフェードのα値加減量
+	const int PRIORITY = 7;	// フェードの優先順位
 }
 
 //************************************************************
@@ -42,6 +41,7 @@ CFade::CFade() :
 	m_funcSetMode	(nullptr),		// モード設定関数ポインタ
 	m_modeNext		(INIT_SCENE),	// 遷移先モード
 	m_fade			(FADE_NONE),	// フェード状態
+	m_type			(TYPE_NONE),	// フェード種類
 	m_fWaitTime		(0.0f),			// 現在の余韻時間
 	m_fSubIn		(0.0f),			// インのα値減少量
 	m_fAddOut		(0.0f)			// アウトのα値増加量
@@ -66,9 +66,10 @@ HRESULT CFade::Init()
 	m_funcSetMode	= nullptr;		// モード設定関数ポインタ
 	m_modeNext		= INIT_SCENE;	// 遷移先モード
 	m_fade			= FADE_IN;		// フェード状態
+	m_type			= TYPE_NONE;	// フェード種類
 	m_fWaitTime		= 0.0f;			// 現在の余韻時間
-	m_fSubIn		= SKIP_LEVEL;	// インのα値減少量
-	m_fAddOut		= SKIP_LEVEL;	// アウトのα値増加量
+	m_fSubIn		= 1.0f;			// インのα値減少量
+	m_fAddOut		= 1.0f;			// アウトのα値増加量
 
 	// オブジェクト2Dの初期化
 	if (FAILED(CObject2D::Init()))
@@ -119,7 +120,7 @@ void CFade::Uninit()
 void CFade::Update(const float fDeltaTime)
 {
 	// フェードしていない場合抜ける
-	if (m_fade == FADE_NONE) { return; }
+	if (m_fade == FADE_NONE) { m_type = TYPE_NONE; return; }
 
 	COLOR colFade = GetColor();	// フェード色
 	switch (m_fade)
@@ -208,10 +209,11 @@ void CFade::Draw(CShader* pShader)
 //============================================================
 void CFade::SetFade
 (
-	const float fAddOut,	// アウトのα値増加量
-	const float fSubIn,		// インのα値減少量
-	const int nPriority,	// 優先順位
-	const COLOR colFade		// フェード色
+	const float fAddOut,			// アウトのα値増加量
+	const float fSubIn,				// インのα値減少量
+	std::function<HRESULT()> pFunc,	// モード設定関数ポインタ
+	const int nPriority,			// 優先順位
+	const COLOR colFade				// フェード色
 )
 {
 	// フェード中の場合抜ける
@@ -227,8 +229,11 @@ void CFade::SetFade
 	// 色を設定
 	SetColor(colFade);
 
-	// モード設定関数ポインタを初期化
-	m_funcSetMode = nullptr;
+	// モード設定関数ポインタを設定
+	m_funcSetMode = pFunc;
+
+	// フェード種類を設定
+	m_type = TYPE_FADE;
 
 	// フェードアウト状態にする
 	m_fade = FADE_OUT;
@@ -270,6 +275,9 @@ void CFade::SetModeFade
 
 	// ロード画面を挟まないモード設定関数を設定
 	m_funcSetMode = std::bind(&CManager::SetMode, GET_MANAGER);
+
+	// フェード種類を設定
+	m_type = TYPE_MODE;
 
 	if (m_fWaitTime <= 0.0f)
 	{ // カウンターが未設定の場合
@@ -321,6 +329,9 @@ void CFade::SetLoadFade
 
 	// ロード画面を挟むモード設定関数を設定
 	m_funcSetMode = std::bind(&CManager::SetLoadMode, GET_MANAGER);
+
+	// フェード種類を設定
+	m_type = TYPE_LOAD;
 
 	if (m_fWaitTime <= 0.0f)
 	{ // カウンターが未設定の場合

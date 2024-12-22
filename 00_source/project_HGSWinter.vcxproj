@@ -238,6 +238,8 @@
     <ClCompile Include="resource\titleManager.cpp" />
     <ClCompile Include="resource\titleState.cpp" />
     <ClCompile Include="resource\titleStateLogo.cpp" />
+    <ClCompile Include="resource\titleStateSelect.cpp" />
+    <ClCompile Include="resource\titleStateTutorial.cpp" />
     <ClCompile Include="resource\useful.cpp" />
     <ClCompile Include="resource\value.cpp" />
     <ClCompile Include="resource\valueUI.cpp" />
@@ -326,6 +328,8 @@
     <ClInclude Include="resource\titleManager.h" />
     <ClInclude Include="resource\titleState.h" />
     <ClInclude Include="resource\titleStateLogo.h" />
+    <ClInclude Include="resource\titleStateSelect.h" />
+    <ClInclude Include="resource\titleStateTutorial.h" />
     <ClInclude Include="resource\useful.h" />
     <ClInclude Include="resource\value.h" />
     <ClInclude Include="resource\valueUI.h" />

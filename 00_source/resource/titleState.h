@@ -45,5 +45,7 @@ protected:
 //	インクルードファイル
 //************************************************************
 #include "titleStateLogo.h"
+#include "titleStateSelect.h"
+#include "titleStateTutorial.h"
 
 #endif	// _TITLE_STATE_H_

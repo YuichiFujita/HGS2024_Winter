@@ -9,6 +9,7 @@
 //************************************************************
 #include "titleManager.h"
 #include "titleState.h"
+#include "manager.h"
 
 //************************************************************
 //	eƒNƒ‰ƒX [CTitleManager] ‚Ìƒƒ“ƒoŠÖ”
@@ -90,6 +91,15 @@ HRESULT CTitleManager::ChangeState(CTitleState* pState)
 	}
 
 	return S_OK;
+}
+
+//============================================================
+//	ƒQ[ƒ€‰æ–Ê‘JˆÚˆ—
+//============================================================
+void CTitleManager::TransGame()
+{
+	// ƒQ[ƒ€‰æ–Ê‚É‘JˆÚ‚·‚é
+	GET_MANAGER->SetLoadScene(CScene::MODE_GAME);
 }
 
 //============================================================

@@ -383,6 +383,15 @@ void useful::RotToVec(const float fPhi, const float fTheta, VECTOR3* pVec)
 //============================================================
 //	縦幅からテクスチャのアスペクト比を考慮した横幅の取得処理
 //============================================================
+float useful::GetTexWidthFromAspect(const float fHeight, const char* pTexturePath)
+{
+	// アスペクト比から計算した横幅を返す
+	return GetTexWidthFromAspect(fHeight, GET_MANAGER->GetTexture()->Regist(pTexturePath));
+}
+
+//============================================================
+//	縦幅からテクスチャのアスペクト比を考慮した横幅の取得処理
+//============================================================
 float useful::GetTexWidthFromAspect(const float fHeight, const int nTexIdx)
 {
 	// テクスチャアスペクト比を取得
@@ -390,6 +399,15 @@ float useful::GetTexWidthFromAspect(const float fHeight, const int nTexIdx)
 
 	// アスペクト比から計算した横幅を返す
 	return fHeight * aspect.x;
+}
+
+//============================================================
+//	横幅からテクスチャのアスペクト比を考慮した縦幅の取得処理
+//============================================================
+float useful::GetTexHeightFromAspect(const float fWidth, const char* pTexturePath)
+{
+	// アスペクト比から計算した縦幅を返す
+	return GetTexHeightFromAspect(fWidth, GET_MANAGER->GetTexture()->Regist(pTexturePath));
 }
 
 //============================================================

@@ -49,6 +49,18 @@
     <Filter Include="outgame">
       <UniqueIdentifier>{7598e507-1ebe-4bfc-96a0-8df4716ce436}</UniqueIdentifier>
     </Filter>
+    <Filter Include="system\debug">
+      <UniqueIdentifier>{e70c967f-fb02-4e73-b16b-451de6fecbda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system\input">
+      <UniqueIdentifier>{90360f11-c2ca-4f21-b43d-34e307978fc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system\renderer">
+      <UniqueIdentifier>{06fb53c4-136a-4338-ad57-82aaab582a87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system\light">
+      <UniqueIdentifier>{1faf34bd-5ba1-4887-a513-30d558c73838}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="resource\camera.cpp">
@@ -58,18 +70,6 @@
       <Filter>system</Filter>
     </ClCompile>
     <ClCompile Include="resource\deltaTime.cpp">
-      <Filter>system</Filter>
-    </ClCompile>
-    <ClCompile Include="resource\debugproc.cpp">
-      <Filter>system</Filter>
-    </ClCompile>
-    <ClCompile Include="resource\debug.cpp">
-      <Filter>system</Filter>
-    </ClCompile>
-    <ClCompile Include="resource\input.cpp">
-      <Filter>system</Filter>
-    </ClCompile>
-    <ClCompile Include="resource\light.cpp">
       <Filter>system</Filter>
     </ClCompile>
     <ClCompile Include="resource\main.cpp">
@@ -195,17 +195,8 @@
     <ClCompile Include="resource\value.cpp">
       <Filter>2D</Filter>
     </ClCompile>
-    <ClCompile Include="resource\renderState.cpp">
-      <Filter>system</Filter>
-    </ClCompile>
-    <ClCompile Include="resource\renderer.cpp">
-      <Filter>system</Filter>
-    </ClCompile>
     <ClCompile Include="resource\multiValue.cpp">
       <Filter>2D</Filter>
-    </ClCompile>
-    <ClCompile Include="resource\screen.cpp">
-      <Filter>system</Filter>
     </ClCompile>
     <ClCompile Include="resource\multiModel.cpp">
       <Filter>3D</Filter>
@@ -279,15 +270,6 @@
     <ClCompile Include="resource\particle3D.cpp">
       <Filter>3D</Filter>
     </ClCompile>
-    <ClCompile Include="resource\inputManager.cpp">
-      <Filter>system</Filter>
-    </ClCompile>
-    <ClCompile Include="resource\lightDir.cpp">
-      <Filter>system</Filter>
-    </ClCompile>
-    <ClCompile Include="resource\lightManager.cpp">
-      <Filter>system</Filter>
-    </ClCompile>
     <ClCompile Include="resource\characterAnim3D.cpp">
       <Filter>flyweight</Filter>
     </ClCompile>
@@ -297,13 +279,49 @@
     <ClCompile Include="resource\extension.cpp">
       <Filter>utility</Filter>
     </ClCompile>
-    <ClCompile Include="resource\renderTexture.cpp">
-      <Filter>system</Filter>
-    </ClCompile>
     <ClCompile Include="resource\titleState.cpp">
       <Filter>state\state_title</Filter>
     </ClCompile>
     <ClCompile Include="resource\titleStateLogo.cpp">
+      <Filter>state\state_title</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\debug.cpp">
+      <Filter>system\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\debugproc.cpp">
+      <Filter>system\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\input.cpp">
+      <Filter>system\input</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\inputManager.cpp">
+      <Filter>system\input</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\renderer.cpp">
+      <Filter>system\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\renderState.cpp">
+      <Filter>system\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\renderTexture.cpp">
+      <Filter>system\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\screen.cpp">
+      <Filter>system\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\light.cpp">
+      <Filter>system\light</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\lightDir.cpp">
+      <Filter>system\light</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\lightManager.cpp">
+      <Filter>system\light</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\titleStateSelect.cpp">
+      <Filter>state\state_title</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\titleStateTutorial.cpp">
       <Filter>state\state_title</Filter>
     </ClCompile>
   </ItemGroup>
@@ -419,12 +437,6 @@
     <ClInclude Include="resource\camera.h">
       <Filter>system</Filter>
     </ClInclude>
-    <ClInclude Include="resource\debug.h">
-      <Filter>system</Filter>
-    </ClInclude>
-    <ClInclude Include="resource\debugproc.h">
-      <Filter>system</Filter>
-    </ClInclude>
     <ClInclude Include="resource\deltaTime.h">
       <Filter>system</Filter>
     </ClInclude>
@@ -440,28 +452,13 @@
     <ClInclude Include="resource\manager.h">
       <Filter>system</Filter>
     </ClInclude>
-    <ClInclude Include="resource\renderer.h">
-      <Filter>system</Filter>
-    </ClInclude>
     <ClInclude Include="resource\sound.h">
-      <Filter>system</Filter>
-    </ClInclude>
-    <ClInclude Include="resource\input.h">
-      <Filter>system</Filter>
-    </ClInclude>
-    <ClInclude Include="resource\light.h">
       <Filter>system</Filter>
     </ClInclude>
     <ClInclude Include="resource\precompile.h">
       <Filter>system</Filter>
     </ClInclude>
-    <ClInclude Include="resource\renderState.h">
-      <Filter>system</Filter>
-    </ClInclude>
     <ClInclude Include="resource\resource.h">
-      <Filter>system</Filter>
-    </ClInclude>
-    <ClInclude Include="resource\screen.h">
       <Filter>system</Filter>
     </ClInclude>
     <ClInclude Include="resource\multiValue.h">
@@ -539,15 +536,6 @@
     <ClInclude Include="resource\particle3D.h">
       <Filter>3D</Filter>
     </ClInclude>
-    <ClInclude Include="resource\inputManager.h">
-      <Filter>system</Filter>
-    </ClInclude>
-    <ClInclude Include="resource\lightDir.h">
-      <Filter>system</Filter>
-    </ClInclude>
-    <ClInclude Include="resource\lightManager.h">
-      <Filter>system</Filter>
-    </ClInclude>
     <ClInclude Include="resource\characterAnim3D.h">
       <Filter>flyweight</Filter>
     </ClInclude>
@@ -557,13 +545,49 @@
     <ClInclude Include="resource\extension.h">
       <Filter>utility</Filter>
     </ClInclude>
-    <ClInclude Include="resource\renderTexture.h">
-      <Filter>system</Filter>
-    </ClInclude>
     <ClInclude Include="resource\titleState.h">
       <Filter>state\state_title</Filter>
     </ClInclude>
     <ClInclude Include="resource\titleStateLogo.h">
+      <Filter>state\state_title</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\debugproc.h">
+      <Filter>system\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\debug.h">
+      <Filter>system\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\inputManager.h">
+      <Filter>system\input</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\input.h">
+      <Filter>system\input</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\renderer.h">
+      <Filter>system\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\renderState.h">
+      <Filter>system\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\renderTexture.h">
+      <Filter>system\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\screen.h">
+      <Filter>system\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\lightManager.h">
+      <Filter>system\light</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\light.h">
+      <Filter>system\light</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\lightDir.h">
+      <Filter>system\light</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\titleStateSelect.h">
+      <Filter>state\state_title</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\titleStateTutorial.h">
       <Filter>state\state_title</Filter>
     </ClInclude>
   </ItemGroup>

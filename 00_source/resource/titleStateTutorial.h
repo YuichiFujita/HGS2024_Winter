@@ -1,14 +1,14 @@
 //============================================================
 //
-//	ロゴ表示状態ヘッダー [titleStateLogo.h]
+//	チュートリアル表示状態ヘッダー [titleStateTutorial.h]
 //	Author：藤田勇一
 //
 //============================================================
 //************************************************************
 //	二重インクルード防止
 //************************************************************
-#ifndef _TITLE_STATE_LOGO_H_
-#define _TITLE_STATE_LOGO_H_
+#ifndef _TITLE_STATE_TUTORIAL_H_
+#define _TITLE_STATE_TUTORIAL_H_
 
 //************************************************************
 //	インクルードファイル
@@ -23,15 +23,15 @@ class CObject2D;	// オブジェクト2Dクラス
 //************************************************************
 //	クラス定義
 //************************************************************
-// ロゴ表示状態クラス
-class CTitleStateLogo : public CTitleState
+// チュートリアル表示状態クラス
+class CTitleStateTutorial : public CTitleState
 {
 public:
 	// コンストラクタ
-	CTitleStateLogo();
+	CTitleStateTutorial();
 
 	// デストラクタ
-	~CTitleStateLogo() override;
+	~CTitleStateTutorial() override;
 
 	// オーバーライド関数
 	HRESULT Init() override;	// 初期化
@@ -39,13 +39,8 @@ public:
 	void Update(const float fDeltaTime) override;	// 更新
 
 private:
-	// メンバ関数
-	void UpdateDecide();	// 決定更新
-	void UpdateTransSelect(const float fDeltaTime);	// タイトル遷移更新
-
 	// メンバ変数
-	CObject2D* m_pLogo;	// ロゴ情報
-	float m_fCurTime;	// 現在の経過時間
+	CObject2D* m_pTutorial;	// チュートリアル情報
 };
 
-#endif	// _TITLE_STATE_LOGO_H_
+#endif	// _TITLE_STATE_TUTORIAL_H_

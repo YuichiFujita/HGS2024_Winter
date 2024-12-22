@@ -22,16 +22,6 @@ class CTitleState;	// タイトル状態クラス
 class CTitleManager
 {
 public:
-	// 表示テキスト列挙
-	enum EText
-	{
-		TEXT_CONTINUE = 0,	// コンティニュー
-		TEXT_RESET,			// リセット
-		TEXT_SETTING,		// 設定
-		TEXT_RESET_TITLE,	// すでになまえがつけられています
-		TEXT_MAX			// この列挙型の総数
-	};
-
 	// コンストラクタ
 	CTitleManager();
 
@@ -43,6 +33,7 @@ public:
 	void Uninit();	// 終了
 	void Update(const float fDeltaTime);		// 更新
 	HRESULT ChangeState(CTitleState* pState);	// 状態変更
+	void TransGame();	// ゲーム画面遷移
 
 	// 静的メンバ関数
 	static CTitleManager* Create();	// 生成
