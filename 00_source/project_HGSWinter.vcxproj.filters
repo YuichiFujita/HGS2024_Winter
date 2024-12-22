@@ -357,6 +357,18 @@
     <ClCompile Include="resource\resultStateNormal.cpp">
       <Filter>state\result</Filter>
     </ClCompile>
+    <ClCompile Include="resource\rankingManager.cpp">
+      <Filter>scene\ranking</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\sceneRanking.cpp">
+      <Filter>scene\ranking</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\rankingState.cpp">
+      <Filter>state\ranking</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\rankingStateNormal.cpp">
+      <Filter>state\ranking</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource\anim2D.h">
@@ -640,6 +652,18 @@
     </ClInclude>
     <ClInclude Include="resource\resultStateNormal.h">
       <Filter>state\result</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\rankingManager.h">
+      <Filter>scene\ranking</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\sceneRanking.h">
+      <Filter>scene\ranking</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\rankingState.h">
+      <Filter>state\ranking</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\rankingStateNormal.h">
+      <Filter>state\ranking</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
