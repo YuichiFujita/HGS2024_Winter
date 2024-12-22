@@ -132,7 +132,7 @@ void CSceneGame::Update(const float fDeltaTime)
 	assert(m_pGameManager != nullptr);
 	m_pGameManager->Update(fDeltaTime);
 
-	if (m_pGameManager->GetState() == CGameManager::STATE_NORMAL)
+	if (m_pGameManager->IsNormal())
 	{ // ゲームが通常状態の場合
 
 		// ポーズの更新
@@ -148,7 +148,6 @@ void CSceneGame::Update(const float fDeltaTime)
 	}
 
 #ifdef _DEBUG
-
 	else
 	{ // ポーズ中の場合
 
@@ -159,7 +158,6 @@ void CSceneGame::Update(const float fDeltaTime)
 			GET_MANAGER->GetCamera()->Update(fDeltaTime);
 		}
 	}
-
 #endif	// _DEBUG
 }
 

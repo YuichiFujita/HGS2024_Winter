@@ -43,9 +43,6 @@
     <Filter Include="ingame">
       <UniqueIdentifier>{b06a5a0f-755e-465b-ada1-cd07cde8f5d6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="state\state_title">
-      <UniqueIdentifier>{70b8fcbd-b32f-41af-bf19-557e9afd870b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="outgame">
       <UniqueIdentifier>{7598e507-1ebe-4bfc-96a0-8df4716ce436}</UniqueIdentifier>
     </Filter>
@@ -60,6 +57,12 @@
     </Filter>
     <Filter Include="system\light">
       <UniqueIdentifier>{1faf34bd-5ba1-4887-a513-30d558c73838}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="state\game">
+      <UniqueIdentifier>{b4210378-91b6-47fe-9d22-843a2ff1d962}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="state\title">
+      <UniqueIdentifier>{70b8fcbd-b32f-41af-bf19-557e9afd870b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -280,10 +283,10 @@
       <Filter>utility</Filter>
     </ClCompile>
     <ClCompile Include="resource\titleState.cpp">
-      <Filter>state\state_title</Filter>
+      <Filter>state\title</Filter>
     </ClCompile>
     <ClCompile Include="resource\titleStateLogo.cpp">
-      <Filter>state\state_title</Filter>
+      <Filter>state\title</Filter>
     </ClCompile>
     <ClCompile Include="resource\debug.cpp">
       <Filter>system\debug</Filter>
@@ -319,10 +322,16 @@
       <Filter>system\light</Filter>
     </ClCompile>
     <ClCompile Include="resource\titleStateSelect.cpp">
-      <Filter>state\state_title</Filter>
+      <Filter>state\title</Filter>
     </ClCompile>
     <ClCompile Include="resource\titleStateTutorial.cpp">
-      <Filter>state\state_title</Filter>
+      <Filter>state\title</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\gameState.cpp">
+      <Filter>state\game</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\gameStateNormal.cpp">
+      <Filter>state\game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -546,10 +555,10 @@
       <Filter>utility</Filter>
     </ClInclude>
     <ClInclude Include="resource\titleState.h">
-      <Filter>state\state_title</Filter>
+      <Filter>state\title</Filter>
     </ClInclude>
     <ClInclude Include="resource\titleStateLogo.h">
-      <Filter>state\state_title</Filter>
+      <Filter>state\title</Filter>
     </ClInclude>
     <ClInclude Include="resource\debugproc.h">
       <Filter>system\debug</Filter>
@@ -585,10 +594,16 @@
       <Filter>system\light</Filter>
     </ClInclude>
     <ClInclude Include="resource\titleStateSelect.h">
-      <Filter>state\state_title</Filter>
+      <Filter>state\title</Filter>
     </ClInclude>
     <ClInclude Include="resource\titleStateTutorial.h">
-      <Filter>state\state_title</Filter>
+      <Filter>state\title</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\gameState.h">
+      <Filter>state\game</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\gameStateNormal.h">
+      <Filter>state\game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

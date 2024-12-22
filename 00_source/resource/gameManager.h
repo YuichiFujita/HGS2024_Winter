@@ -11,20 +11,18 @@
 #define _GAMEMANAGER_H_
 
 //************************************************************
+//	前方宣言
+//************************************************************
+class CGameState;		// ゲーム状態クラス
+class CGameStateNormal;	// 通常状態クラス
+
+//************************************************************
 //	クラス定義
 //************************************************************
 // ゲームマネージャークラス
 class CGameManager
 {
 public:
-	// 状態列挙
-	enum EState
-	{
-		STATE_NONE = 0,	// 何もしない状態
-		STATE_NORMAL,	// 通常状態
-		STATE_MAX		// この列挙型の総数
-	};
-
 	// コンストラクタ
 	CGameManager();
 
@@ -34,9 +32,12 @@ public:
 	// メンバ関数
 	HRESULT Init();	// 初期化
 	void Uninit();	// 終了
-	void Update(const float fDeltaTime);	// 更新
-	void SetState(const EState state);		// 状態設定
-	EState GetState() const;				// 状態取得
+	void Update(const float fDeltaTime);		// 更新
+	HRESULT ChangeState(CGameState* pState);	// 状態変更
+	void TransResult();		// リザルト画面遷移
+	bool IsNormal() const;	// 通常状態確認
+	inline void SetEnableControlOK(const bool bOK)	{ m_bControlOK = bOK; }		// 操作可能フラグ設定
+	inline bool IsControlOK() const					{ return m_bControlOK; }	// 操作可能フラグ取得
 
 	// 静的メンバ関数
 	static CGameManager* Create();	// 生成
@@ -44,7 +45,8 @@ public:
 
 private:
 	// メンバ変数
-	EState m_state;	// 状態
+	CGameState* m_pState;	// 状態
+	bool m_bControlOK;		// 操作可能フラグ
 };
 
 #endif	// _GAMEMANAGER_H_

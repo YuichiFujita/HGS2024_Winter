@@ -8,6 +8,8 @@
 //	インクルードファイル
 //************************************************************
 #include "gameManager.h"
+#include "gameState.h"
+#include "manager.h"
 
 //************************************************************
 //	親クラス [CGameManager] のメンバ関数
@@ -16,7 +18,8 @@
 //	コンストラクタ
 //============================================================
 CGameManager::CGameManager() :
-	m_state	(STATE_NONE)	// 状態
+	m_pState	 (nullptr),	// 状態
+	m_bControlOK (false)	// 操作可能フラグ
 {
 
 }
@@ -35,7 +38,11 @@ CGameManager::~CGameManager()
 HRESULT CGameManager::Init()
 {
 	// メンバ変数を初期化
-	m_state = STATE_NORMAL;	// 状態
+	m_pState	 = nullptr;	// 状態
+	m_bControlOK = true;	// 操作可能フラグ
+
+	// 通常状態にする
+	ChangeState(new CGameStateNormal);
 
 	return S_OK;
 }
@@ -45,7 +52,8 @@ HRESULT CGameManager::Init()
 //============================================================
 void CGameManager::Uninit()
 {
-
+	// 状態の終了
+	SAFE_UNINIT(m_pState);
 }
 
 //============================================================
@@ -53,34 +61,56 @@ void CGameManager::Uninit()
 //============================================================
 void CGameManager::Update(const float fDeltaTime)
 {
-	switch (m_state)
-	{ // 状態ごとの処理
-	case STATE_NONE:
-	case STATE_NORMAL:
-		break;
+	// 状態ごとの更新
+	assert(m_pState != nullptr);
+	m_pState->Update(fDeltaTime);
+}
 
-	default:	// 例外処理
+//============================================================
+//	状態の変更処理
+//============================================================
+HRESULT CGameManager::ChangeState(CGameState* pState)
+{
+	// 状態の生成に失敗している場合抜ける
+	if (pState == nullptr) { assert(false); return E_FAIL; }
+
+	// 状態インスタンスを終了
+	SAFE_UNINIT(m_pState);
+
+	// 状態インスタンスを変更
+	assert(m_pState == nullptr);
+	m_pState = pState;
+
+	// 状態にコンテキストを設定
+	m_pState->SetContext(this);
+
+	// 状態インスタンスを初期化
+	if (FAILED(m_pState->Init()))
+	{ // 初期化に失敗した場合
+
 		assert(false);
-		break;
+		return E_FAIL;
 	}
+
+	return S_OK;
 }
 
 //============================================================
-//	状態設定処理
+//	リザルト画面遷移処理
 //============================================================
-void CGameManager::SetState(const EState state)
+void CGameManager::TransResult()
 {
-	// 状態を設定
-	m_state = state;
+	// リザルト画面に遷移する
+	GET_MANAGER->SetLoadScene(CScene::MODE_RESULT);
 }
 
 //============================================================
-//	状態取得処理
+//	通常状態かの確認処理
 //============================================================
-CGameManager::EState CGameManager::GetState() const
+bool CGameManager::IsNormal() const
 {
-	// 状態を返す
-	return m_state;
+	// 通常状態かを判定し返す
+	return (typeid(*m_pState) == typeid(CGameStateNormal));
 }
 
 //============================================================
