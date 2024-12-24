@@ -15,6 +15,12 @@
 //************************************************************
 class CResultState;	// リザルト状態クラス
 
+#ifdef SCORE
+class CMultiValue;	// マルチ数字クラス
+#else TIMER
+class CTimeUI;		// タイムUIクラス
+#endif
+
 //************************************************************
 //	クラス定義
 //************************************************************
@@ -41,6 +47,11 @@ public:
 
 private:
 	// メンバ変数
+#ifdef SCORE
+	CMultiValue* m_pScore;	// スコア情報
+#else TIMER
+	CTimeUI* m_pTime;		// タイム情報
+#endif
 	CResultState* m_pState;	// 状態
 };
 

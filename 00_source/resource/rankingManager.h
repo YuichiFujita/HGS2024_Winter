@@ -14,6 +14,13 @@
 //	前方宣言
 //************************************************************
 class CRankingState;	// ランキング状態クラス
+class CAnim2D;			// アニメーション2Dクラス
+
+#ifdef SCORE
+class CMultiValue;	// マルチ数字クラス
+#else TIMER
+class CTimeUI;		// タイムUIクラス
+#endif
 
 //************************************************************
 //	クラス定義
@@ -22,6 +29,9 @@ class CRankingState;	// ランキング状態クラス
 class CRankingManager
 {
 public:
+	// 定数
+	static constexpr int MAX_RANK = 5;	// ランキング上位表示数
+
 	// コンストラクタ
 	CRankingManager();
 
@@ -38,9 +48,32 @@ public:
 	static CRankingManager* Create();	// 生成
 	static void Release(CRankingManager*& prRankingManager);	// 破棄
 
+#ifdef SCORE
+	static int SetRank(const int nNewScore);	// ランキング設定
+#else TIMER
+	static int SetRank(const float fNewTime);	// ランキング設定
+#endif
+
 private:
+	// 静的メンバ関数
+#ifdef SCORE
+	static int SortRank(const int nNewScore, int* pRankArray);		// ランキングソート
+	static HRESULT LoadRank(const char* pPath, int* pRankArray);	// ランキング読込
+	static HRESULT SaveRank(const char* pPath, int* pRankArray);	// ランキング保存
+#else TIMER
+	static int SortRank(const float fNewTime, float* pRankArray);	// ランキングソート
+	static HRESULT LoadRank(const char* pPath, float* pRankArray);	// ランキング読込
+	static HRESULT SaveRank(const char* pPath, float* pRankArray);	// ランキング保存
+#endif
+
 	// メンバ変数
-	CRankingState* m_pState;	// 状態
+	CAnim2D* m_apRank[MAX_RANK];		// 順位情報
+#ifdef SCORE
+	CMultiValue* m_apScore[MAX_RANK];	// スコア情報
+#else TIMER
+	CTimeUI* m_apTime[MAX_RANK];		// タイム情報
+#endif
+	CRankingState* m_pState;			// 状態
 };
 
 #endif	// _RANKINGMANAGER_H_

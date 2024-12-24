@@ -15,6 +15,12 @@
 //************************************************************
 class CGameState;	// ゲーム状態クラス
 
+#ifdef SCORE
+class CMultiValue;	// マルチ数字クラス
+#else TIMER
+class CTimerUI;		// タイマーUIクラス
+#endif
+
 //************************************************************
 //	クラス定義
 //************************************************************
@@ -44,6 +50,11 @@ public:
 
 private:
 	// メンバ変数
+#ifdef SCORE
+	CMultiValue* m_pScore;	// スコア情報
+#else TIMER
+	CTimerUI* m_pTimer;		// タイマー情報
+#endif
 	CGameState* m_pState;	// 状態
 	bool m_bControlOK;		// 操作可能フラグ
 };

@@ -98,6 +98,9 @@ HRESULT CTitleManager::ChangeState(CTitleState* pState)
 //============================================================
 void CTitleManager::TransGame()
 {
+	// フェード中の場合抜ける
+	if (GET_MANAGER->GetFade()->IsFade()) { return; }
+
 	// ゲーム画面に遷移する
 	GET_MANAGER->SetLoadScene(CScene::MODE_GAME);
 }

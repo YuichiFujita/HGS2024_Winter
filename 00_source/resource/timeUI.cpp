@@ -398,6 +398,9 @@ void CTimeUI::SetTime(const float fTime)
 
 	// 表示時間の補正
 	useful::LimitNum(m_fTime, CTimer::TIME_MIN, CTimer::TIME_MAX);
+
+	// 数字のテクスチャ座標の設定
+	SetTexNum();
 }
 
 //============================================================

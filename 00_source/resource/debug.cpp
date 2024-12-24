@@ -13,6 +13,7 @@
 #include "renderer.h"
 #include "scene.h"
 #include "sceneGame.h"
+#include "gameManager.h"
 #include "debugproc.h"
 #include "pause.h"
 
@@ -233,6 +234,9 @@ void CDebug::UpdateDebugControl()
 
 		// ポーズ表示変更
 		ChangeDispPause();
+
+		// リザルト遷移
+		TransResult();
 		break;
 
 	case CScene::MODE_RESULT:
@@ -444,6 +448,18 @@ void CDebug::ChangeDispPause()
 	{
 		// ポーズの表示状況を設定
 		CSceneGame::GetPause()->SetEnableDebugDisp(!CSceneGame::GetPause()->IsDebugDisp());
+	}
+}
+
+//============================================================
+//	リザルト遷移処理
+//============================================================
+void CDebug::TransResult()
+{
+	if (GET_INPUTKEY->IsTrigger(KEY_RESULT_TRANS))
+	{
+		// リザルトに遷移する
+		CSceneGame::GetGameManager()->TransResult();
 	}
 }
 

@@ -15,7 +15,13 @@
 //============================================================
 //	コンストラクタ
 //============================================================
-CRetention::CRetention()
+CRetention::CRetention() :
+#ifdef SCORE
+	m_nScore		 (0),		// クリアスコア
+#else TIMER
+	m_fTime			 (0.0f),	// クリアタイム
+#endif
+	m_nUpdateRankIdx (-1)		// ランキング更新インデックス
 {
 
 }
@@ -33,6 +39,14 @@ CRetention::~CRetention()
 //============================================================
 HRESULT CRetention::Init()
 {
+	// メンバ変数を初期化
+#ifdef SCORE
+	m_nScore		 = 0;		// クリアスコア
+#else TIMER
+	m_fTime			 = 0.0f;	// クリアタイム
+#endif
+	m_nUpdateRankIdx = -1;		// ランキング更新インデックス
+
 	return S_OK;
 }
 

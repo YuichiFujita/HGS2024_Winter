@@ -602,7 +602,7 @@ void CMultiValue::SetTexNum()
 	( // ˆø”
 		pNumDivide,	// •ª‰ğŒ‹‰Ê‚ÌŠi”[”z—ñ
 		m_nNum,		// •ª‰ğ‚·‚é”’l
-		nDigit - 1	// •ª‰ğ‚·‚é”š‚ÌŒ…”
+		nDigit		// •ª‰ğ‚·‚é”š‚ÌŒ…”
 	);
 
 	// •ª‰ğ‚µ‚½”’l‚ğ”½‰f

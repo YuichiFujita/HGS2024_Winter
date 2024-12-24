@@ -19,9 +19,6 @@
     <Filter Include="scene\game">
       <UniqueIdentifier>{7014a010-61a7-43fe-8ac9-3a929ebe0be9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="shader">
-      <UniqueIdentifier>{7802df47-284e-428b-bacd-10c28e8da035}</UniqueIdentifier>
-    </Filter>
     <Filter Include="object">
       <UniqueIdentifier>{5874bc1c-3cb1-4064-9beb-9d80c63bb63c}</UniqueIdentifier>
     </Filter>
@@ -75,6 +72,9 @@
     </Filter>
     <Filter Include="state\ranking">
       <UniqueIdentifier>{3f62ecf1-dfcf-46c2-81b4-38f65e09d338}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shader">
+      <UniqueIdentifier>{7802df47-284e-428b-bacd-10c28e8da035}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
