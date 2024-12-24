@@ -11,6 +11,7 @@
 #include "rankingState.h"
 #include "manager.h"
 #include "anim2D.h"
+#include "retention.h"
 
 #ifdef SCORE
 #include "multiValue.h"
@@ -33,8 +34,9 @@ namespace
 	}
 
 #ifdef SCORE
-	const int RANK_INIT[CRankingManager::MAX_RANK] = { 0, 0, 0, 0, 0 };	// 初期ランキング
-	const char* RANK_PATH = "data\\BIN\\rank_score.bin";	// ランキングパス
+	const int	RANK_INIT[CRankingManager::MAX_RANK] = { 0, 0, 0, 0, 0 };	// 初期ランキング
+	const char*	RANK_PATH	= "data\\BIN\\rank_score.bin";	// ランキングパス
+	const COLOR	COL_UPDATE	= color::Yellow();	// ランキング更新色
 	namespace score
 	{
 		const CValue::EType TYPE = CValue::TYPE_NORMAL;	// 数字種類
@@ -45,8 +47,9 @@ namespace
 		const VECTOR3 SPACE	 = VECTOR3(SIZE.x * 0.85f, 0.0f, 0.0f);	// スコア数字空白
 	}
 #else TIMER
-	const float RANK_INIT[CRankingManager::MAX_RANK] = { 150.0f, 180.0f, 210.0f, 240.0f, 270.0f };	// 初期ランキング
-	const char* RANK_PATH = "data\\BIN\\rank_time.bin";	// ランキングパス
+	const float	RANK_INIT[CRankingManager::MAX_RANK] = { 150.0f, 180.0f, 210.0f, 240.0f, 270.0f };	// 初期ランキング
+	const char*	RANK_PATH	= "data\\BIN\\rank_time.bin";	// ランキングパス
+	const COLOR	COL_UPDATE	= color::Yellow();	// ランキング更新色
 	namespace time
 	{
 		const CValue::EType TYPE = CValue::TYPE_NORMAL;	// 数字種類
@@ -90,6 +93,8 @@ CRankingManager::~CRankingManager()
 //============================================================
 HRESULT CRankingManager::Init()
 {
+	CRetention* pRetention = GET_MANAGER->GetRetention();	// データ保存マネージャー
+
 	// メンバ変数を初期化
 	memset(&m_apRank[0], 0, sizeof(m_apRank));		// 順位情報
 #ifdef SCORE
@@ -173,6 +178,19 @@ HRESULT CRankingManager::Init()
 			assert(false);
 			return E_FAIL;
 		}
+#endif
+	}
+
+	const int nUpdateIdx = pRetention->GetUpdateRankIdx();	// ランキング更新インデックス
+	if (nUpdateIdx > NONE_IDX)
+	{ // ランキングが更新されていた場合
+
+#ifdef SCORE
+		// 色を変更する
+		m_apScore[nUpdateIdx]->SetColor(COL_UPDATE);
+#else TIMER
+		// 色を変更する
+		m_apTime[nUpdateIdx]->SetColor(COL_UPDATE);
 #endif
 	}
 
