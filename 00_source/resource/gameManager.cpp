@@ -19,6 +19,8 @@
 #include "timerUI.h"
 #endif
 
+#include "player.h"
+
 //************************************************************
 //	定数宣言
 //************************************************************
@@ -130,6 +132,14 @@ HRESULT CGameManager::Init()
 	// タイマーの計測開始
 	m_pTimer->Start();
 #endif
+
+	// プレイヤーの生成
+	if (CPlayer::Create(VEC3_ZERO, VEC3_ZERO) == nullptr)
+	{ // 生成に失敗した場合
+
+		assert(false);
+		return E_FAIL;
+	}
 
 	return S_OK;
 }
