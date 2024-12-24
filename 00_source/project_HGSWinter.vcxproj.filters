@@ -369,6 +369,30 @@
     <ClCompile Include="resource\rankingStateNormal.cpp">
       <Filter>state\ranking</Filter>
     </ClCompile>
+    <ClCompile Include="resource\field.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\liquid.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\orbit.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\scenery.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\sky.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\wall.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\wave.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\stage.cpp">
+      <Filter>ingame</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource\anim2D.h">
@@ -664,6 +688,30 @@
     </ClInclude>
     <ClInclude Include="resource\rankingStateNormal.h">
       <Filter>state\ranking</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\field.h">
+      <Filter>3D</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\liquid.h">
+      <Filter>3D</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\orbit.h">
+      <Filter>3D</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\scenery.h">
+      <Filter>3D</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\sky.h">
+      <Filter>3D</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\wall.h">
+      <Filter>3D</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\wave.h">
+      <Filter>3D</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\stage.h">
+      <Filter>ingame</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

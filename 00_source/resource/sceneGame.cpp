@@ -21,7 +21,6 @@
 CGameManager* CSceneGame::m_pGameManager = nullptr;	// ゲームマネージャー
 CPause* CSceneGame::m_pPause = nullptr;		// ポーズ情報
 CHitStop* CSceneGame::m_pHitStop = nullptr;	// ヒットストップ情報
-CStage* CSceneGame::m_pStage = nullptr;		// ステージ情報
 
 //************************************************************
 //	子クラス [CSceneGame] のメンバ関数
@@ -85,18 +84,6 @@ HRESULT CSceneGame::Init()
 		return E_FAIL;
 	}
 
-	// TODO：ステージ追加時に修正
-#if 0
-	// ステージの生成
-	m_pStage = CStage::Create();
-	if (m_pStage == nullptr)
-	{ // 生成に失敗した場合
-
-		assert(false);
-		return E_FAIL;
-	}
-#endif
-
 	// TODO：カメラ設定
 #if 0
 	// 追従カメラにする
@@ -123,12 +110,6 @@ void CSceneGame::Uninit()
 
 	// ヒットストップの破棄
 	SAFE_REF_RELEASE(m_pHitStop);
-
-	// TODO：ステージ追加時に修正
-#if 0
-	// ステージの破棄
-	SAFE_REF_RELEASE(m_pStage);
-#endif
 
 	// シーンの終了
 	CScene::Uninit();
@@ -220,38 +201,4 @@ CHitStop* CSceneGame::GetHitStop()
 
 	// ヒットストップのポインタを返す
 	return m_pHitStop;
-}
-
-//============================================================
-//	ステージ取得処理
-//============================================================
-CStage* CSceneGame::GetStage()
-{
-	// インスタンス未使用
-	assert(m_pStage != nullptr);
-
-	// ステージのポインタを返す
-	return m_pStage;
-}
-
-//============================================================
-//	プレイヤー取得処理
-//============================================================
-CPlayer* CSceneGame::GetPlayer()
-{
-	// TODO：プレイヤー追加時に修正
-#if 0
-	CListManager<CPlayer>* pListManager = CPlayer::GetList();	// プレイヤーリストマネージャー
-	if (pListManager == nullptr)		{ return nullptr; }		// リスト未使用の場合抜ける
-	if (pListManager->GetNumAll() != 1)	{ return nullptr; }		// プレイヤーが1人ではない場合抜ける
-	CPlayer* pPlayer = pListManager->GetList().front();			// プレイヤー情報
-
-	// インスタンス未使用
-	assert(pPlayer != nullptr);
-
-	// プレイヤーのポインタを返す
-	return pPlayer;
-#else
-	return nullptr;
-#endif
 }

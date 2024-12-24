@@ -20,6 +20,7 @@
 #include "font.h"
 #include "character.h"
 #include "characterAnim3D.h"
+#include "stage.h"
 #include "shader.h"
 #include "retention.h"
 #include "debug.h"
@@ -51,7 +52,7 @@ CManager::CManager() :
 	m_pFont				(nullptr),	// フォントインスタンス
 	m_pCharacter		(nullptr),	// キャラクターインスタンス
 	m_pCharacterAnim3D	(nullptr),	// キャラクターアニメーション3Dインスタンス
-	m_pItem				(nullptr),	// アイテムインスタンス
+	m_pStage			(nullptr),	// ステージインスタンス
 	m_pFade				(nullptr),	// フェードインスタンス
 	m_pLoading			(nullptr),	// ローディングインスタンス
 	m_pScene			(nullptr),	// シーンインスタンス
@@ -93,7 +94,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	m_pFont				= nullptr;		// フォントインスタンス
 	m_pCharacter		= nullptr;		// キャラクターインスタンス
 	m_pCharacterAnim3D	= nullptr;		// キャラクターアニメーション3Dインスタンス
-	m_pItem				= nullptr;		// アイテムインスタンス
+	m_pStage			= nullptr;		// ステージインスタンス
 	m_pFade				= nullptr;		// フェードインスタンス
 	m_pLoading			= nullptr;		// ローディングインスタンス
 	m_pScene			= nullptr;		// シーンインスタンス
@@ -227,6 +228,15 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// キャラクターアニメーション3Dの生成
 	m_pCharacterAnim3D = CCharacterAnim3D::Create();
 	if (m_pCharacterAnim3D == nullptr)
+	{ // 生成に失敗した場合
+
+		assert(false);
+		return E_FAIL;
+	}
+
+	// ステージの生成
+	m_pStage = CStage::Create();
+	if (m_pStage == nullptr)
 	{ // 生成に失敗した場合
 
 		assert(false);
@@ -430,6 +440,9 @@ void CManager::Uninit()
 
 	// キャラクターアニメーション3Dの破棄
 	SAFE_REF_RELEASE(m_pCharacterAnim3D);
+
+	// ステージの破棄
+	SAFE_REF_RELEASE(m_pStage);
 
 	// シェーダーの破棄
 	CShader::Release();
@@ -971,15 +984,15 @@ CCharacterAnim3D* CManager::GetCharacterAnim3D()
 }
 
 //============================================================
-//	アイテム取得処理
+//	ステージ取得処理
 //============================================================
-CItem* CManager::GetItem()
+CStage* CManager::GetStage()
 {
 	// インスタンス未使用
-	assert(m_pItem != nullptr);
+	assert(m_pStage != nullptr);
 
-	// アイテムを返す
-	return m_pItem;
+	// ステージのポインタを返す
+	return m_pStage;
 }
 
 //============================================================

@@ -21,11 +21,11 @@ namespace
 	namespace basic
 	{
 		const VECTOR3 INIT_VECU	= VECTOR3(0.0f, 1.0f, 0.0f);	// 上方向ベクトルの初期値
-		const float VIEW_NEAR	= 10.0f;	// モデルが見えるZ軸の最小値
-		const float VIEW_FAR	= 10000.0f;	// モデルが見えるZ軸の最大値
-		const float MIN_DIS		= 1.0f;		// カメラの視点から注視点への距離の最小
-		const float MAX_DIS		= 10000.0f;	// カメラの視点から注視点への距離の最大
-		const float REV_DIS		= 0.001f;	// カメラ揺れ計算時のカメラ距離の補正係数
+		const float VIEW_NEAR	= 10.0f;		// モデルが見えるZ軸の最小値
+		const float VIEW_FAR	= 100000.0f;	// モデルが見えるZ軸の最大値
+		const float MIN_DIS		= 1.0f;			// カメラの視点から注視点への距離の最小
+		const float MAX_DIS		= 10000.0f;		// カメラの視点から注視点への距離の最大
+		const float REV_DIS		= 0.001f;		// カメラ揺れ計算時のカメラ距離の補正係数
 
 		const float VIEW_ASPECT		= (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;	// アスペクト比
 		const float VIEW_ANGLE		= D3DXToRadian(45.0f);	// 視野角
@@ -179,32 +179,15 @@ void CCamera::SetCamera()
 	// プロジェクションマトリックスの初期化
 	m_camera.mtxProj.Identity();
 
-	if (m_state == STATE_CONTROL)
-	{ // 操作カメラの場合
-
-		// 透視投影でプロジェクションマトリックスを作成
-		D3DXMatrixPerspectiveFovLH
-		( // 引数
-			&m_camera.mtxProj,	// プロジェクションマトリックス
-			basic::VIEW_ANGLE,	// 視野角
-			basic::VIEW_ASPECT,	// 画面のアスペクト比
-			basic::VIEW_NEAR,	// Z軸の最小値
-			basic::VIEW_FAR		// Z軸の最大値
-		);
-	}
-	else
-	{ // 別カメラの場合
-
-		// 平行投影でプロジェクションマトリックスを作成
-		D3DXMatrixOrthoLH
-		( // 引数
-			&m_camera.mtxProj,		// プロジェクションマトリックス
-			(float)SCREEN_WIDTH,	// 投影する横幅
-			(float)SCREEN_HEIGHT,	// 投影する縦幅
-			basic::VIEW_NEAR,		// Z軸の最小値
-			basic::VIEW_FAR			// Z軸の最大値
-		);
-	}
+	// 透視投影でプロジェクションマトリックスを作成
+	D3DXMatrixPerspectiveFovLH
+	( // 引数
+		&m_camera.mtxProj,	// プロジェクションマトリックス
+		basic::VIEW_ANGLE,	// 視野角
+		basic::VIEW_ASPECT,	// 画面のアスペクト比
+		basic::VIEW_NEAR,	// Z軸の最小値
+		basic::VIEW_FAR		// Z軸の最大値
+	);
 
 	// プロジェクションマトリックスの設定
 	pDevice->SetTransform(D3DTS_PROJECTION, &m_camera.mtxProj);

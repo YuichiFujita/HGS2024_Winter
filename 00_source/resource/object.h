@@ -81,7 +81,12 @@ public:
 		LABEL_EFFECT,		// エフェクト
 		LABEL_PARTICLE,		// パーティクル
 		LABEL_PLAYER,		// プレイヤー
-		LABEL_TILE,			// タイル
+		LABEL_FIELD,		// 地面
+		LABEL_WALL,			// 壁
+		LABEL_SCENERY,		// 景色
+		LABEL_SKY,			// 空
+		LABEL_LIQUID,		// 液体
+		LABEL_WAVE,			// 波動
 #ifdef _DEBUG
 		LABEL_DEBUG,		// デバッグ
 #endif // _DEBUG

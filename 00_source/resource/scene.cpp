@@ -8,14 +8,15 @@
 //	インクルードファイル
 //************************************************************
 #include "scene.h"
-#include "manager.h"
-#include "renderer.h"
-#include "lightManager.h"
-#include "camera.h"
 #include "sceneTitle.h"
 #include "sceneGame.h"
 #include "sceneResult.h"
 #include "sceneRanking.h"
+#include "manager.h"
+#include "renderer.h"
+#include "lightManager.h"
+#include "camera.h"
+#include "stage.h"
 
 //************************************************************
 //	親クラス [CScene] のメンバ関数
@@ -41,6 +42,9 @@ CScene::~CScene()
 //============================================================
 HRESULT CScene::Init()
 {
+	// ステージの割当
+	GET_MANAGER->GetStage()->BindStage("data\\TXT\\stage.txt");
+
 	return S_OK;
 }
 
@@ -121,4 +125,26 @@ void CScene::Release(CScene*& prScene)
 
 	// メモリ開放
 	SAFE_DELETE(prScene);
+}
+
+//============================================================
+//	プレイヤー取得処理
+//============================================================
+CPlayer* CScene::GetPlayer()
+{
+	// TODO：プレイヤー追加時に修正
+#if 0
+	CListManager<CPlayer>* pListManager = CPlayer::GetList();	// プレイヤーリストマネージャー
+	if (pListManager == nullptr)		{ return nullptr; }		// リスト未使用の場合抜ける
+	if (pListManager->GetNumAll() != 1)	{ return nullptr; }		// プレイヤーが1人ではない場合抜ける
+	CPlayer* pPlayer = pListManager->GetList().front();			// プレイヤー情報
+
+	// インスタンス未使用
+	assert(pPlayer != nullptr);
+
+	// プレイヤーのポインタを返す
+	return pPlayer;
+#else
+	return nullptr;
+#endif
 }

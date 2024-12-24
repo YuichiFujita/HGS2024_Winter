@@ -674,14 +674,14 @@ void CObjectMeshField::SetTerrain(const POSGRID2& rPart, VECTOR3* pPosGap)
 //============================================================
 bool CObjectMeshField::IsPositionRange(const VECTOR3&rPos)
 {
-	D3DXVECTOR3 aVtxPos[4];		// ポリゴンの頂点座標
-	D3DXVECTOR3 aVtxMtxPos[4];	// ポリゴンの位置・向き反映を行った頂点座標
+	VECTOR3 aVtxPos[4];		// ポリゴンの頂点座標
+	VECTOR3 aVtxMtxPos[4];	// ポリゴンの位置・向き反映を行った頂点座標
 
 	// メッシュの頂点位置を設定
-	aVtxPos[0] = D3DXVECTOR3(-m_size.x * 0.5f, 0.0f, +m_size.y * 0.5f);	// 左上
-	aVtxPos[1] = D3DXVECTOR3(-m_size.x * 0.5f, 0.0f, -m_size.y * 0.5f);	// 左下
-	aVtxPos[2] = D3DXVECTOR3(+m_size.x * 0.5f, 0.0f, -m_size.y * 0.5f);	// 右下
-	aVtxPos[3] = D3DXVECTOR3(+m_size.x * 0.5f, 0.0f, +m_size.y * 0.5f);	// 右上
+	aVtxPos[0] = VECTOR3(-m_size.x * 0.5f, 0.0f, +m_size.y * 0.5f);	// 左上
+	aVtxPos[1] = VECTOR3(-m_size.x * 0.5f, 0.0f, -m_size.y * 0.5f);	// 左下
+	aVtxPos[2] = VECTOR3(+m_size.x * 0.5f, 0.0f, -m_size.y * 0.5f);	// 右下
+	aVtxPos[3] = VECTOR3(+m_size.x * 0.5f, 0.0f, +m_size.y * 0.5f);	// 右上
 
 	for (int nCntVtx = 0; nCntVtx < 4; nCntVtx++)
 	{ // 三角形ポリゴンの頂点数分繰り返す
@@ -1009,7 +1009,7 @@ void CObjectMeshField::SetVtx(bool bNor)
 	int nNumVtx = 0;	// 現在の頂点番号
 
 	// テクスチャ分割数の割合を計算
-	D3DXVECTOR2 texRate = D3DXVECTOR2
+	VECTOR2 texRate = VECTOR2
 	(
 		(float)m_texPart.x / (float)m_part.x,
 		(float)m_texPart.y / (float)m_part.y
@@ -1043,7 +1043,7 @@ void CObjectMeshField::SetVtx(bool bNor)
 				pVtx[0].col = m_col;
 
 				// テクスチャ座標の設定
-				pVtx[0].tex = D3DXVECTOR2(texRate.x * nCntWidth, texRate.y * nCntHeight);
+				pVtx[0].tex = VECTOR2(texRate.x * nCntWidth, texRate.y * nCntHeight);
 
 				// 頂点データのポインタを 1つ分進める
 				pVtx += 1;

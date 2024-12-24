@@ -32,7 +32,7 @@ class CModel;			// モデルクラス
 class CFont;			// フォントクラス
 class CCharacter;		// キャラクタークラス
 class CCharacterAnim3D;	// キャラクターアニメーション3Dクラス
-class CItem;			// アイテムクラス
+class CStage;			// ステージクラス
 class CLoading;			// ローディングクラス
 class CRetention;		// データ保存クラス
 class CDebugProc;		// デバッグ表示クラス
@@ -102,7 +102,7 @@ public:
 	CFont*				GetFont();				// フォント取得
 	CCharacter*			GetCharacter();			// キャラクター取得
 	CCharacterAnim3D*	GetCharacterAnim3D();	// キャラクターアニメーション3D取得
-	CItem*				GetItem();				// アイテム取得
+	CStage*				GetStage();				// ステージ取得
 	CFade*				GetFade();				// フェード取得
 	CLoading*			GetLoading();			// ローディング取得
 	CScene*				GetScene();				// シーン取得
@@ -130,7 +130,7 @@ private:
 	CFont*				m_pFont;			// フォントインスタンス
 	CCharacter*			m_pCharacter;		// キャラクターインスタンス
 	CCharacterAnim3D*	m_pCharacterAnim3D;	// キャラクターアニメーション3Dインスタンス
-	CItem*				m_pItem;			// アイテムインスタンス
+	CStage*				m_pStage;			// ステージインスタンス
 	CFade*				m_pFade;			// フェードインスタンス
 	CLoading*			m_pLoading;			// ローディングインスタンス
 	CScene*				m_pScene;			// シーンインスタンス

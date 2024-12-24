@@ -169,6 +169,7 @@
     <ClCompile Include="resource\effect3D.cpp" />
     <ClCompile Include="resource\extension.cpp" />
     <ClCompile Include="resource\fade.cpp" />
+    <ClCompile Include="resource\field.cpp" />
     <ClCompile Include="resource\font.cpp" />
     <ClCompile Include="resource\fontChar.cpp" />
     <ClCompile Include="resource\gameManager.cpp" />
@@ -181,6 +182,7 @@
     <ClCompile Include="resource\light.cpp" />
     <ClCompile Include="resource\lightDir.cpp" />
     <ClCompile Include="resource\lightManager.cpp" />
+    <ClCompile Include="resource\liquid.cpp" />
     <ClCompile Include="resource\listManager.cpp" />
     <ClCompile Include="resource\loading.cpp" />
     <ClCompile Include="resource\loadtext.cpp" />
@@ -207,6 +209,7 @@
     <ClCompile Include="resource\objectMeshWall.cpp" />
     <ClCompile Include="resource\objectModel.cpp" />
     <ClCompile Include="resource\objectTornado.cpp" />
+    <ClCompile Include="resource\orbit.cpp" />
     <ClCompile Include="resource\particle2D.cpp" />
     <ClCompile Include="resource\particle3D.cpp" />
     <ClCompile Include="resource\pause.cpp" />
@@ -229,6 +232,7 @@
     <ClCompile Include="resource\sceneGame.cpp" />
     <ClCompile Include="resource\sceneRanking.cpp" />
     <ClCompile Include="resource\sceneResult.cpp" />
+    <ClCompile Include="resource\scenery.cpp" />
     <ClCompile Include="resource\sceneTitle.cpp" />
     <ClCompile Include="resource\screen.cpp" />
     <ClCompile Include="resource\scroll2D.cpp" />
@@ -240,7 +244,9 @@
     <ClCompile Include="resource\shaderMono.cpp" />
     <ClCompile Include="resource\shaderToon.cpp" />
     <ClCompile Include="resource\shakeString2D.cpp" />
+    <ClCompile Include="resource\sky.cpp" />
     <ClCompile Include="resource\sound.cpp" />
+    <ClCompile Include="resource\stage.cpp" />
     <ClCompile Include="resource\string2D.cpp" />
     <ClCompile Include="resource\text2D.cpp" />
     <ClCompile Include="resource\texture.cpp" />
@@ -255,6 +261,8 @@
     <ClCompile Include="resource\useful.cpp" />
     <ClCompile Include="resource\value.cpp" />
     <ClCompile Include="resource\valueUI.cpp" />
+    <ClCompile Include="resource\wall.cpp" />
+    <ClCompile Include="resource\wave.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource\anim2D.h" />
@@ -271,6 +279,7 @@
     <ClInclude Include="resource\effect3D.h" />
     <ClInclude Include="resource\extension.h" />
     <ClInclude Include="resource\fade.h" />
+    <ClInclude Include="resource\field.h" />
     <ClInclude Include="resource\font.h" />
     <ClInclude Include="resource\fontChar.h" />
     <ClInclude Include="resource\gameManager.h" />
@@ -283,6 +292,7 @@
     <ClInclude Include="resource\light.h" />
     <ClInclude Include="resource\lightDir.h" />
     <ClInclude Include="resource\lightManager.h" />
+    <ClInclude Include="resource\liquid.h" />
     <ClInclude Include="resource\listManager.h" />
     <ClInclude Include="resource\loading.h" />
     <ClInclude Include="resource\loadtext.h" />
@@ -309,6 +319,7 @@
     <ClInclude Include="resource\objectMeshWall.h" />
     <ClInclude Include="resource\objectModel.h" />
     <ClInclude Include="resource\objectTornado.h" />
+    <ClInclude Include="resource\orbit.h" />
     <ClInclude Include="resource\particle2D.h" />
     <ClInclude Include="resource\particle3D.h" />
     <ClInclude Include="resource\pause.h" />
@@ -329,6 +340,7 @@
     <ClInclude Include="resource\sceneGame.h" />
     <ClInclude Include="resource\sceneRanking.h" />
     <ClInclude Include="resource\sceneResult.h" />
+    <ClInclude Include="resource\scenery.h" />
     <ClInclude Include="resource\sceneTitle.h" />
     <ClInclude Include="resource\screen.h" />
     <ClInclude Include="resource\scroll2D.h" />
@@ -340,7 +352,9 @@
     <ClInclude Include="resource\shaderMono.h" />
     <ClInclude Include="resource\shaderToon.h" />
     <ClInclude Include="resource\shakeString2D.h" />
+    <ClInclude Include="resource\sky.h" />
     <ClInclude Include="resource\sound.h" />
+    <ClInclude Include="resource\stage.h" />
     <ClInclude Include="resource\string2D.h" />
     <ClInclude Include="resource\text2D.h" />
     <ClInclude Include="resource\texture.h" />
@@ -355,6 +369,8 @@
     <ClInclude Include="resource\useful.h" />
     <ClInclude Include="resource\value.h" />
     <ClInclude Include="resource\valueUI.h" />
+    <ClInclude Include="resource\wall.h" />
+    <ClInclude Include="resource\wave.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource\resource.rc" />
