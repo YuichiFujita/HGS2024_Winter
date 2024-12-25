@@ -35,7 +35,7 @@ namespace
 	const float	RADIUS = 40.0f;	// 半径
 	const float HEIGHT = 40.0f;	// 身長
 	const float DELETE_TIME = 5.0f;	// 終了タイム
-	const float DELETE_GRAVITY = 80.0f;	// 終了時の重力
+	const float DELETE_GRAVITY = 150.0f;	// 終了時の重力
 
 	// 飛行状態の定数
 	namespace fly
@@ -49,7 +49,7 @@ namespace
 	namespace sensor
 	{
 		const float RANGE = 100.0f;		// 範囲
-		const float JUMP = 200.0f;		// ジャンプ量
+		const float JUMP = 100.0f;		// ジャンプ量
 	}
 
 	// エフェクト

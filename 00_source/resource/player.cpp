@@ -135,6 +135,10 @@ HRESULT CPlayer::Init()
 //============================================================
 void CPlayer::Uninit()
 {
+	// 影を消す
+	m_pShadow->Uninit();
+	m_pShadow = nullptr;
+
 	// リストから自身のオブジェクトを削除
 	m_pList->DelList(m_iterator);
 

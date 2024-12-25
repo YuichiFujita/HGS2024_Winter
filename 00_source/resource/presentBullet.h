@@ -15,6 +15,8 @@
 //************************************************************
 #include "present.h"
 
+class CShadow;
+
 //************************************************************
 //	クラス定義
 //************************************************************
@@ -71,6 +73,7 @@ private:
 	void UpdateRotation(const float fDeltaTime);		// 向きの更新処理
 
 	// メンバ変数
+	CShadow* m_pShadow;	// 影
 	EState m_state;			// 状態
 	VECTOR3 m_destRot;		// 目的の向き
 	float m_fStateTime;		// 状態時間
