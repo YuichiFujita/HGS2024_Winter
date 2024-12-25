@@ -27,21 +27,15 @@
 namespace
 {
 	const char* MODEL = "data\\MODEL\\PLAYER\\02_head.x";	// モデルの情報
-	const float	GRAVITY = 1.0f;	// 重力
+	const float	GRAVITY = 0.6f;	// 重力
 	const float	RADIUS = 20.0f;	// 半径
 	const float HEIGHT = 80.0f;	// 身長
-
-	// 無し状態の定数
-	namespace none
-	{
-		const float DEST_POS_Y = 300.0f;	// 目的の高さ
-	}
 
 	// 飛行状態の定数
 	namespace fly
 	{
-		const float ADD_HEIGHT = 50.0f;	// 追加の高さ
-		const float END_TIME = 4.0f;	// 終了までの時間
+		const float HEIGHT = 200.0f;	// 高さ
+		const float END_TIME = 1.0f;	// 終了までの時間
 		const float ALPHA = 0.5f;	// 透明度
 	}
 }
@@ -53,7 +47,7 @@ CPresentLand::AFuncState CPresentLand::m_aFuncState[] =		// 状態更新関数リスト
 {
 	&CPresentLand::UpdateNone,	// 無し状態の更新
 	&CPresentLand::UpdateFly,	// 飛び状態の更新
-	&CPresentLand::UpdateFall,	// 落下状態の更新
+	& CPresentLand::UpdateStop,	// 停止状態の更新
 };
 
 //************************************************************
@@ -63,11 +57,12 @@ CPresentLand::AFuncState CPresentLand::m_aFuncState[] =		// 状態更新関数リスト
 //	コンストラクタ
 //============================================================
 CPresentLand::CPresentLand() : CPresent(),
-m_fFlyTime(0.0f),		// 飛ぶ時間
+m_fFlyTime(0.0f),	// 飛ぶ時間
+m_oldPos(VEC3_ZERO),	// 過去位置
 m_originPos(VEC3_ZERO),	// 初期位置
 m_destPos(VEC3_ZERO),	// 目的の位置
-m_move(VEC3_ZERO),		// 移動量
-m_state(STATE_NONE)		// 状態
+m_move(VEC3_ZERO),	// 移動量
+m_state(STATE_NONE)	// 状態
 {
 	// スタティックアサート
 	static_assert(NUM_ARRAY(m_aFuncState) == CPresentLand::STATE_MAX, "ERROR : State Count Mismatch");
@@ -86,6 +81,7 @@ CPresentLand::~CPresentLand()
 //============================================================
 HRESULT CPresentLand::Init()
 {
+	m_oldPos = VEC3_ZERO;	// 過去位置
 	m_destPos = VEC3_ZERO;	// 目的の位置
 	m_move = VEC3_ZERO;		// 移動量
 	m_state = STATE_NONE;	// 状態
@@ -120,6 +116,9 @@ void CPresentLand::Uninit()
 //============================================================
 void CPresentLand::Update(const float fDeltaTime)
 {
+	// 速度調整処理
+	SpeedCalc();
+
 	// 状態処理
 	(this->*(m_aFuncState[m_state]))(fDeltaTime);
 }
@@ -178,6 +177,27 @@ void CPresentLand::SpeedCalc()
 }
 
 //============================================================
+// フィールドの当たり判定
+//============================================================
+bool CPresentLand::FieldCollision()
+{
+	CStage* pStage = GET_MANAGER->GetStage();	// ステージ情報
+	VECTOR3 pos = GetVec3Position();	// 位置
+
+	// 地面・制限位置着地判定
+	if (pStage->LandFieldPosition(pos, m_oldPos, m_move)
+		|| pStage->LandLimitPosition(pos, m_move, 0.0f))
+	{ // プレイヤーが着地していた場合
+
+		// true を返す
+		return true;
+	}
+
+	// false を返す
+	return false;
+}
+
+//============================================================
 // 無し状態処理
 //============================================================
 void CPresentLand::UpdateNone(const float fDeltaTime)
@@ -192,9 +212,6 @@ void CPresentLand::UpdateNone(const float fDeltaTime)
 	// 目的の位置を設定する
 	m_destPos = pPlayer->GetVec3Position();
 
-	// 高さを再設定する
-	m_destPos.y = none::DEST_POS_Y;
-
 	// 飛び状態にする
 	m_state = STATE_FLY;
 }
@@ -207,35 +224,23 @@ void CPresentLand::UpdateFly(const float fDeltaTime)
 	D3DXVECTOR3 pos = GetVec3Position();
 
 	// 放物線処理
-	pos = useful::GetParabola3D(m_originPos, m_destPos, m_destPos.y + fly::ADD_HEIGHT, fly::END_TIME, m_fFlyTime);
+	pos = useful::GetParabola3D(m_originPos, m_destPos, fly::HEIGHT, fly::END_TIME, m_fFlyTime);
 
 	// 飛んでいる時間を更新
 	m_fFlyTime += fDeltaTime;
 
-	// 一定時間飛んだ場合、落下状態にする
-	if (m_fFlyTime >= fly::END_TIME) { m_state = STATE_FALL; }
+	// 着地したとき、停止状態にする
+	if (FieldCollision()) { m_state = STATE_STOP; }
 
 	// 位置を反映する
 	SetVec3Position(pos);
 }
 
 //============================================================
-// 落下状態処理
+// 停止状態処理
 //============================================================
-void CPresentLand::UpdateFall(const float fDeltaTime)
+void CPresentLand::UpdateStop(const float fDeltaTime)
 {
-	float fDeltaRate = fDeltaTime / (1.0f / (float)main::FPS);	// 経過時間の割合
-	D3DXVECTOR3 pos = GetVec3Position();
-
-	// 重力をかける
-	m_move.y -= GRAVITY * fDeltaRate;
-
-	// 移動する
-	pos += m_move;
-
-	// 位置を設定する
-	SetVec3Position(pos);
-
-	// 透明度を設定する
-	SetAlpha(fly::ALPHA);
+	// フィールドの当たり判定
+	FieldCollision();
 }
