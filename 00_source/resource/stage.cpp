@@ -603,6 +603,24 @@ float CStage::GetFieldDownPositionHeight(const VECTOR3& rPos)
 }
 
 //============================================================
+//	範囲内のランダム位置の取得処理
+//============================================================
+VECTOR3 CStage::GetRandomPositionInLimit(const float fRadius) const
+{
+	// 中心位置を設定
+	VECTOR3 posRandom = m_limit.center;
+	posRandom.y = m_limit.fField;
+
+	// ランダム方向/距離分中心から離れた位置を計算
+	float fRandRot = useful::RandomRot();
+	float fRandDis = (float)(rand() % (int)m_limit.fRadius - fRadius);
+	posRandom.x += sinf(fRandRot) * fRandDis;
+	posRandom.z += cosf(fRandRot) * fRandDis;
+
+	return posRandom;
+}
+
+//============================================================
 //	生成処理
 //============================================================
 CStage* CStage::Create()

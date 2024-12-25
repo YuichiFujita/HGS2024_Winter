@@ -72,6 +72,7 @@ public:
 	bool IsFieldPositionRange(const VECTOR3& rPos);			// メッシュの範囲内取得
 	float GetFieldPositionHeight(const VECTOR3& rPos);		// メッシュの着地位置取得
 	float GetFieldDownPositionHeight(const VECTOR3& rPos);	// メッシュの着地位置取得 (現在位置よりは下)
+	VECTOR3 GetRandomPositionInLimit(const float fRadius) const;	// 範囲内のランダム位置取得
 
 	// 静的メンバ関数
 	static CStage* Create();				// 生成
