@@ -18,7 +18,7 @@
 namespace
 {
 	const char* TEXTURE_FILE = "data\\TEXTURE\\warning000.png";
-	const VECTOR3 RADIUS = VECTOR3(40.0f, 40.0f, 0.0f);	// 半径
+	const VECTOR3 RADIUS = VECTOR3(60.0f, 0.0f, 60.0f);	// 半径
 
 	const int PRIORITY = 4;	// エフェクト3Dの優先順位
 }
