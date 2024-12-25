@@ -136,4 +136,5 @@ END_CHARACTERSET
 #	モーション情報
 #------------------------------------------------------------------------------
 MOTIONPASS = data\MOTION\PLAYER\idol.txt			# 待機モーション
-MOTIONPASS = data\MOTION\PLAYER\dash.txt			# 移動モーション
+MOTIONPASS = data\MOTION\SANTA_BLACK\throwTop.txt	# 上投げモーション
+MOTIONPASS = data\MOTION\SANTA_BLACK\throwSide.txt	# 横投げモーション

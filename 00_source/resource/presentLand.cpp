@@ -21,6 +21,7 @@
 #include "player.h"
 #include "enemy.h"
 #include "bomb.h"
+#include "collision.h"
 
 //************************************************************
 //	定数宣言
@@ -30,7 +31,7 @@ namespace
 	const char* MODEL = "data\\MODEL\\PLAYER\\02_head.x";	// モデルの情報
 	const float	GRAVITY = 0.6f;	// 重力
 	const float	RADIUS = 20.0f;	// 半径
-	const float HEIGHT = 80.0f;	// 身長
+	const float HEIGHT = 40.0f;	// 身長
 	const float DELETE_TIME = 5.0f;	// 終了タイム
 
 	// 飛行状態の定数
@@ -38,13 +39,13 @@ namespace
 	{
 		const float HEIGHT = 200.0f;	// 高さ
 		const float END_TIME = 1.0f;	// 終了までの時間
+		const float ALPHA = 0.5f;		// 透明度
 	}
 
 	// 飛行状態の定数
-	namespace attack
+	namespace sensor
 	{
-		const float TIME = 2.0f;	// 爆弾タイム
-		const float ALPHA = 0.5f;	// 透明度
+		const float RANGE = 100.0f;		// 範囲
 	}
 }
 
@@ -55,7 +56,7 @@ CPresentLand::AFuncState CPresentLand::m_aFuncState[] =		// 状態更新関数リスト
 {
 	&CPresentLand::UpdateNone,	// 無し状態の更新
 	&CPresentLand::UpdateFly,	// 飛び状態の更新
-	&CPresentLand::UpdateAttack,	// 停止状態の更新
+	&CPresentLand::UpdateSensor,	// センサー状態の更新
 	&CPresentLand::UpdateDelete,	// 消去状態の更新
 };
 
@@ -214,6 +215,22 @@ bool CPresentLand::FieldCollision()
 }
 
 //============================================================
+// センサー判定
+//============================================================
+bool CPresentLand::AttackSensor()
+{
+	// プレイヤーがいない場合、抜ける
+	CPlayer* pPlayer = CScene::GetPlayer();
+	if (pPlayer == nullptr) { return false; }
+
+	// 目的の位置を設定する
+	VECTOR3 posPlayer = pPlayer->GetVec3Position();
+
+	// 当たり判定の結果を返す
+	return collision::Circle2D(GetVec3Position(), posPlayer, sensor::RANGE, pPlayer->GetRadius());
+}
+
+//============================================================
 // 無し状態処理
 //============================================================
 void CPresentLand::UpdateNone(const float fDeltaTime)
@@ -238,7 +255,7 @@ void CPresentLand::UpdateNone(const float fDeltaTime)
 void CPresentLand::UpdateFly(const float fDeltaTime)
 {
 	// 透明度を設定
-	SetAlpha(attack::ALPHA);
+	SetAlpha(fly::ALPHA);
 
 	D3DXVECTOR3 pos = GetVec3Position();
 
@@ -254,8 +271,8 @@ void CPresentLand::UpdateFly(const float fDeltaTime)
 		// 状態の時間を0にする
 		m_fStateTime = 0.0f;
 
-		// 攻撃状態にする
-		m_state = STATE_ATTACK;
+		// センサー状態にする
+		m_state = STATE_SENSOR;
 
 		// 透明度をリセットする
 		SetAlpha(1.0f);
@@ -266,18 +283,15 @@ void CPresentLand::UpdateFly(const float fDeltaTime)
 }
 
 //============================================================
-// 停止状態処理
+// センサー状態処理
 //============================================================
-void CPresentLand::UpdateAttack(const float fDeltaTime)
+void CPresentLand::UpdateSensor(const float fDeltaTime)
 {
-	// 状態の時間を更新
-	m_fStateTime += fDeltaTime;
-
 	// フィールドの当たり判定
 	FieldCollision();
 
-	if (m_fStateTime >= attack::TIME)
-	{ // タイムが一定以上になった場合
+	if (AttackSensor())
+	{ // 範囲内に入った場合
 
 		// 爆弾の生成処理
 		CBomb::Create(GetVec3Position());
