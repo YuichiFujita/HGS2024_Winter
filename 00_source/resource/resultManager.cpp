@@ -459,12 +459,17 @@ void CResultManager::UpdateSelect()
 
 	// 選択肢操作
 	CInputKeyboard* pKey = GET_INPUTKEY;	// キーボード情報
-	if (pKey->IsTrigger(DIK_LEFT))
+	CInputPad* pPad = GET_INPUTPAD;			// パッド情報
+	if (pKey->IsTrigger(DIK_LEFT)
+	||  pKey->IsTrigger(DIK_A)
+	||  pPad->IsTrigger(CInputPad::KEY_LEFT))
 	{
 		// 左に選択をずらす
 		m_nCurSelect = (m_nCurSelect + 1) % SELECT_MAX;
 	}
-	if (pKey->IsTrigger(DIK_RIGHT))
+	if (pKey->IsTrigger(DIK_RIGHT)
+	||  pKey->IsTrigger(DIK_D)
+	||  pPad->IsTrigger(CInputPad::KEY_RIGHT))
 	{
 		// 右に選択をずらす
 		m_nCurSelect = (m_nCurSelect + (SELECT_MAX - 1)) % SELECT_MAX;
