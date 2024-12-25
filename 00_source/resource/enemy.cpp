@@ -153,6 +153,10 @@ HRESULT CEnemy::Init()
 //============================================================
 void CEnemy::Uninit()
 {
+	// 影を消す
+	m_pShadow->Uninit();
+	m_pShadow = nullptr;
+
 	// リストから自身のオブジェクトを削除
 	m_pList->DelList(m_iterator);
 
@@ -570,10 +574,12 @@ void CEnemy::BulletAttack(const float fDeltaTime)
 
 	fVecRot += fAddRot;
 
+	VECTOR3 pos = GetVec3Position();
+
 	for (int nCnt = 0; nCnt < nNum; nCnt++)
 	{
 		// 設置型プレゼントを飛ばす
-		CPresentBullet::Create(GetVec3Position(), fVecRot);
+		CPresentBullet::Create(VECTOR3(pos.x, pos.y + 40.0f, pos.z), fVecRot);
 
 		fVecRot -= fAddRot;
 	}

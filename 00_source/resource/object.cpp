@@ -102,7 +102,7 @@ void CObject::Release()
 			// €–Sƒtƒ‰ƒO‚ğ—§‚Ä‚é
 			m_bDeath = true;
 		}
-		else { assert(false); }	// €–SÏ‚İ
+		else {  }	// €–SÏ‚İ
 	}
 }
 
