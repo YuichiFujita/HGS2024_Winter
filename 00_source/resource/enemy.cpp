@@ -19,7 +19,7 @@
 #include "sceneGame.h"
 #include "gameManager.h"
 #include "player.h"
-#include "present.h"
+#include "presentLand.h"
 
 //************************************************************
 //	定数宣言
@@ -37,6 +37,10 @@ namespace
 	const float	JUMP_HEIGHT = 1000.0f;	// ジャンプの最高到達点
 	const float	JUMP_TIME = 0.65f;		// ジャンプ時間
 	const float	CHANGE_ATK = 700.0f;	// 攻撃変更距離
+
+	const float LAND_NUM_TIME = 50.0f;		// 設置型プレゼントが増える基準
+	const int LAND_NUM_MAX = 3;				// 設置型プレゼントの最大数
+	const float LAND_NUM_RANGE = 50.0f;		// 設置型プレゼントの範囲の
 
 	namespace motion
 	{
@@ -447,14 +451,14 @@ CEnemy::EMotion CEnemy::UpdateAttack(const float fDeltaTime)
 		{ // モーション種類ごとの処理
 		case MOTION_ATK_UP:
 
-			// 設置型プレゼントを飛ばす
-			CPresent::Create(GetVec3Position(), VEC3_ZERO, CPresent::TYPE_LAND);
+			// 設置型プレゼント処理
+			LandAttack(fDeltaTime);
 			break;
 
 		case MOTION_ATK_SIDE:
 
-			// 設置型プレゼントを飛ばす
-			CPresent::Create(GetVec3Position(), VEC3_ZERO, CPresent::TYPE_BULLET);
+			// 弾型プレゼントを飛ばす
+			CPresentLand::Create(GetVec3Position(), VEC3_ZERO, CPresent::TYPE_BULLET);
 			break;
 		};
 	}
@@ -486,6 +490,23 @@ CEnemy::EMotion CEnemy::UpdateAttack(const float fDeltaTime)
 
 	// 現在のモーションを返す
 	return MOTION_IDOL;
+}
+
+//============================================================
+// 設置型プレゼント処理
+//============================================================
+void CEnemy::LandAttack(const float fDeltaTime)
+{
+	int nNum = (int)(CSceneGame::GetGameManager()->GetGameTime() / LAND_NUM_TIME);	// 現在の経過時間
+
+	// 最大数を3に抑える
+	useful::LimitMaxNum(nNum, LAND_NUM_MAX);
+
+	for (int nCnt = 0; nCnt < nNum; nCnt++)
+	{
+		// 設置型プレゼントを飛ばす
+		CPresentLand::Create(GetVec3Position(), VEC3_ZERO, 30.0f * nCnt);
+	}
 }
 
 //============================================================

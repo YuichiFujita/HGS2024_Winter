@@ -48,12 +48,6 @@ public:
 	virtual float GetHeight() const = 0;				// 縦幅取得
 
 	// 静的メンバ関数
-	static CPresent* Create	// 生成
-	( // 引数
-		const VECTOR3& rPos,	// 位置
-		const VECTOR3& rRot,	// 向き
-		const EType type		// 種類
-	);
 	static CListManager<CPresent>* GetList();	// リスト取得
 
 	// メンバ関数
