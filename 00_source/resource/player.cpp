@@ -19,6 +19,7 @@
 #include "sceneGame.h"
 #include "gameManager.h"
 #include "shadow.h"
+#include "particle3D.h"
 
 //************************************************************
 //	定数宣言
@@ -255,9 +256,12 @@ bool CPlayer::Hit()
 {
 	// 死んでる場合抜ける
 	if (IsDeath()) { return false; }
+	if (m_state == STATE_DEATH) { return false; }
 
 	// 死亡状態にする
 	SetState(STATE_DEATH);
+
+	CParticle3D::Create(CParticle3D::TYPE_BIG_EXPLOSION, GetVec3Position() + VECTOR3(0.0f, 30.0f, 0.0f));
 
 	// 死亡（開始の音を使い回し）
 	PLAY_SOUND(CSound::LABEL_SE_START);
