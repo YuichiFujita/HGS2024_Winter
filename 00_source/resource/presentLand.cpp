@@ -24,6 +24,7 @@
 #include "collision.h"
 #include "effect3D.h"
 #include "warning.h"
+#include "shadow.h"
 
 //************************************************************
 //	定数宣言
@@ -79,6 +80,7 @@ CPresentLand::AFuncState CPresentLand::m_aFuncState[] =		// 状態更新関数リスト
 //	コンストラクタ
 //============================================================
 CPresentLand::CPresentLand() : CPresent(),
+m_pShadow(nullptr),		// 影
 m_pWarning(nullptr),	// 警告ポリゴン
 m_fStateTime(0.0f),	// 状態の時間
 m_oldPos(VEC3_ZERO),	// 過去位置
@@ -104,6 +106,7 @@ CPresentLand::~CPresentLand()
 //============================================================
 HRESULT CPresentLand::Init()
 {
+	m_pShadow = nullptr;		// 影
 	m_pWarning = nullptr;	// 警告ポリゴン
 	m_fStateTime = 0.0f;	// 状態の時間
 	m_oldPos = VEC3_ZERO;	// 過去位置
@@ -123,6 +126,9 @@ HRESULT CPresentLand::Init()
 	// モデルの割り当て処理
 	BindModel(MODEL);
 
+	// 影の生成
+	m_pShadow = CShadow::Create(CShadow::TEXTURE_NORMAL, VECTOR3(90.0f, 0.0f, 90.0f), this);
+
 	// 成功を返す
 	return S_OK;
 }
@@ -132,6 +138,10 @@ HRESULT CPresentLand::Init()
 //============================================================
 void CPresentLand::Uninit()
 {
+	// 影を消す
+	m_pShadow->Uninit();
+	m_pShadow = nullptr;
+
 	// 警告ポリゴンを NULL にする
 	m_pWarning = nullptr;
 
@@ -240,6 +250,9 @@ CPresentLand* CPresentLand::Create
 
 		// 目的位置設定処理
 		pPresent->SetDestPos(fRange);
+
+		// 影位置の修正
+		pPresent->m_pShadow->SetDrawInfo();
 
 		// 確保したアドレスを返す
 		return pPresent;
