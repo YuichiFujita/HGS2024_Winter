@@ -60,6 +60,7 @@ private:
 	void SpeedCalc();							// 速度計算処理
 	bool FieldCollision();						// フィールドの当たり判定
 	bool AttackSensor();						// センサー判定
+	void Collision();							// 当たり判定
 
 	void UpdateNone(const float fDeltaTime);	// 無し状態処理
 	void UpdateFly(const float fDeltaTime);		// 飛ぶ状態処理
