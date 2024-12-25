@@ -1,13 +1,13 @@
 //============================================================
 //
-//	設置型プレゼント処理 [presentLand.cpp]
+//	弾型プレゼント処理 [presentBullet.cpp]
 //	Author：小原立暉
 //
 //============================================================
 //************************************************************
 //	インクルードファイル
 //************************************************************
-#include "presentLand.h"
+#include "presentBulletCopy.h"
 #include "manager.h"
 #include "renderer.h"
 #include "sound.h"
@@ -29,12 +29,12 @@ namespace
 }
 
 //************************************************************
-//	子クラス [CPresentLand] のメンバ関数
+//	子クラス [CPresentBullet] のメンバ関数
 //************************************************************
 //============================================================
 //	コンストラクタ
 //============================================================
-CPresentLand::CPresentLand() : CPresent()
+CPresentBullet::CPresentBullet() : CPresent()
 {
 
 }
@@ -42,7 +42,7 @@ CPresentLand::CPresentLand() : CPresent()
 //============================================================
 //	デストラクタ
 //============================================================
-CPresentLand::~CPresentLand()
+CPresentBullet::~CPresentBullet()
 {
 
 }
@@ -50,7 +50,7 @@ CPresentLand::~CPresentLand()
 //============================================================
 //	初期化処理
 //============================================================
-HRESULT CPresentLand::Init()
+HRESULT CPresentBullet::Init()
 {
 	// オブジェクトキャラクターの初期化
 	if (FAILED(CPresent::Init()))
@@ -68,7 +68,7 @@ HRESULT CPresentLand::Init()
 //============================================================
 //	終了処理
 //============================================================
-void CPresentLand::Uninit()
+void CPresentBullet::Uninit()
 {
 	// オブジェクトキャラクターの終了
 	CPresent::Uninit();
@@ -77,7 +77,7 @@ void CPresentLand::Uninit()
 //============================================================
 //	更新処理
 //============================================================
-void CPresentLand::Update(const float fDeltaTime)
+void CPresentBullet::Update(const float fDeltaTime)
 {
 
 }
@@ -85,7 +85,7 @@ void CPresentLand::Update(const float fDeltaTime)
 //============================================================
 //	描画処理
 //============================================================
-void CPresentLand::Draw(CShader* pShader)
+void CPresentBullet::Draw(CShader* pShader)
 {
 	// オブジェクトキャラクターの描画
 	CPresent::Draw(pShader);
@@ -94,7 +94,7 @@ void CPresentLand::Draw(CShader* pShader)
 //============================================================
 //	更新状況の設定処理
 //============================================================
-void CPresentLand::SetEnableUpdate(const bool bUpdate)
+void CPresentBullet::SetEnableUpdate(const bool bUpdate)
 {
 	// 引数の更新状況を設定
 	CObject::SetEnableUpdate(bUpdate);	// 自身
@@ -103,7 +103,7 @@ void CPresentLand::SetEnableUpdate(const bool bUpdate)
 //============================================================
 //	描画状況の設定処理
 //============================================================
-void CPresentLand::SetEnableDraw(const bool bDraw)
+void CPresentBullet::SetEnableDraw(const bool bDraw)
 {
 	// 引数の描画状況を設定
 	CObject::SetEnableDraw(bDraw);	// 自身
@@ -112,7 +112,7 @@ void CPresentLand::SetEnableDraw(const bool bDraw)
 //============================================================
 // 半径取得
 //============================================================
-float CPresentLand::GetRadius() const
+float CPresentBullet::GetRadius() const
 {
 	// 半径を返す
 	return RADIUS;
@@ -121,7 +121,7 @@ float CPresentLand::GetRadius() const
 //============================================================
 // 縦幅取得
 //============================================================
-float CPresentLand::GetHeight() const
+float CPresentBullet::GetHeight() const
 {
 	// 高さを返す
 	return HEIGHT;

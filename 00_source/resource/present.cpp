@@ -19,6 +19,7 @@
 #include "gameManager.h"
 
 #include "presentLand.h"
+#include "presentBulletCopy.h"
 
 //************************************************************
 //	定数宣言
@@ -26,17 +27,6 @@
 namespace
 {
 	const int	PRIORITY = 3;		// プレゼントの優先順位
-	const float	GRAVITY = 3600.0f;	// 重力
-	const float	RADIUS = 20.0f;	// 半径
-	const float HEIGHT = 80.0f;	// 身長
-	const float	REV_ROTA = 9.0f;		// 向き変更の補正係数
-	const float	JUMP_REV = 0.16f;	// 通常状態時の空中の移動量の減衰係数
-	const float	LAND_REV = 0.16f;	// 通常状態時の地上の移動量の減衰係数
-
-	namespace motion
-	{
-		const int BLEND_FRAME_OTHER = 5;	// モーションの基本的なブレンドフレーム
-	}
 }
 
 //************************************************************
@@ -50,7 +40,7 @@ CListManager<CPresent>* CPresent::m_pList = nullptr;	// オブジェクトリスト
 //============================================================
 //	コンストラクタ
 //============================================================
-CPresent::CPresent() : CObjectChara(CObject::LABEL_PRESENT, CObject::DIM_3D, PRIORITY),
+CPresent::CPresent() : CObjectModel(CObject::LABEL_PRESENT, CObject::DIM_3D, PRIORITY),
 m_type(TYPE_LAND)		// 種類
 {
 
@@ -72,7 +62,7 @@ HRESULT CPresent::Init()
 	m_type = TYPE_LAND;		// 種類
 
 	// オブジェクトキャラクターの初期化
-	if (FAILED(CObjectChara::Init()))
+	if (FAILED(CObjectModel::Init()))
 	{ // 初期化に失敗した場合
 
 		// 失敗を返す
@@ -117,7 +107,7 @@ void CPresent::Uninit()
 	}
 
 	// オブジェクトキャラクターの終了
-	CObjectChara::Uninit();
+	CObjectModel::Uninit();
 }
 
 //============================================================
@@ -134,7 +124,7 @@ void CPresent::Update(const float fDeltaTime)
 void CPresent::Draw(CShader* pShader)
 {
 	// オブジェクトキャラクターの描画
-	CObjectChara::Draw(pShader);
+	CObjectModel::Draw(pShader);
 }
 
 //============================================================
@@ -174,6 +164,13 @@ CPresent* CPresent::Create
 
 		// 設置型プレゼントを生成
 		pPresent = new CPresentLand;
+
+		break;
+
+	case CPresent::TYPE_BULLET:
+
+		// 弾方プレゼントを生成
+		pPresent = new CPresentBullet;
 
 		break;
 

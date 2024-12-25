@@ -13,13 +13,13 @@
 //************************************************************
 //	インクルードファイル
 //************************************************************
-#include "objectChara.h"
+#include "objectModel.h"
 
 //************************************************************
 //	クラス定義
 //************************************************************
 // プレゼントクラス
-class CPresent : public CObjectChara
+class CPresent : public CObjectModel
 {
 public:
 
@@ -27,6 +27,7 @@ public:
 	enum EType
 	{
 		TYPE_LAND = 0,	// 設置型
+		TYPE_BULLET,	// 弾型
 		TYPE_MAX		// この列挙型の総数
 	};
 
@@ -43,6 +44,8 @@ public:
 	void Draw(CShader* pShader = nullptr) override;		// 描画
 	void SetEnableUpdate(const bool bUpdate) override;	// 更新状況設定
 	void SetEnableDraw(const bool bDraw) override;		// 描画状況設定
+	virtual float GetRadius() const = 0;				// 半径取得
+	virtual float GetHeight() const = 0;				// 縦幅取得
 
 	// 静的メンバ関数
 	static CPresent* Create	// 生成

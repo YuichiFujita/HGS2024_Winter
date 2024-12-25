@@ -1,14 +1,14 @@
 //============================================================
 //
-//	設置型プレゼントヘッダー [presentLand.h]
+//	弾型プレゼントヘッダー [presentBullet.h]
 //	Author：小原立暉
 // 
 //============================================================
 //************************************************************
 //	二重インクルード防止
 //************************************************************
-#ifndef _PRESENT_LAND_H_
-#define _PRESENT_LAND_H_
+#ifndef _PRESENT_BULLET_H_
+#define _PRESENT_BULLET_H_
 
 //************************************************************
 //	インクルードファイル
@@ -18,25 +18,16 @@
 //************************************************************
 //	クラス定義
 //************************************************************
-// 設置型プレゼントクラス
-class CPresentLand : public CPresent
+// 弾型プレゼントクラス
+class CPresentBullet : public CPresent
 {
 public:
 
-	// 状態
-	enum EState
-	{
-		STATE_NONE = 0,		// 無し状態
-		STATE_FLY,			// 飛ぶ状態
-		STATE_FALL,			// 移動状態
-		STATE_MAX			// この列挙型の総数
-	};
-
 	// コンストラクタ
-	CPresentLand();
+	CPresentBullet();
 
 	// デストラクタ
-	~CPresentLand() override;
+	~CPresentBullet() override;
 
 	// オーバーライド関数
 	HRESULT Init() override;	// 初期化
@@ -51,8 +42,8 @@ public:
 private:
 	// メンバ関数
 
+
 	// メンバ変数
-	EState m_state;		// 状態
 };
 
 #endif	// _PLAYER_H_
