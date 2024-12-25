@@ -40,17 +40,6 @@ public:
 	// メンバ関数
 	bool IsStagEnd() const;	// 演出終了フラグ取得
 
-	/*
-		@brief	easeOutBack関数
-		@details https://easings.net/ja#easeInBack
-		@param	start		[in]	初期値
-		@param	end			[in]	目標値
-		@param	startTime	[in]	開始時間
-		@param	endTime		[in]	終了時間
-		@param	currentTime	[in]	現在の時間
-		@param	c			[in]	バックの強さ
-		@return	補正されたfloat値
-	*/
 	inline float EaseOutBack(float start, float end, float startTime, float endTime, float currentTime, float c = 1.70158f)
 	{
 		// 割合
@@ -61,6 +50,13 @@ public:
 
 		float cal = ratio * ratio * ((c + 1) * ratio + c) + 1;
 		return start + (end - start) * cal;
+	}
+
+	inline float EasingCubicInOut(float start, float end, float startTime, float endTime, float currentTime)
+	{
+		float ratio = easing::InOutCubic(currentTime, startTime, endTime);
+		useful::LimitNum(ratio, 0.0f, 1.0f);
+		return start + (end - start) * ratio;
 	}
 
 private:

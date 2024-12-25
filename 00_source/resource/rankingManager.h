@@ -15,6 +15,7 @@
 //************************************************************
 class CRankingState;	// ランキング状態クラス
 class CAnim2D;			// アニメーション2Dクラス
+class CObject2D;		// オブジェクト2Dクラス
 
 #ifdef SCORE
 class CMultiValue;	// マルチ数字クラス
@@ -74,6 +75,7 @@ private:
 #else TIMER
 	CTimeUI* m_apTime[MAX_RANK];		// タイム情報
 #endif
+	CObject2D* m_pTitle;				// タイトル情報
 	CRankingState* m_pState;			// 状態
 };
 

@@ -23,6 +23,7 @@
 #include "bomb.h"
 #include "collision.h"
 #include "effect3D.h"
+#include "warning.h"
 
 //************************************************************
 //	定数宣言
@@ -78,6 +79,7 @@ CPresentLand::AFuncState CPresentLand::m_aFuncState[] =		// 状態更新関数リスト
 //	コンストラクタ
 //============================================================
 CPresentLand::CPresentLand() : CPresent(),
+m_pWarning(nullptr),	// 警告ポリゴン
 m_fStateTime(0.0f),	// 状態の時間
 m_oldPos(VEC3_ZERO),	// 過去位置
 m_originPos(VEC3_ZERO),	// 初期位置
@@ -102,6 +104,7 @@ CPresentLand::~CPresentLand()
 //============================================================
 HRESULT CPresentLand::Init()
 {
+	m_pWarning = nullptr;	// 警告ポリゴン
 	m_fStateTime = 0.0f;	// 状態の時間
 	m_oldPos = VEC3_ZERO;	// 過去位置
 	m_destPos = VEC3_ZERO;	// 目的の位置
@@ -129,6 +132,9 @@ HRESULT CPresentLand::Init()
 //============================================================
 void CPresentLand::Uninit()
 {
+	// 警告ポリゴンを NULL にする
+	m_pWarning = nullptr;
+
 	// オブジェクトキャラクターの終了
 	CPresent::Uninit();
 }
@@ -260,6 +266,9 @@ void CPresentLand::SetDestPos(const float fRange)
 	// 位置補正
 	CStage* pStage = GET_MANAGER->GetStage();	// ステージ情報
 	pStage->LimitPosition(m_destPos, RADIUS);
+
+	// 警告ポリゴンを出す
+	m_pWarning = CWarning::Create(m_destPos);
 }
 
 //============================================================
@@ -372,6 +381,9 @@ void CPresentLand::UpdateFly(const float fDeltaTime)
 
 		// 透明度をリセットする
 		SetAlpha(1.0f);
+
+		// 警告ポリゴンを NULL にする
+		m_pWarning = nullptr;
 	}
 
 	// 位置を反映する

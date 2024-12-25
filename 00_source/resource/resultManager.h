@@ -71,6 +71,7 @@ private:
 #else TIMER
 	CTimeUI* m_pTime;		// タイム情報
 #endif
+	CObject2D* m_pTitle;	// タイトル情報
 	CResultState* m_pState;	// 状態
 	int m_nCurSelect;		// 現在の選択肢
 	int m_nOldSelect;		// 前回の選択肢
