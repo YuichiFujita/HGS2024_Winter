@@ -28,7 +28,7 @@ public:
 	{
 		STATE_NONE = 0,		// 無し状態
 		STATE_FLY,			// 飛ぶ状態
-		STATE_STOP,			// 停止状態
+		STATE_ATTACK,		// 攻撃状態
 		STATE_MAX			// この列挙型の総数
 	};
 
@@ -61,10 +61,10 @@ private:
 
 	void UpdateNone(const float fDeltaTime);	// 無し状態処理
 	void UpdateFly(const float fDeltaTime);		// 飛ぶ状態処理
-	void UpdateStop(const float fDeltaTime);	// 停止状態処理
+	void UpdateAttack(const float fDeltaTime);	// 攻撃状態処理
 
 	// メンバ変数
-	float m_fFlyTime;			// 飛ぶ時間
+	float m_fStateTime;			// 状態の時間
 	VECTOR3	m_oldPos;			// 過去位置
 	VECTOR3 m_originPos;		// 初期位置
 	VECTOR3 m_destPos;			// 目的の位置

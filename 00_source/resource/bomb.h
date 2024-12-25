@@ -37,22 +37,27 @@ public:
 	void SetEnableUpdate(const bool bUpdate) override;	// 更新状況設定
 	void SetEnableDraw(const bool bDraw) override;		// 描画状況設定
 	float GetRadius() const;							// 半径取得
-	float GetHeight() const;							// 縦幅取得
 
 	// 静的メンバ関数
 	static CBomb* Create(const VECTOR3& rPos);	// 生成
 	static CListManager<CBomb>* GetList();	// リスト取得
 
-	// メンバ関数
-
 private:
+
 	// メンバ関数
+	void SetDestPos();	// 目的位置の設定処理
+	bool FieldCollision();	// フィールドの当たり判定
+	void Fly(const float fDeltaTime);	// 飛行処理
 
 	// 静的メンバ変数
 	static CListManager<CBomb>* m_pList;	// オブジェクトリスト
 
 	// メンバ変数
 	CListManager<CBomb>::AIterator m_iterator;	// イテレーター
+	float m_fFlyTime;	// 飛ぶ時間
+	VECTOR3	m_oldPos;	// 過去位置
+	VECTOR3 m_originPos;	// 初期位置
+	VECTOR3 m_destPos;	// 目的位置
 };
 
 #endif	// _PRESENT_H_

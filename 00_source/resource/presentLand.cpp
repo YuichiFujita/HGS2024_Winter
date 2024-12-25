@@ -20,6 +20,7 @@
 #include "gameManager.h"
 #include "player.h"
 #include "enemy.h"
+#include "bomb.h"
 
 //************************************************************
 //	定数宣言
@@ -36,6 +37,12 @@ namespace
 	{
 		const float HEIGHT = 200.0f;	// 高さ
 		const float END_TIME = 1.0f;	// 終了までの時間
+	}
+
+	// 飛行状態の定数
+	namespace attack
+	{
+		const float TIME = 2.0f;	// タイム
 		const float ALPHA = 0.5f;	// 透明度
 	}
 }
@@ -47,7 +54,7 @@ CPresentLand::AFuncState CPresentLand::m_aFuncState[] =		// 状態更新関数リスト
 {
 	&CPresentLand::UpdateNone,	// 無し状態の更新
 	&CPresentLand::UpdateFly,	// 飛び状態の更新
-	& CPresentLand::UpdateStop,	// 停止状態の更新
+	&CPresentLand::UpdateAttack,	// 停止状態の更新
 };
 
 //************************************************************
@@ -57,7 +64,7 @@ CPresentLand::AFuncState CPresentLand::m_aFuncState[] =		// 状態更新関数リスト
 //	コンストラクタ
 //============================================================
 CPresentLand::CPresentLand() : CPresent(),
-m_fFlyTime(0.0f),	// 飛ぶ時間
+m_fStateTime(0.0f),	// 状態の時間
 m_oldPos(VEC3_ZERO),	// 過去位置
 m_originPos(VEC3_ZERO),	// 初期位置
 m_destPos(VEC3_ZERO),	// 目的の位置
@@ -81,6 +88,7 @@ CPresentLand::~CPresentLand()
 //============================================================
 HRESULT CPresentLand::Init()
 {
+	m_fStateTime = 0.0f;	// 状態の時間
 	m_oldPos = VEC3_ZERO;	// 過去位置
 	m_destPos = VEC3_ZERO;	// 目的の位置
 	m_move = VEC3_ZERO;		// 移動量
@@ -116,6 +124,9 @@ void CPresentLand::Uninit()
 //============================================================
 void CPresentLand::Update(const float fDeltaTime)
 {
+	// 前回の位置を保存
+	m_oldPos = GetVec3Position();
+
 	// 速度調整処理
 	SpeedCalc();
 
@@ -189,6 +200,9 @@ bool CPresentLand::FieldCollision()
 		|| pStage->LandLimitPosition(pos, m_move, 0.0f))
 	{ // プレイヤーが着地していた場合
 
+		// 位置を反映
+		SetVec3Position(pos);
+
 		// true を返す
 		return true;
 	}
@@ -224,13 +238,20 @@ void CPresentLand::UpdateFly(const float fDeltaTime)
 	D3DXVECTOR3 pos = GetVec3Position();
 
 	// 放物線処理
-	pos = useful::GetParabola3D(m_originPos, m_destPos, fly::HEIGHT, fly::END_TIME, m_fFlyTime);
+	pos = useful::GetParabola3D(m_originPos, m_destPos, fly::HEIGHT, fly::END_TIME, m_fStateTime);
 
 	// 飛んでいる時間を更新
-	m_fFlyTime += fDeltaTime;
+	m_fStateTime += fDeltaTime;
 
-	// 着地したとき、停止状態にする
-	if (FieldCollision()) { m_state = STATE_STOP; }
+	if (FieldCollision()) 
+	{ // 着地した場合
+
+		// 状態の時間を0にする
+		m_fStateTime = 0.0f;
+
+		// 攻撃状態にする
+		m_state = STATE_ATTACK;
+	}
 
 	// 位置を反映する
 	SetVec3Position(pos);
@@ -239,8 +260,21 @@ void CPresentLand::UpdateFly(const float fDeltaTime)
 //============================================================
 // 停止状態処理
 //============================================================
-void CPresentLand::UpdateStop(const float fDeltaTime)
+void CPresentLand::UpdateAttack(const float fDeltaTime)
 {
+	// 状態の時間を更新
+	m_fStateTime += fDeltaTime;
+
 	// フィールドの当たり判定
 	FieldCollision();
+
+	if (m_fStateTime >= attack::TIME)
+	{ // タイムが一定以上になった場合
+
+		// 爆弾の生成処理
+		CBomb::Create(GetVec3Position());
+	}
+
+	// 透明度を設定
+	SetAlpha(attack::ALPHA);
 }
