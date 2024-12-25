@@ -27,6 +27,13 @@ namespace
 	const float	GRAVITY = 3600.0f;	// 重力
 	const float	RADIUS = 20.0f;	// 半径
 	const float HEIGHT = 80.0f;	// 身長
+
+	// 飛行状態の定数
+	namespace fly
+	{
+		const float DEST_POS_Y = 600.0f;	// 目的の高さ
+		const float ALPHA = 0.5f;	// 透明度
+	}
 }
 
 //************************************************************
@@ -37,6 +44,7 @@ namespace
 //============================================================
 CPresentLand::CPresentLand() : CPresent(),
 m_destPos(VEC3_ZERO),	// 目的の位置
+m_move(VEC3_ZERO),		// 移動量
 m_state(STATE_NONE)		// 状態
 {
 
@@ -56,6 +64,7 @@ CPresentLand::~CPresentLand()
 HRESULT CPresentLand::Init()
 {
 	m_destPos = VEC3_ZERO;	// 目的の位置
+	m_move = VEC3_ZERO;		// 移動量
 	m_state = STATE_NONE;	// 状態
 
 	// オブジェクトキャラクターの初期化
@@ -86,7 +95,7 @@ void CPresentLand::Uninit()
 void CPresentLand::Update(const float fDeltaTime)
 {
 	// 状態処理
-	UpdateState();
+	UpdateState(fDeltaTime);
 }
 
 //============================================================
@@ -137,7 +146,7 @@ float CPresentLand::GetHeight() const
 //============================================================
 // 状態処理
 //============================================================
-void CPresentLand::UpdateState(void)
+void CPresentLand::UpdateState(const float fDeltaTime)
 {
 	switch (m_state)
 	{
@@ -147,12 +156,12 @@ void CPresentLand::UpdateState(void)
 
 	case CPresentLand::STATE_FLY:
 
-		UpdateFly();
+		UpdateFly(fDeltaTime);
 		break;
 
 	case CPresentLand::STATE_FALL:
 
-		UpdateFall();
+		UpdateFall(fDeltaTime);
 		break;
 
 	default:
@@ -165,7 +174,7 @@ void CPresentLand::UpdateState(void)
 //============================================================
 // 飛び状態の処理
 //============================================================
-void CPresentLand::UpdateFly(void)
+void CPresentLand::UpdateFly(const float fDeltaTime)
 {
 	CPlayer* pPlayer = CScene::GetPlayer();
 
@@ -175,13 +184,25 @@ void CPresentLand::UpdateFly(void)
 	m_destPos = pPlayer->GetVec3Position();
 
 	// 目的の高さを再設定する
-	m_destPos.y = 600.0f;
+	m_destPos.y = fly::DEST_POS_Y;
+
+	// 透明度を設定する
+	SetAlpha(fly::ALPHA);
 }
 
 //============================================================
 // 落下状態の処理
 //============================================================
-void CPresentLand::UpdateFall(void)
+void CPresentLand::UpdateFall(const float fDeltaTime)
 {
+	D3DXVECTOR3 pos = GetVec3Position();
 
+	// 重力をかける
+	m_move.y += GRAVITY * fDeltaTime;
+
+	// 移動する
+	pos += m_move;
+
+	// 位置を設定する
+	SetVec3Position(pos);
 }

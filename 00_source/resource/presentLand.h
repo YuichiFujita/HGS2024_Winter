@@ -50,12 +50,13 @@ public:
 
 private:
 	// メンバ関数
-	void UpdateState(void);
-	void UpdateFly(void);
-	void UpdateFall(void);
+	void UpdateState(const float fDeltaTime);
+	void UpdateFly(const float fDeltaTime);
+	void UpdateFall(const float fDeltaTime);
 
 	// メンバ変数
 	D3DXVECTOR3 m_destPos;	// 目的の位置
+	D3DXVECTOR3 m_move;		// 移動量
 	EState m_state;			// 状態
 };
 
