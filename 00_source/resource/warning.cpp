@@ -20,7 +20,7 @@ namespace
 	const char* TEXTURE_FILE = "data\\TEXTURE\\warning000.png";
 	const VECTOR3 RADIUS = VECTOR3(60.0f, 0.0f, 60.0f);	// 半径
 
-	const int PRIORITY = 4;	// エフェクト3Dの優先順位
+	const int PRIORITY = 1;	// エフェクト3Dの優先順位
 }
 
 //************************************************************
@@ -54,15 +54,6 @@ HRESULT CWarning::Init()
 		assert(false);
 		return E_FAIL;
 	}
-
-	// レンダーステートの情報を取得
-	CRenderState* pRenderState = GetRenderState();
-
-	// Zテストの設定
-	pRenderState->SetZFunc(D3DCMP_ALWAYS);
-
-	// Zバッファの使用状況の設定
-	pRenderState->SetZUpdate(false);
 
 	return S_OK;
 }
