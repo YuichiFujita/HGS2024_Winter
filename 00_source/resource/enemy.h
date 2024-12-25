@@ -48,15 +48,15 @@ public:
 	enum EMotion
 	{
 		MOTION_IDOL = 0,	// 待機モーション
-		MOTION_WALK,		// 歩行モーション
+		MOTION_ATK_UP,		// 上投げモーション
+		MOTION_ATK_SIDE,	// 横投げモーション
 		MOTION_MAX			// この列挙型の総数
 	};
 
 	// 状態列挙
 	enum EState
 	{
-		STATE_NONE = 0,	// 何もしない状態
-		STATE_IDOL,		// 待機状態
+		STATE_IDOL = 0,	// 待機状態
 		STATE_JUMP,		// ジャンプ状態
 		STATE_ATK,		// 攻撃状態
 		STATE_MAX		// この列挙型の総数
@@ -102,13 +102,14 @@ private:
 	static AFuncState m_aFuncState[];	// 状態更新関数リスト
 
 	// メンバ関数
+	float CalcIdolTime();	// 待機時間計算
+	bool IsAttack();		// 攻撃モーションフラグ取得
 	void SetState(const EState state);	// 状態設定
-	void SetJump(const VECTOR3& rCurPos, const VECTOR3& rJumpPos);	// ジャンプ設定
-	EMotion UpdateNone(const float fDeltaTime);		// 何もしない状態時の更新
+	void SetJump(const VECTOR3& rCurPos, const VECTOR3& rJumpPos);		// ジャンプ設定
+	void SetAttack(const VECTOR3& rCurPos, const VECTOR3& rPlayerPos);	// 攻撃設定
 	EMotion UpdateIdol(const float fDeltaTime);		// 待機状態時の更新
 	EMotion UpdateJump(const float fDeltaTime);		// ジャンプ状態時の更新
 	EMotion UpdateAttack(const float fDeltaTime);	// 攻撃状態時の更新
-	EMotion UpdateMove(const float fDeltaTime);		// 移動量/目標向きの更新
 	void UpdateOldPosition();						// 過去位置の更新
 	void UpdateGravity(const float fDeltaTime);		// 重力の更新
 	bool UpdateLanding(VECTOR3* pPos, const float fDeltaTime);	// 着地状況の更新

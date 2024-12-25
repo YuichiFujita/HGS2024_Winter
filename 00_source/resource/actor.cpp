@@ -38,7 +38,7 @@ namespace
 	};
 	const SModelInfo MODEL_FILE[] =	// サウンドファイル
 	{
-		SModelInfo("data\\MODEL\\ACTOR\\wood000.x", 30.0f),		// 木00
+		SModelInfo("data\\MODEL\\ACTOR\\wood.x", 30.0f),		// 木00
 		SModelInfo("data\\MODEL\\ACTOR\\stone000.x", 30.0f),	// 石00
 	};
 

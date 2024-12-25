@@ -64,7 +64,7 @@ namespace
 {
 	const char*	SAVE_TXT = "data\\TXT\\save_actor.txt";	// 保存テキスト
 	const float	INIT_ALPHA = 0.5f;	// 配置前のα値
-	const float	MOVE = 1.5f;		// 移動量
+	const float	MOVE = 3.0f;		// 移動量
 	const float	ROTMOVE = 0.02f;	// 向き移動量
 	const float	SCALEMOVE = 0.1f;	// 拡大量
 }
