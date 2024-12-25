@@ -7,7 +7,7 @@
 //************************************************************
 //	インクルードファイル
 //************************************************************
-#include "enemy.h"
+#include "enemyCopy.h"
 #include "manager.h"
 #include "renderer.h"
 #include "sound.h"
