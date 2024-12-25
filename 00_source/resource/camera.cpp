@@ -427,7 +427,33 @@ void CCamera::InitNone()
 //============================================================
 void CCamera::InitFollow()
 {
+	// カメラ追従状態ではない場合抜ける
+	if (m_state != STATE_FOLLOW) { return; }
 
+	//----------------------------------------------------
+	//	向きの更新
+	//----------------------------------------------------
+	// 向きの設定
+	m_camera.rot = m_camera.destRot = follow::ROT;
+	useful::NormalizeRot(m_camera.rot);		// 現在向きを正規化
+	useful::NormalizeRot(m_camera.destRot);	// 目標向きを正規化
+
+	//----------------------------------------------------
+	//	距離の更新
+	//----------------------------------------------------
+	// 距離の設定
+	m_camera.fDis = m_camera.fDestDis = follow::DISTANCE;
+
+	//----------------------------------------------------
+	//	位置の更新
+	//----------------------------------------------------
+	// 注視点の更新
+	m_camera.posR = m_camera.destPosR = CScene::GetPlayer()->GetVec3Position();
+
+	// 視点の更新
+	m_camera.posV.x = m_camera.destPosV.x = m_camera.destPosR.x + ((-m_camera.fDis * sinf(m_camera.rot.x)) * sinf(m_camera.rot.y));
+	m_camera.posV.y = m_camera.destPosV.y = m_camera.destPosR.y + ((-m_camera.fDis * cosf(m_camera.rot.x)));
+	m_camera.posV.z = m_camera.destPosV.z = m_camera.destPosR.z + ((-m_camera.fDis * sinf(m_camera.rot.x)) * cosf(m_camera.rot.y));
 }
 
 //============================================================
@@ -505,7 +531,7 @@ void CCamera::UpdateFollow(const float fDeltaTime)
 	//----------------------------------------------------
 	// 向きの設定
 	m_camera.rot = m_camera.destRot = follow::ROT;
-	useful::NormalizeRot(m_camera.rot);		// 向きを正規化
+	useful::NormalizeRot(m_camera.rot);		// 現在向きを正規化
 	useful::NormalizeRot(m_camera.destRot);	// 目標向きを正規化
 
 	//----------------------------------------------------
