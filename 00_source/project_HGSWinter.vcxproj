@@ -273,6 +273,7 @@
     <ClCompile Include="resource\value.cpp" />
     <ClCompile Include="resource\valueUI.cpp" />
     <ClCompile Include="resource\wall.cpp" />
+    <ClCompile Include="resource\warning.cpp" />
     <ClCompile Include="resource\wave.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -392,6 +393,7 @@
     <ClInclude Include="resource\value.h" />
     <ClInclude Include="resource\valueUI.h" />
     <ClInclude Include="resource\wall.h" />
+    <ClInclude Include="resource\warning.h" />
     <ClInclude Include="resource\wave.h" />
   </ItemGroup>
   <ItemGroup>
