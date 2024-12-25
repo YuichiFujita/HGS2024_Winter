@@ -411,6 +411,9 @@
     <ClCompile Include="resource\presentBullet.cpp">
       <Filter>ingame\Present</Filter>
     </ClCompile>
+    <ClCompile Include="resource\bomb.cpp">
+      <Filter>ingame\Present</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource\anim2D.h">
@@ -744,6 +747,9 @@
       <Filter>ingame\Present</Filter>
     </ClInclude>
     <ClInclude Include="resource\presentBullet.h">
+      <Filter>ingame\Present</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\bomb.h">
       <Filter>ingame\Present</Filter>
     </ClInclude>
   </ItemGroup>
