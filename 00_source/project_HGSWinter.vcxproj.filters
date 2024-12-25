@@ -408,7 +408,7 @@
     <ClCompile Include="resource\presentLand.cpp">
       <Filter>ingame\Present</Filter>
     </ClCompile>
-    <ClCompile Include="resource\presentBulletCopy.cpp">
+    <ClCompile Include="resource\presentBullet.cpp">
       <Filter>ingame\Present</Filter>
     </ClCompile>
   </ItemGroup>
@@ -743,7 +743,7 @@
     <ClInclude Include="resource\presentLand.h">
       <Filter>ingame\Present</Filter>
     </ClInclude>
-    <ClInclude Include="resource\presentBulletCopy.h">
+    <ClInclude Include="resource\presentBullet.h">
       <Filter>ingame\Present</Filter>
     </ClInclude>
   </ItemGroup>

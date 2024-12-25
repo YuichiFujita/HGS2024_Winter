@@ -7,7 +7,7 @@
 //************************************************************
 //	インクルードファイル
 //************************************************************
-#include "presentBulletCopy.h"
+#include "presentBullet.h"
 #include "manager.h"
 #include "renderer.h"
 #include "sound.h"
