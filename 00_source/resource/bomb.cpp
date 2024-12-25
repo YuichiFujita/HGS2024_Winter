@@ -151,6 +151,9 @@ void CBomb::Update(const float fDeltaTime)
 //============================================================
 void CBomb::Draw(CShader* pShader)
 {
+	// ダメージ状態の場合、抜ける
+	if (m_state == STATE_DAMAGE) { return; }
+
 	// オブジェクトキャラクターの描画
 	CObjectModel::Draw(pShader);
 }

@@ -20,6 +20,7 @@
 #include "gameManager.h"
 #include "player.h"
 #include "presentLand.h"
+#include "presentBullet.h"
 
 //************************************************************
 //	定数宣言
@@ -40,7 +41,10 @@ namespace
 
 	const float LAND_NUM_TIME = 50.0f;		// 設置型プレゼントが増える基準
 	const int LAND_NUM_MAX = 3;				// 設置型プレゼントの最大数
-	const float LAND_NUM_RANGE = 50.0f;		// 設置型プレゼントの範囲の
+	const float LAND_NUM_RANGE = 50.0f;		// 設置型プレゼントの範囲
+
+	const float BULLET_NUM_TIME = 6.0f;	// 弾型プレゼントが増える基準
+	const float BULLET_ROT_RANGE = D3DX_PI * 0.1f;		// 弾型プレゼントの向きの範囲
 
 	namespace motion
 	{
@@ -346,6 +350,14 @@ void CEnemy::SetAttack(const VECTOR3& rCurPos, const VECTOR3& rPlayerPos)
 //============================================================
 CEnemy::EMotion CEnemy::UpdateIdol(const float fDeltaTime)
 {
+	// 操作不可能な場合抜ける
+	CGameManager* pGameManager = CSceneGame::GetGameManager();	// ゲームマネージャー
+	if (pGameManager != nullptr)
+	{ // ゲームマネージャーがある場合
+
+		if (!pGameManager->IsControlOK()) { return MOTION_IDOL; }
+	}
+
 	CPlayer* pPlayer = CScene::GetPlayer();			// プレイヤー情報
 	VECTOR3 posPlayer = pPlayer->GetVec3Position();	// プレイヤー位置
 	VECTOR3 posEnemy = GetVec3Position();	// 敵位置
@@ -457,8 +469,8 @@ CEnemy::EMotion CEnemy::UpdateAttack(const float fDeltaTime)
 
 		case MOTION_ATK_SIDE:
 
-			// 弾型プレゼントを飛ばす
-			CPresentLand::Create(GetVec3Position(), VEC3_ZERO, CPresent::TYPE_BULLET);
+			// 弾型プレゼント処理
+			BulletAttack(fDeltaTime);
 			break;
 		};
 	}
@@ -497,7 +509,7 @@ CEnemy::EMotion CEnemy::UpdateAttack(const float fDeltaTime)
 //============================================================
 void CEnemy::LandAttack(const float fDeltaTime)
 {
-	int nNum = (int)(CSceneGame::GetGameManager()->GetGameTime() / LAND_NUM_TIME);	// 現在の経過時間
+	int nNum = (int)(CSceneGame::GetGameManager()->GetGameTime() / LAND_NUM_TIME) + 1;	// 現在の経過時間
 
 	// 最大数を3に抑える
 	useful::LimitMaxNum(nNum, LAND_NUM_MAX);
@@ -506,6 +518,43 @@ void CEnemy::LandAttack(const float fDeltaTime)
 	{
 		// 設置型プレゼントを飛ばす
 		CPresentLand::Create(GetVec3Position(), VEC3_ZERO, 30.0f * nCnt);
+	}
+}
+
+//============================================================
+// 弾型プレゼント処理
+//============================================================
+void CEnemy::BulletAttack(const float fDeltaTime)
+{
+	int nNum = (int)(CSceneGame::GetGameManager()->GetGameTime() / BULLET_NUM_TIME) + 1;	// 現在の経過時間
+
+	float fVecRot = 0.0f;    // 射撃方向
+	float fAddRot = 0.0f;    // 射撃加算向き
+
+	if (nNum % 2 == 0)
+	{ // 発射数が偶数の場合
+
+		// 加算向きを減算
+		fAddRot -= BULLET_ROT_RANGE * 0.5f;
+		useful::NormalizeRot(fAddRot);    // 向き正規化
+	}
+
+	for (int nCntMagic = 0; nCntMagic < (int)(nNum * 0.5f); nCntMagic++)
+	{ // 発射数の半分繰り返す
+
+		// 加算向きを加算
+		fAddRot += BULLET_ROT_RANGE;
+		useful::NormalizeRot(fAddRot);    // 向き正規化
+	}
+
+	fVecRot += fAddRot;
+
+	for (int nCnt = 0; nCnt < nNum; nCnt++)
+	{
+		// 設置型プレゼントを飛ばす
+		CPresentBullet::Create(GetVec3Position(), fVecRot);
+
+		fVecRot -= fAddRot;
 	}
 }
 

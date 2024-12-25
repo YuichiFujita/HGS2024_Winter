@@ -166,6 +166,46 @@ float CPresentBullet::GetHeight() const
 }
 
 //============================================================
+// 生成処理
+//============================================================
+CPresentBullet* CPresentBullet::Create
+( // 引数
+	const VECTOR3& rPos,	// 位置
+	const float fRotY		// 方向
+)
+{
+	// プレゼントの生成
+	CPresentBullet* pPresent = new CPresentBullet;
+
+	if (pPresent == nullptr)
+	{ // 生成に失敗した場合
+
+		return nullptr;
+	}
+	else
+	{ // 生成に成功した場合
+
+		// プレゼントの初期化
+		if (FAILED(pPresent->Init()))
+		{ // 初期化に失敗した場合
+
+			// プレゼントの破棄
+			SAFE_DELETE(pPresent);
+			return nullptr;
+		}
+
+		// 位置を設定
+		pPresent->SetVec3Position(rPos);
+
+		// 向きを設定
+		pPresent->SetVec3Rotation(VECTOR3(0.0f, fRotY, 0.0f));
+
+		// 確保したアドレスを返す
+		return pPresent;
+	}
+}
+
+//============================================================
 // 当たり判定
 //============================================================
 void CPresentBullet::Collision()
