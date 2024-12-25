@@ -42,6 +42,11 @@ namespace
 //	静的メンバ変数宣言
 //************************************************************
 CListManager<CPlayer>* CPlayer::m_pList = nullptr;	// オブジェクトリスト
+CPlayer::AFuncState CPlayer::m_aFuncState[] =		// 状態関数配列
+{
+	&CPlayer::UpdateNone,	// 何もしない状態の更新
+	&CPlayer::UpdateNormal,	// 通常状態の更新
+};
 
 //************************************************************
 //	子クラス [CPlayer] のメンバ関数
@@ -56,7 +61,8 @@ CPlayer::CPlayer() : CObjectChara(CObject::LABEL_PLAYER, CObject::DIM_3D, PRIORI
 	m_state		(STATE_NONE),	// 状態
 	m_bJump		(false)			// ジャンプ状況
 {
-
+	// スタティックアサート
+	static_assert(NUM_ARRAY(m_aFuncState) == CPlayer::STATE_MAX, "ERROR : State Count Mismatch");
 }
 
 //============================================================
@@ -143,7 +149,7 @@ void CPlayer::Update(const float fDeltaTime)
 	UpdateOldPosition();
 
 	// 状態の更新
-	EMotion curMotion = UpdateState(fDeltaTime);
+	EMotion curMotion = (this->*(m_aFuncState[m_state]))(fDeltaTime);
 
 	// モーション・オブジェクトキャラクターの更新
 	UpdateMotion(curMotion, fDeltaTime);
@@ -174,35 +180,6 @@ void CPlayer::SetEnableDraw(const bool bDraw)
 {
 	// 引数の描画状況を設定
 	CObject::SetEnableDraw(bDraw);	// 自身
-}
-
-//============================================================
-//	状態の更新処理
-//============================================================
-CPlayer::EMotion CPlayer::UpdateState(const float fDeltaTime)
-{
-	EMotion curMotion = MOTION_IDOL;	// 現在のモーション
-	switch (m_state)
-	{ // 状態ごとの処理
-	case STATE_NONE:
-
-		// 何もしない状態時の更新
-		curMotion = UpdateNone(fDeltaTime);
-		break;
-
-	case STATE_NORMAL:
-
-		// 通常状態の更新
-		curMotion = UpdateNormal(fDeltaTime);
-		break;
-
-	default:
-		assert(false);
-		break;
-	}
-
-	// 現在のモーションを返す
-	return curMotion;
 }
 
 //============================================================
@@ -313,6 +290,10 @@ CPlayer::EMotion CPlayer::UpdateNone(const float fDeltaTime)
 	// 着地判定
 	UpdateLanding(&posPlayer, fDeltaTime);
 
+	// 位置補正
+	CStage* pStage = GET_MANAGER->GetStage();	// ステージ情報
+	pStage->LimitPosition(posPlayer, RADIUS);
+
 	// 向き更新
 	UpdateRotation(&rotPlayer, fDeltaTime);
 
@@ -354,6 +335,10 @@ CPlayer::EMotion CPlayer::UpdateNormal(const float fDeltaTime)
 
 	// 着地判定
 	UpdateLanding(&posPlayer, fDeltaTime);
+
+	// 位置補正
+	CStage* pStage = GET_MANAGER->GetStage();	// ステージ情報
+	pStage->LimitPosition(posPlayer, RADIUS);
 
 	// 向き更新
 	UpdateRotation(&rotPlayer, fDeltaTime);
