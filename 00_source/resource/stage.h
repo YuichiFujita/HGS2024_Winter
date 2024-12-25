@@ -85,6 +85,7 @@ private:
 	HRESULT LoadScenery(const char* pString, FILE* pFile);	// 景色情報の読込
 	HRESULT LoadSky(const char* pString, FILE* pFile);		// 空情報の読込
 	HRESULT LoadLiquid(const char* pString, FILE* pFile);	// 液体情報の読込
+	HRESULT LoadActor(const char* pString, FILE* pFile);	// アクター情報の読込
 
 	// メンバ変数
 	std::string m_sCurPath;	// 現在のステージパス

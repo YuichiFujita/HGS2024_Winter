@@ -22,6 +22,10 @@
 #include "player.h"
 #include "enemy.h"
 
+#ifdef _DEBUG
+#include "editManager.h"
+#endif // DEBUG
+
 //************************************************************
 //	定数宣言
 //************************************************************
@@ -57,6 +61,9 @@ namespace
 //	コンストラクタ
 //============================================================
 CGameManager::CGameManager() :
+#ifdef _DEBUG
+	m_pEditManager	(nullptr),	// エディットマネージャー
+#endif // DEBUG
 #ifdef SCORE
 	m_pScore	 (nullptr),	// スコア情報
 #else TIMER
@@ -82,6 +89,9 @@ CGameManager::~CGameManager()
 HRESULT CGameManager::Init()
 {
 	// メンバ変数を初期化
+#ifdef _DEBUG
+	m_pEditManager = nullptr;	// エディットマネージャー
+#endif // DEBUG
 #ifdef SCORE
 	m_pScore	 = nullptr;	// スコア情報
 #else TIMER
@@ -168,6 +178,11 @@ void CGameManager::Uninit()
 	// タイマーの終了
 	//SAFE_UNINIT(m_pTimer);
 #endif
+
+#ifdef _DEBUG
+	// エディットマネージャーの破棄
+	SAFE_REF_RELEASE(m_pEditManager);
+#endif // DEBUG
 }
 
 //============================================================
@@ -190,6 +205,11 @@ void CGameManager::Update(const float fDeltaTime)
 	// タイマーの更新
 	//m_pTimer->Update(fDeltaTime);
 #endif
+
+#ifdef _DEBUG
+	// エディットマネージャーの更新
+	if (m_pEditManager != nullptr) { m_pEditManager->Update(fDeltaTime); }
+#endif // DEBUG
 }
 
 //============================================================
@@ -308,3 +328,22 @@ void CGameManager::Release(CGameManager*& prGameManager)
 	// メモリ開放
 	SAFE_DELETE(prGameManager);
 }
+
+#ifdef _DEBUG
+//============================================================
+//	エディットモードの変更処理
+//============================================================
+void CGameManager::ChangeEnableEdit()
+{
+	if (m_pEditManager == nullptr)
+	{
+		// エディットマネージャーの生成
+		m_pEditManager = CEditManager::Create();
+	}
+	else
+	{
+		// エディットマネージャーの破棄
+		SAFE_REF_RELEASE(m_pEditManager);
+	}
+}
+#endif // DEBUG
