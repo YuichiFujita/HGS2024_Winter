@@ -263,6 +263,9 @@ bool CPlayer::Hit()
 	// 死亡状態にする
 	SetState(STATE_DEATH);
 
+	// 死亡（開始の音を使い回し）
+	PLAY_SOUND(CSound::LABEL_SE_START);
+
 	CGameManager* pGameManager = CSceneGame::GetGameManager();	// ゲームマネージャー
 	if (pGameManager != nullptr)
 	{ // ゲームマネージャーがある場合
