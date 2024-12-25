@@ -56,6 +56,8 @@ private:
 	static AFuncState m_aFuncState[];	// 状態更新関数リスト
 
 	// メンバ関数
+	void Collision();							// 当たり判定
+
 	void UpdateHoming(const float fDeltaTime);			// ホーミング処理
 	void UpdateMove(const float fDeltaTime);			// 移動処理
 	void UpdateDeath(const float fDeltaTime);			// 死亡処理

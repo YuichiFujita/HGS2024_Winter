@@ -30,7 +30,7 @@ namespace
 {
 	const char* MODEL = "data\\MODEL\\PLAYER\\02_head.x";	// モデルの情報
 	const float	GRAVITY = 0.6f;	// 重力
-	const float	RADIUS = 20.0f;	// 半径
+	const float	RADIUS = 40.0f;	// 半径
 	const float HEIGHT = 40.0f;	// 身長
 	const float DELETE_TIME = 5.0f;	// 終了タイム
 
@@ -135,6 +135,9 @@ void CPresentLand::Update(const float fDeltaTime)
 
 	// 状態処理
 	(this->*(m_aFuncState[m_state]))(fDeltaTime);
+
+	// 当たり判定処理
+	Collision();
 }
 
 //============================================================
@@ -228,6 +231,29 @@ bool CPresentLand::AttackSensor()
 
 	// 当たり判定の結果を返す
 	return collision::Circle2D(GetVec3Position(), posPlayer, sensor::RANGE, pPlayer->GetRadius());
+}
+
+//============================================================
+// 当たり判定
+//============================================================
+void CPresentLand::Collision()
+{
+	// 飛び状態以外の場合、この関数を抜ける
+	if (m_state != STATE_FLY) { return; }
+
+	// プレイヤーがいない場合、抜ける
+	CPlayer* pPlayer = CScene::GetPlayer();
+	if (pPlayer == nullptr) { return; }
+
+	// 位置を設定する
+	VECTOR3 pos = GetVec3Position();
+
+	if (collision::Circle3D(pos, pPlayer->GetVec3Position(), RADIUS, pPlayer->GetRadius()))
+	{ // 当たった場合
+
+		// ヒット処理
+		pPlayer->Hit();
+	}
 }
 
 //============================================================

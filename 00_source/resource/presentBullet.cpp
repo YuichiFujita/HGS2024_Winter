@@ -20,6 +20,7 @@
 #include "gameManager.h"
 #include "player.h"
 #include "particle3D.h"
+#include "collision.h"
 
 //************************************************************
 //	定数宣言
@@ -48,7 +49,6 @@ CPresentBullet::AFuncState CPresentBullet::m_aFuncState[] =		// 状態更新関数リス
 	&CPresentBullet::UpdateHoming,		// ホーミング状態
 	&CPresentBullet::UpdateMove,		// 移動状態
 	&CPresentBullet::UpdateDeath,		// 死亡状態
-										// この列挙型の総数
 };
 
 //************************************************************
@@ -115,6 +115,9 @@ void CPresentBullet::Update(const float fDeltaTime)
 {
 	// 状態処理
 	(this->*(m_aFuncState[m_state]))(fDeltaTime);
+
+	// 当たり判定
+	Collision();
 }
 
 //============================================================
@@ -160,6 +163,26 @@ float CPresentBullet::GetHeight() const
 {
 	// 高さを返す
 	return HEIGHT;
+}
+
+//============================================================
+// 当たり判定
+//============================================================
+void CPresentBullet::Collision()
+{
+	// プレイヤーがいない場合、抜ける
+	CPlayer* pPlayer = CScene::GetPlayer();
+	if (pPlayer == nullptr) { return; }
+
+	// 位置を設定する
+	VECTOR3 pos = GetVec3Position();
+
+	if (collision::Circle3D(pos, pPlayer->GetVec3Position(), RADIUS, pPlayer->GetRadius()))
+	{ // 当たった場合
+
+		// ヒット処理
+		pPlayer->Hit();
+	}
 }
 
 //============================================================
