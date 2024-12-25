@@ -405,6 +405,9 @@
     <ClCompile Include="present.cpp">
       <Filter>ingame\Present</Filter>
     </ClCompile>
+    <ClCompile Include="presentLand.cpp">
+      <Filter>ingame\Present</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource\anim2D.h">
@@ -732,6 +735,9 @@
       <Filter>ingame</Filter>
     </ClInclude>
     <ClInclude Include="present.h">
+      <Filter>ingame\Present</Filter>
+    </ClInclude>
+    <ClInclude Include="presentLand.h">
       <Filter>ingame\Present</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,13 +1,13 @@
 //============================================================
 //
-//	プレゼント処理 [present.cpp]
+//	設置型プレゼント処理 [presentLand.cpp]
 //	Author：小原立暉
 //
 //============================================================
 //************************************************************
 //	インクルードファイル
 //************************************************************
-#include "present.h"
+#include "presentLand.h"
 #include "manager.h"
 #include "renderer.h"
 #include "sound.h"
@@ -18,14 +18,13 @@
 #include "sceneGame.h"
 #include "gameManager.h"
 
-#include "presentLand.h"
-
 //************************************************************
 //	定数宣言
 //************************************************************
 namespace
 {
-	const int	PRIORITY = 3;		// プレゼントの優先順位
+	const char* SETUP_TXT = "data\\CHARACTER\\player.txt";	// セットアップテキスト相対パス
+	const int	PRIORITY = 3;		// プレイヤーの優先順位
 	const float	GRAVITY = 3600.0f;	// 重力
 	const float	RADIUS = 20.0f;	// 半径
 	const float HEIGHT = 80.0f;	// 身長
@@ -40,18 +39,12 @@ namespace
 }
 
 //************************************************************
-//	静的メンバ変数宣言
-//************************************************************
-CListManager<CPresent>* CPresent::m_pList = nullptr;	// オブジェクトリスト
-
-//************************************************************
-//	子クラス [CPresent] のメンバ関数
+//	子クラス [CPresentLand] のメンバ関数
 //************************************************************
 //============================================================
 //	コンストラクタ
 //============================================================
-CPresent::CPresent() : CObjectChara(CObject::LABEL_PRESENT, CObject::DIM_3D, PRIORITY),
-m_type(TYPE_LAND)		// 種類
+CPresentLand::CPresentLand() : CPresent()
 {
 
 }
@@ -59,7 +52,7 @@ m_type(TYPE_LAND)		// 種類
 //============================================================
 //	デストラクタ
 //============================================================
-CPresent::~CPresent()
+CPresentLand::~CPresentLand()
 {
 
 }
@@ -67,12 +60,10 @@ CPresent::~CPresent()
 //============================================================
 //	初期化処理
 //============================================================
-HRESULT CPresent::Init()
+HRESULT CPresentLand::Init()
 {
-	m_type = TYPE_LAND;		// 種類
-
 	// オブジェクトキャラクターの初期化
-	if (FAILED(CObjectChara::Init()))
+	if (FAILED(CPresent::Init()))
 	{ // 初期化に失敗した場合
 
 		// 失敗を返す
@@ -80,22 +71,11 @@ HRESULT CPresent::Init()
 		return E_FAIL;
 	}
 
-	if (m_pList == nullptr)
-	{ // リストマネージャーが存在しない場合
+	// キャラクター情報の割当
+	BindCharaData(SETUP_TXT);
 
-		// リストマネージャーの生成
-		m_pList = CListManager<CPresent>::Create();
-		if (m_pList == nullptr)
-		{ // 生成に失敗した場合
-
-			// 失敗を返す
-			assert(false);
-			return E_FAIL;
-		}
-	}
-
-	// リストに自身のオブジェクトを追加・イテレーターを取得
-	m_iterator = m_pList->AddList(this);
+	// 初期モーションの割当
+	SetMotion(0);
 
 	// 成功を返す
 	return S_OK;
@@ -104,26 +84,16 @@ HRESULT CPresent::Init()
 //============================================================
 //	終了処理
 //============================================================
-void CPresent::Uninit()
+void CPresentLand::Uninit()
 {
-	// リストから自身のオブジェクトを削除
-	m_pList->DelList(m_iterator);
-
-	if (m_pList->GetNumAll() == 0)
-	{ // オブジェクトが一つもない場合
-
-		// リストマネージャーの破棄
-		m_pList->Release(m_pList);
-	}
-
 	// オブジェクトキャラクターの終了
-	CObjectChara::Uninit();
+	CPresent::Uninit();
 }
 
 //============================================================
 //	更新処理
 //============================================================
-void CPresent::Update(const float fDeltaTime)
+void CPresentLand::Update(const float fDeltaTime)
 {
 
 }
@@ -131,16 +101,16 @@ void CPresent::Update(const float fDeltaTime)
 //============================================================
 //	描画処理
 //============================================================
-void CPresent::Draw(CShader* pShader)
+void CPresentLand::Draw(CShader* pShader)
 {
 	// オブジェクトキャラクターの描画
-	CObjectChara::Draw(pShader);
+	CPresent::Draw(pShader);
 }
 
 //============================================================
 //	更新状況の設定処理
 //============================================================
-void CPresent::SetEnableUpdate(const bool bUpdate)
+void CPresentLand::SetEnableUpdate(const bool bUpdate)
 {
 	// 引数の更新状況を設定
 	CObject::SetEnableUpdate(bUpdate);	// 自身
@@ -149,75 +119,8 @@ void CPresent::SetEnableUpdate(const bool bUpdate)
 //============================================================
 //	描画状況の設定処理
 //============================================================
-void CPresent::SetEnableDraw(const bool bDraw)
+void CPresentLand::SetEnableDraw(const bool bDraw)
 {
 	// 引数の描画状況を設定
 	CObject::SetEnableDraw(bDraw);	// 自身
-}
-
-//============================================================
-//	生成処理
-//============================================================
-CPresent* CPresent::Create
-(
-	const VECTOR3& rPos,	// 位置
-	const VECTOR3& rRot,	// 向き
-	const EType type		// 種類
-)
-{
-	// プレゼントの生成
-	CPresent* pPresent = nullptr;
-
-	switch (type)
-	{
-	case CPresent::TYPE_LAND:
-
-		// 設置型プレゼントを生成
-		pPresent = new CPresentLand;
-
-		break;
-
-	default:
-
-		// 停止
-		assert(false);
-
-		break;
-	}
-
-	if (pPresent == nullptr)
-	{ // 生成に失敗した場合
-
-		return nullptr;
-	}
-	else
-	{ // 生成に成功した場合
-
-		// プレゼントの初期化
-		if (FAILED(pPresent->Init()))
-		{ // 初期化に失敗した場合
-
-			// プレゼントの破棄
-			SAFE_DELETE(pPresent);
-			return nullptr;
-		}
-
-		// 位置を設定
-		pPresent->SetVec3Position(rPos);
-
-		// 向きを設定
-		pPresent->SetVec3Rotation(rRot);
-
-		// 確保したアドレスを返す
-		return pPresent;
-	}
-}
-
-//============================================================
-//	リスト取得処理
-//============================================================
-CListManager<CPresent>* CPresent::GetList()
-{
-	// オブジェクトリストを返す
-	return m_pList;
 }
