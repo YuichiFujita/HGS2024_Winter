@@ -26,7 +26,7 @@
 //************************************************************
 namespace
 {
-	const char* MODEL = "data\\MODEL\\PLAYER\\01_body.x";	// モデル
+	const char* MODEL = "data\\MODEL\\PRESENT\\PresentBomb.x";	// モデル
 	const int	PRIORITY = 3;	// 爆弾の優先順位
 	const float	DEST_RANGE = 130.0f;	// 目的位置の範囲
 	const float RADIUS = 80.0f;	// 半径

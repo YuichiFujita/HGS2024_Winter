@@ -43,8 +43,8 @@ namespace
 	const int LAND_NUM_MAX = 3;				// 設置型プレゼントの最大数
 	const float LAND_NUM_RANGE = 50.0f;		// 設置型プレゼントの範囲
 
-	const float BULLET_NUM_TIME = 6.0f;	// 弾型プレゼントが増える基準
-	const float BULLET_ROT_RANGE = D3DX_PI * 0.1f;		// 弾型プレゼントの向きの範囲
+	const float BULLET_NUM_TIME = 60.0f;	// 弾型プレゼントが増える基準
+	const float BULLET_ROT_RANGE = D3DX_PI * 0.2f;		// 弾型プレゼントの向きの範囲
 
 	namespace motion
 	{

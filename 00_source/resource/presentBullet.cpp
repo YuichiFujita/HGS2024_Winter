@@ -27,12 +27,12 @@
 //************************************************************
 namespace
 {
-	const char* MODEL = "data\\MODEL\\PLAYER\\01_body.x";	// モデル
+	const char* MODEL = "data\\MODEL\\PRESENT\\PresentBag.x";	// モデル
 	const float	RADIUS = 20.0f;	// 半径
 	const float HEIGHT = 80.0f;	// 身長
-	const float SPEED = 500.0f;	// 速度
-	const float	REV_ROTA = 0.04f;	// 向き変更の補正係数
-	const float SUB_SPEED = 200.0f;	// 速度の減算量
+	const float SPEED = 570.0f;	// 速度
+	const float	REV_ROTA = 0.06f;	// 向き変更の補正係数
+	const float SUB_SPEED = 230.0f;	// 速度の減算量
 
 	// 移動状態
 	namespace move
