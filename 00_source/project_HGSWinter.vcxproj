@@ -155,9 +155,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="enemy.cpp" />
-    <ClCompile Include="present.cpp" />
-    <ClCompile Include="presentLand.cpp" />
     <ClCompile Include="resource\anim2D.cpp" />
     <ClCompile Include="resource\anim3D.cpp" />
     <ClCompile Include="resource\camera.cpp" />
@@ -170,6 +167,7 @@
     <ClCompile Include="resource\deltaTime.cpp" />
     <ClCompile Include="resource\effect2D.cpp" />
     <ClCompile Include="resource\effect3D.cpp" />
+    <ClCompile Include="resource\enemy.cpp" />
     <ClCompile Include="resource\extension.cpp" />
     <ClCompile Include="resource\fade.cpp" />
     <ClCompile Include="resource\field.cpp" />
@@ -221,6 +219,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="resource\present.cpp" />
+    <ClCompile Include="resource\presentLand.cpp" />
     <ClCompile Include="resource\random.cpp" />
     <ClCompile Include="resource\rankingManager.cpp" />
     <ClCompile Include="resource\rankingState.cpp" />
@@ -269,9 +269,6 @@
     <ClCompile Include="resource\wave.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="enemy.h" />
-    <ClInclude Include="present.h" />
-    <ClInclude Include="presentLand.h" />
     <ClInclude Include="resource\anim2D.h" />
     <ClInclude Include="resource\anim3D.h" />
     <ClInclude Include="resource\camera.h" />
@@ -284,6 +281,7 @@
     <ClInclude Include="resource\deltaTime.h" />
     <ClInclude Include="resource\effect2D.h" />
     <ClInclude Include="resource\effect3D.h" />
+    <ClInclude Include="resource\enemy.h" />
     <ClInclude Include="resource\extension.h" />
     <ClInclude Include="resource\fade.h" />
     <ClInclude Include="resource\field.h" />
@@ -332,6 +330,8 @@
     <ClInclude Include="resource\pause.h" />
     <ClInclude Include="resource\player.h" />
     <ClInclude Include="resource\precompile.h" />
+    <ClInclude Include="resource\present.h" />
+    <ClInclude Include="resource\presentLand.h" />
     <ClInclude Include="resource\random.h" />
     <ClInclude Include="resource\rankingManager.h" />
     <ClInclude Include="resource\rankingState.h" />
