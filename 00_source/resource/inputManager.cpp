@@ -19,23 +19,6 @@
 bool input::Decide()
 {
 	CInputKeyboard* pKey = GET_INPUTKEY;	// キーボード情報
-	return (pKey->IsTrigger(DIK_Z) || pKey->IsTrigger(DIK_RETURN));
-}
-
-//============================================================
-//	キャンセル操作
-//============================================================
-bool input::Cancel()
-{
-	CInputKeyboard* pKey = GET_INPUTKEY;	// キーボード情報
-	return (pKey->IsTrigger(DIK_X) || pKey->IsTrigger(DIK_LSHIFT) || pKey->IsTrigger(DIK_RSHIFT));
-}
-
-//============================================================
-//	フィールドメニュー操作
-//============================================================
-bool input::FieldMenu()
-{
-	CInputKeyboard* pKey = GET_INPUTKEY;	// キーボード情報
-	return (pKey->IsTrigger(DIK_C) || pKey->IsTrigger(DIK_LCONTROL) || pKey->IsTrigger(DIK_RCONTROL));
+	CInputPad* pPad = GET_INPUTPAD;			// パッド情報
+	return (pKey->IsTrigger(DIK_SPACE) || pKey->IsTrigger(DIK_RETURN) || pPad->IsTrigger(CInputPad::KEY_A) || pPad->IsTrigger(CInputPad::KEY_B) || pPad->IsTrigger(CInputPad::KEY_X) || pPad->IsTrigger(CInputPad::KEY_Y));
 }
