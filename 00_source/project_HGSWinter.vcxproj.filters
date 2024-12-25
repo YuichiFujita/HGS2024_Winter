@@ -426,6 +426,9 @@
     <ClCompile Include="resource\gameStateStart.cpp">
       <Filter>state\game</Filter>
     </ClCompile>
+    <ClCompile Include="resource\shadow.cpp">
+      <Filter>ingame</Filter>
+    </ClCompile>
     <ClCompile Include="resource\warning.cpp">
       <Filter>ingame</Filter>
     </ClCompile>
@@ -778,6 +781,9 @@
     </ClInclude>
     <ClInclude Include="resource\gameStateStart.h">
       <Filter>state\game</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\shadow.h">
+      <Filter>ingame</Filter>
     </ClInclude>
     <ClInclude Include="resource\warning.h">
       <Filter>ingame</Filter>

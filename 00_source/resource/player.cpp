@@ -18,6 +18,7 @@
 #include "stage.h"
 #include "sceneGame.h"
 #include "gameManager.h"
+#include "shadow.h"
 
 //************************************************************
 //	定数宣言
@@ -63,6 +64,7 @@ CPlayer::AFuncState CPlayer::m_aFuncState[] =		// 状態更新関数リスト
 //	コンストラクタ
 //============================================================
 CPlayer::CPlayer() : CObjectChara(CObject::LABEL_PLAYER, CObject::DIM_3D, PRIORITY),
+	m_pShadow	(nullptr),		// 影
 	m_oldPos	(VEC3_ZERO),	// 過去位置
 	m_move		(VEC3_ZERO),	// 移動量
 	m_destRot	(VEC3_ZERO),	// 目標向き
@@ -87,6 +89,7 @@ CPlayer::~CPlayer()
 HRESULT CPlayer::Init()
 {
 	// メンバ変数を初期化
+	m_pShadow	= nullptr;		// 影
 	m_oldPos	= VEC3_ZERO;	// 過去位置
 	m_move		= VEC3_ZERO;	// 移動量
 	m_destRot	= VEC3_ZERO;	// 目標向き
@@ -107,6 +110,9 @@ HRESULT CPlayer::Init()
 
 	// 初期モーションの割当
 	SetMotion(MOTION_IDOL);
+
+	// 影の生成
+	m_pShadow = CShadow::Create(CShadow::TEXTURE_NORMAL, VECTOR3(70.0f, 0.0f, 70.0f), this);
 
 	if (m_pList == nullptr)
 	{ // リストマネージャーが存在しない場合
@@ -225,6 +231,9 @@ CPlayer* CPlayer::Create
 		// 向きを設定
 		pPlayer->SetVec3Rotation(rRot);
 		pPlayer->m_destRot = rRot;	// 目標向きも同一の向きにする
+
+		// 影位置の修正
+		pPlayer->m_pShadow->SetDrawInfo();
 
 		// 確保したアドレスを返す
 		return pPlayer;
