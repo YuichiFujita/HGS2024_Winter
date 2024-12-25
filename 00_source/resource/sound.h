@@ -30,6 +30,7 @@ public:
 		LABEL_BGM_GENERAL,		// BGM (汎用)
 		LABEL_BGM_GAME_000,		// ゲームBGM (000)
 		LABEL_BGM_TITLE_000,	// タイトルBGM (000)
+		LABEL_BGM_RESULT_000,	// リザルトBGM (000)
 		LABEL_SE_BALLCHIME,		// BALL入力効果音
 		LABEL_SE_THROW_TOP,		// 上投げ
 		LABEL_SE_THROW_SIDE,	// 横投げ
