@@ -29,6 +29,7 @@ public:
 		STATE_NONE = 0,		// –³‚µó‘Ô
 		STATE_FLY,			// ”ò‚Ôó‘Ô
 		STATE_ATTACK,		// UŒ‚ó‘Ô
+		STATE_DELETE,		// íœó‘Ô
 		STATE_MAX			// ‚±‚Ì—ñ‹“Œ^‚Ì‘”
 	};
 
@@ -62,6 +63,7 @@ private:
 	void UpdateNone(const float fDeltaTime);	// –³‚µó‘Ôˆ—
 	void UpdateFly(const float fDeltaTime);		// ”ò‚Ôó‘Ôˆ—
 	void UpdateAttack(const float fDeltaTime);	// UŒ‚ó‘Ôˆ—
+	void UpdateDelete(const float fDeltaTime);	// íœó‘Ôˆ—
 
 	// ƒƒ“ƒo•Ï”
 	float m_fStateTime;			// ó‘Ô‚ÌŠÔ

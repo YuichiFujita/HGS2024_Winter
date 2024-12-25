@@ -24,10 +24,10 @@
 namespace
 {
 	const char* MODEL = "data\\MODEL\\PLAYER\\01_body.x";	// モデル
-	const int	DEST_POS_RAND = 400;	// 目的位置のランダム値
+	const int	DEST_POS_RAND = 600;	// 目的位置のランダム値
 	const int	PRIORITY = 3;	// 爆弾の優先順位
 	const float RADIUS = 60.0f;	// 半径
-	const float FLY_HEIGHT = 60.0f;	// 飛ぶときの最高到達点
+	const float FLY_HEIGHT = 90.0f;	// 飛ぶときの最高到達点
 	const float FLY_TIME = 1.0f;	// 飛ぶ時間
 }
 
