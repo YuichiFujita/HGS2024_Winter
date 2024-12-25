@@ -21,6 +21,7 @@
 #include "player.h"
 #include "particle3D.h"
 #include "collision.h"
+#include "effect3D.h"
 
 //************************************************************
 //	定数宣言
@@ -28,7 +29,7 @@
 namespace
 {
 	const char* MODEL = "data\\MODEL\\PRESENT\\PresentBag.x";	// モデル
-	const float	RADIUS = 20.0f;	// 半径
+	const float	RADIUS = 50.0f;	// 半径
 	const float HEIGHT = 80.0f;	// 身長
 	const float SPEED = 570.0f;	// 速度
 	const float	REV_ROTA = 0.06f;	// 向き変更の補正係数
@@ -38,6 +39,14 @@ namespace
 	namespace move
 	{
 		const float TIME = 1.0f;	// 移動状態の時間
+	}
+
+	// エフェクト
+	namespace effect
+	{
+		const float RADIUS = 20.0f;		// 半径
+		const int LIFE = 10;			// 寿命
+		const float SUB_SIZE = 0.1f;	// 半径の減算量
 	}
 }
 
@@ -216,8 +225,10 @@ void CPresentBullet::Collision()
 
 	// 位置を設定する
 	VECTOR3 pos = GetVec3Position();
+	VECTOR3 sizeMaxPlayer = VECTOR3(pPlayer->GetRadius(), pPlayer->GetHeight(), pPlayer->GetRadius());
+	VECTOR3 sizeMinPlayer = VECTOR3(pPlayer->GetRadius(), 0.0f, pPlayer->GetRadius());
 
-	if (collision::Circle3D(pos, pPlayer->GetVec3Position(), RADIUS, pPlayer->GetRadius()))
+	if (collision::Box3D(pos, pPlayer->GetVec3Position(), sizeMaxPlayer, GetModelData().vtxMax, sizeMinPlayer, -GetModelData().vtxMin))
 	{ // 当たった場合
 
 		// ヒット処理
@@ -255,6 +266,9 @@ void CPresentBullet::UpdateHoming(const float fDeltaTime)
 
 	// 状態時間を減算する
 	m_fStateTime -= fDeltaTime;
+
+	// エフェクトを生成する
+	CEffect3D::Create(pos, effect::RADIUS, CEffect3D::TYPE_NORMAL, effect::LIFE, VECTOR3(), VECTOR3(), color::Purple(), effect::SUB_SIZE);
 }
 
 //============================================================
@@ -284,6 +298,9 @@ void CPresentBullet::UpdateMove(const float fDeltaTime)
 		// 死亡状態にする
 		m_state = STATE_DEATH;
 	}
+
+	// エフェクトを生成する
+	CEffect3D::Create(pos, effect::RADIUS, CEffect3D::TYPE_NORMAL, effect::LIFE, VECTOR3(), VECTOR3(), color::Purple(), effect::SUB_SIZE);
 }
 
 //============================================================
