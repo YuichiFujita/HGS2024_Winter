@@ -35,11 +35,6 @@ namespace
 	const float	JUMP_REV	= 0.18f;	// 通常状態時の空中の移動量の減衰係数
 	const float	LAND_REV	= 0.18f;	// 通常状態時の地上の移動量の減衰係数
 
-	namespace camera
-	{
-		const CCamera::SSwing HIT_SWING = CCamera::SSwing(8.0f, 1.8f, 0.14f);	// ヒット時のカメラ揺れ
-	}
-
 	namespace motion
 	{
 		const int BLEND_FRAME_OTHER = 5;	// モーションの基本的なブレンドフレーム
@@ -261,11 +256,11 @@ bool CPlayer::Hit()
 	// 死んでる場合抜ける
 	if (IsDeath()) { return false; }
 
-	// カメラ揺れを設定
-	GET_MANAGER->GetCamera()->SetSwing(camera::HIT_SWING);
-
 	// 死亡状態にする
 	SetState(STATE_DEATH);
+
+	// 死亡（開始の音を使い回し）
+	PLAY_SOUND(CSound::LABEL_SE_START);
 
 	CGameManager* pGameManager = CSceneGame::GetGameManager();	// ゲームマネージャー
 	if (pGameManager != nullptr)
@@ -430,8 +425,7 @@ CPlayer::EMotion CPlayer::UpdateDeath(const float fDeltaTime)
 	SetVec3Rotation(rotPlayer);
 
 	// 死亡モーションを返す
-	//return MOTION_DEATH;	// TODO：死亡できたら変更
-	return MOTION_IDOL;
+	return MOTION_DEATH;
 }
 
 //============================================================
