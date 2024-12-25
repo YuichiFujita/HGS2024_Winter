@@ -87,6 +87,7 @@ public:
 		LABEL_SKY,			// ‹ó
 		LABEL_LIQUID,		// ‰t‘Ì
 		LABEL_WAVE,			// ”g“®
+		LABEL_ENEMY,		// “G
 #ifdef _DEBUG
 		LABEL_DEBUG,		// ƒfƒoƒbƒO
 #endif // _DEBUG
