@@ -28,7 +28,7 @@
 //************************************************************
 namespace
 {
-	const char* MODEL = "data\\MODEL\\PLAYER\\02_head.x";	// モデルの情報
+	const char* MODEL = "data\\MODEL\\PRESENT\\PresentBox.x";	// モデルの情報
 	const float	GRAVITY = 0.6f;	// 重力
 	const float	RADIUS = 40.0f;	// 半径
 	const float HEIGHT = 40.0f;	// 身長

@@ -64,7 +64,7 @@ HRESULT CSceneResult::Init()
 	pCamera->SetState(CCamera::STATE_ROTATE);		// ‰ñ“]ó‘Ô‚ğİ’è
 
 	// BGM‚ÌÄ¶
-	PLAY_SOUND(CSound::LABEL_BGM_GENERAL);
+	PLAY_SOUND(CSound::LABEL_BGM_RESULT_000);
 
 	return S_OK;
 }

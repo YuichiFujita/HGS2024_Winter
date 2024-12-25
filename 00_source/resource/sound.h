@@ -28,9 +28,14 @@ public:
 	{
 		LABEL_NONE = NONE_IDX,	// ラベル無し
 		LABEL_BGM_GENERAL,		// BGM (汎用)
+		LABEL_BGM_GAME_000,		// ゲームBGM (000)
+		LABEL_BGM_TITLE_000,	// タイトルBGM (000)
+		LABEL_BGM_RESULT_000,	// リザルトBGM (000)
 		LABEL_SE_BALLCHIME,		// BALL入力効果音
 		LABEL_SE_THROW_TOP,		// 上投げ
 		LABEL_SE_THROW_SIDE,	// 横投げ
+		LABEL_SE_JUMP,			// ジャンプ
+		LABEL_SE_LANDING,		// 着地
 		LABEL_MAX				// この列挙型の総数
 	};
 

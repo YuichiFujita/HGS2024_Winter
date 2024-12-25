@@ -111,6 +111,7 @@ private:
 	EMotion UpdateJump(const float fDeltaTime);		// ジャンプ状態時の更新
 	EMotion UpdateAttack(const float fDeltaTime);	// 攻撃状態時の更新
 	void LandAttack(const float fDeltaTime);	// 設置型プレゼント処理
+	void BulletAttack(const float fDeltaTime);	// 弾型プレゼント処理
 	void UpdateOldPosition();						// 過去位置の更新
 	void UpdateGravity(const float fDeltaTime);		// 重力の更新
 	bool UpdateLanding(VECTOR3* pPos, const float fDeltaTime);	// 着地状況の更新

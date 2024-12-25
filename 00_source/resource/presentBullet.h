@@ -48,6 +48,13 @@ public:
 	float GetRadius() const override;					// 半径取得
 	float GetHeight() const override;					// 縦幅取得
 
+	// 静的メンバ関数
+	static CPresentBullet* Create	// 生成
+	( // 引数
+		const VECTOR3& rPos,	// 位置
+		const float fRotY		// 方向
+	);
+
 private:
 	// エイリアス定義
 	typedef void(CPresentBullet::* AFuncState)(const float);	// 状態更新関数ポインタ
