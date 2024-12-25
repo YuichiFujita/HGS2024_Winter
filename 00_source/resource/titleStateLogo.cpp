@@ -19,7 +19,7 @@
 namespace
 {
 	const char* TEXTURE = "data\\TEXTURE\\logo000.png";	// テクスチャパス
-	const float TRANS_TIME = 6.0f;	// 自動遷移時間
+	const float TRANS_TIME = 2.0f;	// 自動遷移時間
 }
 
 //************************************************************
