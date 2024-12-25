@@ -19,6 +19,7 @@
 #include "sceneGame.h"
 #include "gameManager.h"
 #include "player.h"
+#include "particle3D.h"
 
 //************************************************************
 //	定数宣言
@@ -26,11 +27,29 @@
 namespace
 {
 	const char* MODEL = "data\\MODEL\\PLAYER\\01_body.x";	// モデル
-	const float SPEED = 500.0f;	// 速度
 	const float	RADIUS = 20.0f;	// 半径
 	const float HEIGHT = 80.0f;	// 身長
+	const float SPEED = 500.0f;	// 速度
 	const float	REV_ROTA = 0.04f;	// 向き変更の補正係数
+	const float SUB_SPEED = 200.0f;	// 速度の減算量
+
+	// 移動状態
+	namespace move
+	{
+		const float TIME = 1.0f;	// 移動状態の時間
+	}
 }
+
+//************************************************************
+// 静的メンバ変数宣言
+//************************************************************
+CPresentBullet::AFuncState CPresentBullet::m_aFuncState[] =		// 状態更新関数リスト
+{
+	&CPresentBullet::UpdateHoming,		// ホーミング状態
+	&CPresentBullet::UpdateMove,		// 移動状態
+	&CPresentBullet::UpdateDeath,		// 死亡状態
+										// この列挙型の総数
+};
 
 //************************************************************
 //	子クラス [CPresentBullet] のメンバ関数
@@ -39,10 +58,13 @@ namespace
 //	コンストラクタ
 //============================================================
 CPresentBullet::CPresentBullet() : CPresent(),
-m_destPos(VEC3_ZERO),	// 目的の位置
-m_fHomingTime(0.0f)	// ホーミングする時間
+m_state(STATE_HOMING),	// 状態
+m_destRot(VEC3_ZERO),	// 目的の向き
+m_fStateTime(0.0f),		// 状態時間
+m_fSpeed(0.0f)			// 速度
 {
-
+	// スタティックアサート
+	static_assert(NUM_ARRAY(m_aFuncState) == CPresentBullet::STATE_MAX, "ERROR : State Count Mismatch");
 }
 
 //============================================================
@@ -58,7 +80,8 @@ CPresentBullet::~CPresentBullet()
 //============================================================
 HRESULT CPresentBullet::Init()
 {
-	m_fHomingTime = 1.0f;	// ホーミングする時間
+	m_fStateTime = 1.0f;	// 状態時間
+	m_fSpeed = SPEED;		// 速度
 
 	// オブジェクトキャラクターの初期化
 	if (FAILED(CPresent::Init()))
@@ -90,11 +113,8 @@ void CPresentBullet::Uninit()
 //============================================================
 void CPresentBullet::Update(const float fDeltaTime)
 {
-	// ホーミング処理
-	Homing(fDeltaTime);
-
-	// 向きの更新処理
-	UpdateRotation(fDeltaTime);
+	// 状態処理
+	(this->*(m_aFuncState[m_state]))(fDeltaTime);
 }
 
 //============================================================
@@ -145,27 +165,86 @@ float CPresentBullet::GetHeight() const
 //============================================================
 // ホーミング処理
 //============================================================
-void CPresentBullet::Homing(const float fDeltaTime)
+void CPresentBullet::UpdateHoming(const float fDeltaTime)
 {
-	// ホーミングタイムが0未満の場合、抜ける
-	if (m_fHomingTime < 0.0f) { return; }
+	// 状態時間が0未満の場合、移動状態にする
+	if (m_fStateTime <= 0.0f) { m_fStateTime = 0.0f; m_state = STATE_MOVE; return; }
 
 	// プレイヤーが NULL の場合、抜ける
 	CPlayer* pPlayer = CScene::GetPlayer();
 	if (pPlayer == nullptr) { return; }
 
 	// 目的の位置を設定する
-	m_destPos = pPlayer->GetVec3Position();
+	VECTOR3 posPlayer = pPlayer->GetVec3Position();
 
 	// 目的の向きを設定する
 	D3DXVECTOR3 pos = GetVec3Position();
 	D3DXVECTOR3 rot = GetVec3Rotation();
-	m_destRot.y = atan2f(m_destPos.x - pos.x, m_destPos.z - pos.z);
+	m_destRot.y = atan2f(posPlayer.x - pos.x, posPlayer.z - pos.z);
 
 	// 位置を移動する
-	pos.x += sinf(rot.y) * SPEED * fDeltaTime;
-	pos.z += cosf(rot.y) * SPEED * fDeltaTime;
+	pos.x += sinf(rot.y) * m_fSpeed * fDeltaTime;
+	pos.z += cosf(rot.y) * m_fSpeed * fDeltaTime;
 	SetVec3Position(pos);
+
+	// 向きの更新処理
+	UpdateRotation(fDeltaTime);
+
+	// 状態時間を減算する
+	m_fStateTime -= fDeltaTime;
+}
+
+//============================================================
+// 移動処理
+//============================================================
+void CPresentBullet::UpdateMove(const float fDeltaTime)
+{
+	// 状態時間を測る
+	m_fStateTime += fDeltaTime;
+
+	// 向きの更新処理
+	UpdateRotation(fDeltaTime);
+
+	// 位置を移動する
+	D3DXVECTOR3 pos = GetVec3Position();
+	D3DXVECTOR3 rot = GetVec3Rotation();
+	pos.x += sinf(rot.y) * m_fSpeed * fDeltaTime;
+	pos.z += cosf(rot.y) * m_fSpeed * fDeltaTime;
+	SetVec3Position(pos);
+
+	if (m_fStateTime >= move::TIME)
+	{ // 一定時間経過した場合
+
+		// 状態時間をリセットする
+		m_fStateTime = 0.0f;
+
+		// 死亡状態にする
+		m_state = STATE_DEATH;
+	}
+}
+
+//============================================================
+// 死亡処理
+//============================================================
+void CPresentBullet::UpdateDeath(const float fDeltaTime)
+{
+	// 速度を下げていく
+	m_fSpeed -= SUB_SPEED * fDeltaTime;
+
+	// 位置を移動する
+	D3DXVECTOR3 pos = GetVec3Position();
+	D3DXVECTOR3 rot = GetVec3Rotation();
+	pos.x += sinf(rot.y) * m_fSpeed * fDeltaTime;
+	pos.z += cosf(rot.y) * m_fSpeed * fDeltaTime;
+	SetVec3Position(pos);
+
+	if (m_fSpeed > 0.0f) { return; }
+
+	// 爆発させる
+	CParticle3D::Create(CParticle3D::TYPE_SMALL_EXPLOSION, GetVec3Position());
+
+	// 終了処理
+	Uninit();
 }
 
 //============================================================
