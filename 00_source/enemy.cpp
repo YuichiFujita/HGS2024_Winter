@@ -50,6 +50,7 @@ CListManager<CEnemy>* CEnemy::m_pList = nullptr;	// オブジェクトリスト
 //	コンストラクタ
 //============================================================
 CEnemy::CEnemy() : CObjectChara(CObject::LABEL_ENEMY, CObject::DIM_3D, PRIORITY),
+m_state(STATE_NONE),	// 状態
 m_oldPos(VEC3_ZERO),	// 過去位置
 m_move(VEC3_ZERO),	// 移動量
 m_destRot(VEC3_ZERO),	// 目標向き
@@ -72,6 +73,7 @@ CEnemy::~CEnemy()
 HRESULT CEnemy::Init()
 {
 	// メンバ変数を初期化
+	m_state = STATE_NONE;	// 状態
 	m_oldPos = VEC3_ZERO;	// 過去位置
 	m_move = VEC3_ZERO;	// 移動量
 	m_destRot = VEC3_ZERO;	// 目標向き

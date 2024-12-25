@@ -157,6 +157,7 @@
   <ItemGroup>
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="present.cpp" />
+    <ClCompile Include="presentLand.cpp" />
     <ClCompile Include="resource\anim2D.cpp" />
     <ClCompile Include="resource\anim3D.cpp" />
     <ClCompile Include="resource\camera.cpp" />
@@ -270,6 +271,7 @@
   <ItemGroup>
     <ClInclude Include="enemy.h" />
     <ClInclude Include="present.h" />
+    <ClInclude Include="presentLand.h" />
     <ClInclude Include="resource\anim2D.h" />
     <ClInclude Include="resource\anim3D.h" />
     <ClInclude Include="resource\camera.h" />
