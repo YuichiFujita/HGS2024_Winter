@@ -53,7 +53,7 @@ namespace
 		};
 		const VECTOR3	POS		= VECTOR3(SCREEN_CENT.x - 260.0f, 525.0f, 0.0f);	// 位置
 		const VECTOR3	OFFSET	= VECTOR3(260.0f * 2.0f, 0.0f, 0.0f);	// オフセット
-		const float		WIDTH	= 420.0f;				// 横幅
+		const float		WIDTH	= 380.0f;				// 横幅
 		const COLOR		COL_DEFAULT	= color::White();	// 通常色
 		const COLOR		COL_CHOICE	= color::Yellow();	// 選択色
 	}

@@ -46,6 +46,15 @@ namespace
 		const float REV_ROT		= 1.0f;		// カメラ向きの補正係数
 	}
 
+	// 回転カメラ情報
+	namespace rotate
+	{
+		const VECTOR3 POS = VECTOR3(0.0f, 290.0f, 0.0f);			// 位置
+		const VECTOR3 ROT = VECTOR3(D3DX_PI * 0.38f, 0.0f, 0.0f);	// 向き
+		const float ADDROT = 0.001f;	// 向き加算量
+		const float DISTANCE = 700.0f;	// 追従カメラの最小距離
+	}
+
 	// 追従カメラ情報
 	namespace follow
 	{
@@ -71,12 +80,14 @@ namespace
 CCamera::AFuncState CCamera::m_aFuncState[] =	// 状態更新関数リスト
 {
 	&CCamera::UpdateNone,		// 固定状態の更新
+	&CCamera::UpdateRotate,		// 回転状態の更新
 	&CCamera::UpdateFollow,		// 追従状態の更新
 	&CCamera::UpdateControl,	// 操作状態の更新
 };
 CCamera::AFuncInit CCamera::m_aFuncInit[] =	// 状態初期化関数リスト
 {
 	&CCamera::InitNone,		// 固定状態の初期化
+	&CCamera::InitRotate,	// 回転状態の初期化
 	&CCamera::InitFollow,	// 追従状態の初期化
 	&CCamera::InitControl,	// 操作状態の初期化
 };
@@ -427,6 +438,40 @@ void CCamera::InitNone()
 }
 
 //============================================================
+//	回転カメラ初期化処理
+//============================================================
+void CCamera::InitRotate()
+{
+	// カメラ回転状態ではない場合抜ける
+	if (m_state != STATE_ROTATE) { return; }
+
+	//----------------------------------------------------
+	//	向きの更新
+	//----------------------------------------------------
+	// 向きの設定
+	m_camera.rot = m_camera.destRot = rotate::ROT;
+	useful::NormalizeRot(m_camera.rot);		// 現在向きを正規化
+	useful::NormalizeRot(m_camera.destRot);	// 目標向きを正規化
+
+	//----------------------------------------------------
+	//	距離の更新
+	//----------------------------------------------------
+	// 距離の設定
+	m_camera.fDis = m_camera.fDestDis = rotate::DISTANCE;
+
+	//----------------------------------------------------
+	//	位置の更新
+	//----------------------------------------------------
+	// 注視点の更新
+	m_camera.posR = m_camera.destPosR = rotate::POS;
+
+	// 視点の更新
+	m_camera.posV.x = m_camera.destPosV.x = m_camera.destPosR.x + ((-m_camera.fDis * sinf(m_camera.rot.x)) * sinf(m_camera.rot.y));
+	m_camera.posV.y = m_camera.destPosV.y = m_camera.destPosR.y + ((-m_camera.fDis * cosf(m_camera.rot.x)));
+	m_camera.posV.z = m_camera.destPosV.z = m_camera.destPosR.z + ((-m_camera.fDis * sinf(m_camera.rot.x)) * cosf(m_camera.rot.y));
+}
+
+//============================================================
 //	追従カメラ初期化処理
 //============================================================
 void CCamera::InitFollow()
@@ -526,6 +571,42 @@ void CCamera::UpdateNone(const float fDeltaTime)
 	// 現在位置を更新
 	m_camera.posR += diffPosR * none::REV_POS;	// 注視点
 	m_camera.posV += diffPosV * none::REV_POS;	// 視点
+}
+
+//============================================================
+//	回転カメラの更新処理
+//============================================================
+void CCamera::UpdateRotate(const float fDeltaTime)
+{
+	// カメラ回転状態ではない場合抜ける
+	if (m_state != STATE_ROTATE) { return; }
+
+	//----------------------------------------------------
+	//	向きの更新
+	//----------------------------------------------------
+	// 向きの設定
+	m_camera.rot.x = m_camera.destRot.x = rotate::ROT.x;
+	m_camera.rot.y = m_camera.destRot.y += rotate::ADDROT;
+	m_camera.rot.z = m_camera.destRot.z = rotate::ROT.z;
+	useful::NormalizeRot(m_camera.rot);		// 現在向きを正規化
+	useful::NormalizeRot(m_camera.destRot);	// 目標向きを正規化
+
+	//----------------------------------------------------
+	//	距離の更新
+	//----------------------------------------------------
+	// 距離の設定
+	m_camera.fDis = m_camera.fDestDis = rotate::DISTANCE;
+
+	//----------------------------------------------------
+	//	位置の更新
+	//----------------------------------------------------
+	// 注視点の更新
+	m_camera.posR = m_camera.destPosR = rotate::POS;
+
+	// 視点の更新
+	m_camera.posV.x = m_camera.destPosV.x = m_camera.destPosR.x + ((-m_camera.fDis * sinf(m_camera.rot.x)) * sinf(m_camera.rot.y));
+	m_camera.posV.y = m_camera.destPosV.y = m_camera.destPosR.y + ((-m_camera.fDis * cosf(m_camera.rot.x)));
+	m_camera.posV.z = m_camera.destPosV.z = m_camera.destPosR.z + ((-m_camera.fDis * sinf(m_camera.rot.x)) * cosf(m_camera.rot.y));
 }
 
 //============================================================
