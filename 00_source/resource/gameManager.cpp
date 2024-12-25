@@ -20,6 +20,7 @@
 #endif
 
 #include "player.h"
+#include "enemy.h"
 
 //************************************************************
 //	’è”éŒ¾
@@ -135,6 +136,14 @@ HRESULT CGameManager::Init()
 
 	// ƒvƒŒƒCƒ„[‚Ì¶¬
 	if (CPlayer::Create(VEC3_ZERO, VEC3_ZERO) == nullptr)
+	{ // ¶¬‚É¸”s‚µ‚½ê‡
+
+		assert(false);
+		return E_FAIL;
+	}
+
+	// “G‚Ì¶¬
+	if (CEnemy::Create(VEC3_ZERO, VEC3_ZERO) == nullptr)
 	{ // ¶¬‚É¸”s‚µ‚½ê‡
 
 		assert(false);

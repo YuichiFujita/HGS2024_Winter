@@ -220,6 +220,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="resource\present.cpp" />
+    <ClCompile Include="resource\presentBulletCopy.cpp" />
     <ClCompile Include="resource\presentLand.cpp" />
     <ClCompile Include="resource\random.cpp" />
     <ClCompile Include="resource\rankingManager.cpp" />
@@ -331,6 +332,7 @@
     <ClInclude Include="resource\player.h" />
     <ClInclude Include="resource\precompile.h" />
     <ClInclude Include="resource\present.h" />
+    <ClInclude Include="resource\presentBulletCopy.h" />
     <ClInclude Include="resource\presentLand.h" />
     <ClInclude Include="resource\random.h" />
     <ClInclude Include="resource\rankingManager.h" />
