@@ -77,6 +77,9 @@ void CGameStateStart::Update(const float fDeltaTime)
 	if (m_pStart->IsStagEnd())
 	{ // 開始演出が終了した場合
 
+		// タイマー計測開始
+		m_pContext->TimerStart();
+
 		// 通常状態にする
 		m_pContext->ChangeState(new CGameStateNormal);
 	}

@@ -27,12 +27,12 @@
 //************************************************************
 namespace
 {
-	const char* MODEL = "data\\MODEL\\PLAYER\\01_body.x";	// モデル
+	const char* MODEL = "data\\MODEL\\PRESENT\\PresentBag.x";	// モデル
 	const float	RADIUS = 20.0f;	// 半径
 	const float HEIGHT = 80.0f;	// 身長
-	const float SPEED = 500.0f;	// 速度
-	const float	REV_ROTA = 0.04f;	// 向き変更の補正係数
-	const float SUB_SPEED = 200.0f;	// 速度の減算量
+	const float SPEED = 570.0f;	// 速度
+	const float	REV_ROTA = 0.06f;	// 向き変更の補正係数
+	const float SUB_SPEED = 230.0f;	// 速度の減算量
 
 	// 移動状態
 	namespace move
@@ -163,6 +163,46 @@ float CPresentBullet::GetHeight() const
 {
 	// 高さを返す
 	return HEIGHT;
+}
+
+//============================================================
+// 生成処理
+//============================================================
+CPresentBullet* CPresentBullet::Create
+( // 引数
+	const VECTOR3& rPos,	// 位置
+	const float fRotY		// 方向
+)
+{
+	// プレゼントの生成
+	CPresentBullet* pPresent = new CPresentBullet;
+
+	if (pPresent == nullptr)
+	{ // 生成に失敗した場合
+
+		return nullptr;
+	}
+	else
+	{ // 生成に成功した場合
+
+		// プレゼントの初期化
+		if (FAILED(pPresent->Init()))
+		{ // 初期化に失敗した場合
+
+			// プレゼントの破棄
+			SAFE_DELETE(pPresent);
+			return nullptr;
+		}
+
+		// 位置を設定
+		pPresent->SetVec3Position(rPos);
+
+		// 向きを設定
+		pPresent->SetVec3Rotation(VECTOR3(0.0f, fRotY, 0.0f));
+
+		// 確保したアドレスを返す
+		return pPresent;
+	}
 }
 
 //============================================================
