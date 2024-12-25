@@ -27,7 +27,7 @@ namespace
 	const char*	SETUP_TXT	= "data\\CHARACTER\\player.txt";	// セットアップテキスト相対パス
 	const int	PRIORITY	= 3;		// プレイヤーの優先順位
 	const float	MOVE		= 1.5f;		// 移動量
-	const float	GRAVITY		= 3600.0f;	// 重力
+	const float	GRAVITY		= 0.6f;		// 重力
 	const float	RADIUS		= 20.0f;	// 半径
 	const float HEIGHT		= 80.0f;	// 身長
 	const float	REV_ROTA	= 0.25f;	// 向き変更の補正係数
@@ -552,7 +552,8 @@ CPlayer::EMotion CPlayer::UpdateMove(const float fDeltaTime)
 void CPlayer::UpdateGravity(const float fDeltaTime)
 {
 	// 重力を加算
-	m_move.y -= GRAVITY * fDeltaTime;
+	float fDeltaRate = fDeltaTime / (1.0f / (float)main::FPS);	// 経過時間の割合
+	m_move.y -= GRAVITY * fDeltaRate;
 }
 
 //============================================================

@@ -2,6 +2,7 @@
 //
 //	敵ヘッダー [enemy.h]
 //	Author：小原立暉
+//	Adder ：藤田勇一
 // 
 //============================================================
 //************************************************************
@@ -51,12 +52,14 @@ public:
 		MOTION_MAX			// この列挙型の総数
 	};
 
-	// 状態
+	// 状態列挙
 	enum EState
 	{
-		STATE_NONE = 0,		// 無し
-		STATE_NORMAL,		// 普通状態
-		STATE_MAX			// この列挙型の総数
+		STATE_NONE = 0,	// 何もしない状態
+		STATE_IDOL,		// 待機状態
+		STATE_JUMP,		// ジャンプ状態
+		STATE_ATK,		// 攻撃状態
+		STATE_MAX		// この列挙型の総数
 	};
 
 	// コンストラクタ
@@ -82,20 +85,29 @@ public:
 	static CListManager<CEnemy>* GetList();	// リスト取得
 
 	// メンバ関数
-	inline void SetDestRotation(const VECTOR3& rRot) { m_destRot = rRot; }	// 目標向き設定
-	inline VECTOR3 GetDestRotation() const { return m_destRot; }	// 目標向き取得
-	inline void SetMove(const VECTOR3& rMove) { m_move = rMove; }		// 移動量設定
-	inline VECTOR3 GetMove() const { return m_move; }		// 移動量取得
-	inline void SetEnableJump(const bool bJump) { m_bJump = bJump; }	// ジャンプ状況設定
-	inline bool IsJump() const { return m_bJump; }		// ジャンプ状況設定
-	float GetRadius() const;			// 半径取得
-	float GetHeight() const;			// 縦幅取得
+	inline void SetDestRotation(const VECTOR3& rRot)	{ m_destRot = rRot; }	// 目標向き設定
+	inline VECTOR3 GetDestRotation() const				{ return m_destRot; }	// 目標向き取得
+	inline void SetMove(const VECTOR3& rMove)			{ m_move = rMove; }		// 移動量設定
+	inline VECTOR3 GetMove() const						{ return m_move; }		// 移動量取得
+	inline void SetEnableJump(const bool bJump)			{ m_bJump = bJump; }	// ジャンプ状況設定
+	inline bool IsJump() const							{ return m_bJump; }		// ジャンプ状況設定
+	float GetRadius() const;	// 半径取得
+	float GetHeight() const;	// 縦幅取得
 
 private:
+	// エイリアス定義
+	typedef EMotion(CEnemy::*AFuncState)(const float);	// 状態更新関数ポインタ
+
+	// 関数配列
+	static AFuncState m_aFuncState[];	// 状態更新関数リスト
+
 	// メンバ関数
-	EMotion UpdateState(const float fDeltaTime);	// 状態更新
+	void SetState(const EState state);	// 状態設定
+	void SetJump(const VECTOR3& rCurPos, const VECTOR3& rJumpPos);	// ジャンプ設定
 	EMotion UpdateNone(const float fDeltaTime);		// 何もしない状態時の更新
-	EMotion UpdateNormal(const float fDeltaTime);	// 通常状態時の更新
+	EMotion UpdateIdol(const float fDeltaTime);		// 待機状態時の更新
+	EMotion UpdateJump(const float fDeltaTime);		// ジャンプ状態時の更新
+	EMotion UpdateAttack(const float fDeltaTime);	// 攻撃状態時の更新
 	EMotion UpdateMove(const float fDeltaTime);		// 移動量/目標向きの更新
 	void UpdateOldPosition();						// 過去位置の更新
 	void UpdateGravity(const float fDeltaTime);		// 重力の更新
@@ -114,6 +126,9 @@ private:
 	VECTOR3	m_move;		// 移動量
 	VECTOR3	m_destRot;	// 目標向き
 	bool	m_bJump;	// ジャンプ状況
+	float	m_fStateTime;	// 状態管理時間
+	VECTOR3	m_jumpPosStart;	// ジャンプ開始位置
+	VECTOR3	m_jumpPosEnd;	// ジャンプ終了位置
 };
 
 #endif	// _PLAYER_H_
