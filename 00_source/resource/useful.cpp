@@ -201,6 +201,35 @@ VECTOR2 useful::CalcMoveParabola
 }
 
 //============================================================
+//	放物線の計算処理
+//============================================================
+VECTOR3 useful::GetParabola3D
+(
+	const VECTOR3& rPosStart,	// 射出位置
+	const VECTOR3& rPosEnd,		// 着弾位置
+	const float fMaxHeight,		// 最高到達高さ
+	const float fEndTime,		// 終了時間
+	const float fCurTime		// 現在時間
+)
+{
+	VECTOR3 pos;	// 位置
+
+	// 経過時間の割合を計算
+	float fTimeRate = fCurTime / fEndTime;
+	fTimeRate = useful::LimitNum(fTimeRate, 0.0f, 1.0f);	// 割合を補正
+
+	// XZ平面を計算
+	pos.x = rPosStart.x + (rPosEnd.x - rPosStart.x) * fTimeRate;
+	pos.z = rPosStart.z + (rPosEnd.z - rPosStart.z) * fTimeRate;
+
+	// 高さを計算
+	pos.y = rPosStart.y + (rPosEnd.y - rPosStart.y) * fTimeRate + sinf(D3DX_PI * fTimeRate) * fMaxHeight;
+
+	// 位置を返す
+	return pos;
+}
+
+//============================================================
 //	向きの正規化
 //============================================================
 void useful::NormalizeRot(float& rRot)

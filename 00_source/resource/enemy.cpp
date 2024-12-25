@@ -18,6 +18,8 @@
 #include "sceneGame.h"
 #include "gameManager.h"
 
+#include "player.h"
+
 //************************************************************
 //	定数宣言
 //************************************************************
@@ -50,6 +52,7 @@ CListManager<CEnemy>* CEnemy::m_pList = nullptr;	// オブジェクトリスト
 //	コンストラクタ
 //============================================================
 CEnemy::CEnemy() : CObjectChara(CObject::LABEL_ENEMY, CObject::DIM_3D, PRIORITY),
+m_state(STATE_NONE),	// 状態
 m_oldPos(VEC3_ZERO),	// 過去位置
 m_move(VEC3_ZERO),	// 移動量
 m_destRot(VEC3_ZERO),	// 目標向き
@@ -72,6 +75,7 @@ CEnemy::~CEnemy()
 HRESULT CEnemy::Init()
 {
 	// メンバ変数を初期化
+	m_state = STATE_NONE;	// 状態
 	m_oldPos = VEC3_ZERO;	// 過去位置
 	m_move = VEC3_ZERO;	// 移動量
 	m_destRot = VEC3_ZERO;	// 目標向き
@@ -180,24 +184,26 @@ void CEnemy::SetEnableDraw(const bool bDraw)
 CEnemy::EMotion CEnemy::UpdateState(const float fDeltaTime)
 {
 	EMotion curMotion = MOTION_IDOL;	// 現在のモーション
-	//switch (m_state)
-	//{ // 状態ごとの処理
-	//case STATE_NONE:
 
-	//	// 何もしない状態時の更新
-	//	curMotion = UpdateNone(fDeltaTime);
-	//	break;
+	switch (m_state)
+	{
+	case CEnemy::STATE_NONE:
 
-	//case STATE_NORMAL:
+		// 何もしない状態時の更新
+		curMotion = UpdateNone(fDeltaTime);
+		break;
 
-	//	// 通常状態の更新
-	//	curMotion = UpdateNormal(fDeltaTime);
-	//	break;
+	case CEnemy::STATE_NORMAL:
 
-	//default:
-	//	assert(false);
-	//	break;
-	//}
+		// 通常状態の更新
+		curMotion = UpdateNormal(fDeltaTime);
+		break;
+
+	default:
+
+		assert(false);
+		break;
+	}
 
 	// 現在のモーションを返す
 	return curMotion;
@@ -319,7 +325,7 @@ CEnemy::EMotion CEnemy::UpdateNormal(const float fDeltaTime)
 	VECTOR3 rotEnemy = GetVec3Rotation();	// プレイヤー向き
 
 	// 移動操作
-	curMotion = UpdateMove();
+	curMotion = UpdateMove(fDeltaTime);
 
 	// 重力の更新
 	UpdateGravity(fDeltaTime);
@@ -355,38 +361,22 @@ void CEnemy::UpdateOldPosition()
 //============================================================
 //	移動量/目標向きの更新処理
 //============================================================
-CEnemy::EMotion CEnemy::UpdateMove()
+CEnemy::EMotion CEnemy::UpdateMove(const float fDeltaTime)
 {
-	EMotion curMotion = MOTION_IDOL;	// 現在のモーション
+	CPlayer* pPlayer = CScene::GetPlayer();
 
-	CInputKeyboard* pKey = GET_INPUTKEY;	// キーボード情報
-	if (pKey->IsPress(DIK_W))
-	{
-		m_move.z += 30.0f;
-		m_destRot.y = D3DX_PI;
-		curMotion = MOTION_WALK;
-	}
-	if (pKey->IsPress(DIK_A))
-	{
-		m_move.x -= 30.0f;
-		m_destRot.y = D3DX_PI * 0.5f;
-		curMotion = MOTION_WALK;
-	}
-	if (pKey->IsPress(DIK_S))
-	{
-		m_move.z -= 30.0f;
-		m_destRot.y = 0.0f;
-		curMotion = MOTION_WALK;
-	}
-	if (pKey->IsPress(DIK_D))
-	{
-		m_move.x += 30.0f;
-		m_destRot.y = -D3DX_PI * 0.5f;
-		curMotion = MOTION_WALK;
-	}
+	if (pPlayer == nullptr) { return MOTION_IDOL; }
 
-	// モーションを返す
-	return curMotion;
+	// 方向を定める
+	D3DXVECTOR3 pos = GetVec3Position();
+	D3DXVECTOR3 posPlayer = pPlayer->GetVec3Position();
+	float fAngle = atan2f(posPlayer.x - pos.x, posPlayer.z - pos.z);
+
+	// 目的の向きを反映
+	m_destRot.y = fAngle;
+
+	// 移動モーションを返す
+	return MOTION_WALK;
 }
 
 //============================================================

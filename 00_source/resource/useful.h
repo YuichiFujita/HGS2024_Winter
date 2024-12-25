@@ -853,6 +853,14 @@ namespace useful
 		float* pMaxTime = nullptr,	// 最大経過時間
 		float* pMaxPosY = nullptr	// 最大到達Y座標
 	);
+	VECTOR3 GetParabola3D	// 放物線計算処理
+	( // 引数
+		const VECTOR3& rPosStart,	// 射出位置
+		const VECTOR3& rPosEnd,		// 着弾位置
+		const float fMaxHeight,		// 最高到達高さ
+		const float fEndTime,		// 終了時間
+		const float fCurTime		// 現在時間
+	);
 
 	float RandomRot();					// ランダム向き取得
 	void NormalizeRot(float& rRot);		// 向きの正規化

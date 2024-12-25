@@ -20,6 +20,7 @@
 #endif
 
 #include "player.h"
+#include "enemy.h"
 
 //************************************************************
 //	’è”éŒ¾
@@ -141,6 +142,14 @@ HRESULT CGameManager::Init()
 		return E_FAIL;
 	}
 
+	// “G‚Ì¶¬
+	if (CEnemy::Create(VEC3_ZERO, VEC3_ZERO) == nullptr)
+	{ // ¶¬‚ÉŽ¸”s‚µ‚½ê‡
+
+		assert(false);
+		return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -246,7 +255,7 @@ void CGameManager::TransResult()
 #endif
 
 	// ƒŠƒUƒ‹ƒg‰æ–Ê‚É‘JˆÚ‚·‚é
-	GET_MANAGER->SetLoadScene(CScene::MODE_RESULT);
+	GET_MANAGER->SetLoadScene(CScene::MODE_RESULT, 3.0f);
 }
 
 //============================================================

@@ -17,6 +17,7 @@
 #include "lightManager.h"
 #include "camera.h"
 #include "stage.h"
+#include "player.h"
 
 //************************************************************
 //	親クラス [CScene] のメンバ関数
@@ -133,10 +134,9 @@ void CScene::Release(CScene*& prScene)
 CPlayer* CScene::GetPlayer()
 {
 	// TODO：プレイヤー追加時に修正
-#if 0
 	CListManager<CPlayer>* pListManager = CPlayer::GetList();	// プレイヤーリストマネージャー
-	if (pListManager == nullptr)		{ return nullptr; }		// リスト未使用の場合抜ける
-	if (pListManager->GetNumAll() != 1)	{ return nullptr; }		// プレイヤーが1人ではない場合抜ける
+	if (pListManager == nullptr) { return nullptr; }		// リスト未使用の場合抜ける
+	if (pListManager->GetNumAll() != 1) { return nullptr; }		// プレイヤーが1人ではない場合抜ける
 	CPlayer* pPlayer = pListManager->GetList().front();			// プレイヤー情報
 
 	// インスタンス未使用
@@ -144,7 +144,4 @@ CPlayer* CScene::GetPlayer()
 
 	// プレイヤーのポインタを返す
 	return pPlayer;
-#else
-	return nullptr;
-#endif
 }

@@ -43,6 +43,7 @@ public:
 	void Uninit();	// 終了
 	void Update(const float fDeltaTime);		// 更新
 	HRESULT ChangeState(CRankingState* pState);	// 状態変更
+	void TransTitle();	// タイトル画面遷移
 
 	// 静的メンバ関数
 	static CRankingManager* Create();	// 生成

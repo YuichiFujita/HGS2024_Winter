@@ -56,6 +56,7 @@ public:
 	{
 		STATE_NONE = 0,	// 何もしない状態
 		STATE_NORMAL,	// 通常状態
+		STATE_DEATH,	// 死亡状態
 		STATE_MAX		// この列挙型の総数
 	};
 
@@ -82,23 +83,30 @@ public:
 	static CListManager<CPlayer>* GetList();	// リスト取得
 
 	// メンバ関数
+	bool Hit();	// ヒット
+	void SetState(const EState state);	// 状態設定
+	EState GetState() const;			// 状態取得
+	float GetRadius() const;			// 半径取得
+	float GetHeight() const;			// 縦幅取得
 	inline void SetDestRotation(const VECTOR3& rRot)	{ m_destRot = rRot; }	// 目標向き設定
 	inline VECTOR3 GetDestRotation() const				{ return m_destRot; }	// 目標向き取得
 	inline void SetMove(const VECTOR3& rMove)			{ m_move = rMove; }		// 移動量設定
 	inline VECTOR3 GetMove() const						{ return m_move; }		// 移動量取得
 	inline void SetEnableJump(const bool bJump)			{ m_bJump = bJump; }	// ジャンプ状況設定
 	inline bool IsJump() const							{ return m_bJump; }		// ジャンプ状況設定
-	void SetState(const EState state);	// 状態設定
-	EState GetState() const;			// 状態取得
-	float GetRadius() const;			// 半径取得
-	float GetHeight() const;			// 縦幅取得
 
 private:
+	// エイリアス定義
+	typedef EMotion(CPlayer::*AFuncState)(const float);	// 状態更新関数ポインタ
+
+	// 関数配列
+	static AFuncState m_aFuncState[];	// 状態更新関数リスト
+
 	// メンバ関数
-	EMotion UpdateState(const float fDeltaTime);	// 状態更新
 	EMotion UpdateNone(const float fDeltaTime);		// 何もしない状態時の更新
 	EMotion UpdateNormal(const float fDeltaTime);	// 通常状態時の更新
-	EMotion UpdateMove();							// 移動量/目標向きの更新
+	EMotion UpdateDeath(const float fDeltaTime);	// 死亡状態時の更新
+	EMotion UpdateMove(const float fDeltaTime);		// 移動量/目標向きの更新
 	void UpdateOldPosition();						// 過去位置の更新
 	void UpdateGravity(const float fDeltaTime);		// 重力の更新
 	bool UpdateLanding(VECTOR3* pPos, const float fDeltaTime);	// 着地状況の更新

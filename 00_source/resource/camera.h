@@ -26,6 +26,7 @@ public:
 	enum EState
 	{
 		STATE_NONE = 0,	// 固定状態
+		STATE_FOLLOW,	// 追従状態
 		STATE_CONTROL,	// 操作状態
 		STATE_MAX		// この列挙型の総数
 	};
@@ -114,7 +115,6 @@ public:
 	void Update(const float fDeltaTime);	// 更新
 	void SetCamera();		// カメラ設定
 	SCamera GetCamera();	// カメラ取得
-	void InitNone();		// 固定カメラ初期化
 	void ResetSwing();		// カメラ揺れ初期化
 	void SetState(const EState state, const bool bInit = true);	// カメラ状態設定
 	EState GetState() const;					// カメラ状態取得
@@ -138,9 +138,21 @@ public:
 	static void Release(CCamera*& prCamera);	// 破棄
 
 private:
+	// エイリアス定義
+	typedef void(CCamera::*AFuncState)(const float);	// 状態更新関数ポインタ
+	typedef void(CCamera::*AFuncInit)();				// 状態初期化関数ポインタ
+
+	// 関数配列
+	static AFuncState m_aFuncState[];	// 状態更新関数リスト
+	static AFuncInit m_aFuncInit[];		// 状態初期化関数リスト
+
 	// メンバ関数
-	void UpdateNone();		// 固定カメラ更新
-	void UpdateControl();	// 操作カメラ更新
+	void InitNone();	// 固定カメラ初期化
+	void InitFollow();	// 追従カメラ初期化
+	void InitControl();	// 操作カメラ初期化
+	void UpdateNone(const float fDeltaTime);	// 固定カメラ更新
+	void UpdateFollow(const float fDeltaTime);	// 追従カメラ更新
+	void UpdateControl(const float fDeltaTime);	// 操作カメラ更新
 	void UpdateMove();		// 位置更新
 	void UpdateDistance();	// 距離更新
 	void UpdateRotation();	// 向き更新
