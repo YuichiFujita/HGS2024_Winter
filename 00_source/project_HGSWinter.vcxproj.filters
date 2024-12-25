@@ -417,6 +417,9 @@
     <ClCompile Include="resource\actor.cpp">
       <Filter>ingame</Filter>
     </ClCompile>
+    <ClCompile Include="resource\bomb.cpp">
+      <Filter>ingame\Present</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource\anim2D.h">
@@ -757,6 +760,9 @@
     </ClInclude>
     <ClInclude Include="resource\actor.h">
       <Filter>ingame</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\bomb.h">
+      <Filter>ingame\Present</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

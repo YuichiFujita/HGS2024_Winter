@@ -90,6 +90,7 @@ public:
 		LABEL_WAVE,			// ”g“®
 		LABEL_ENEMY,		// “G
 		LABEL_PRESENT,		// ƒvƒŒƒ[ƒ“ƒg
+		LABEL_BOMB,			// ”š’e
 #ifdef _DEBUG
 		LABEL_DEBUG,		// ƒfƒoƒbƒO
 #endif // _DEBUG

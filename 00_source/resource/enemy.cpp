@@ -20,6 +20,8 @@
 
 #include "player.h"
 
+#include "present.h"
+
 //************************************************************
 //	定数宣言
 //************************************************************
@@ -141,6 +143,12 @@ void CEnemy::Uninit()
 //============================================================
 void CEnemy::Update(const float fDeltaTime)
 {
+	if (GET_INPUTKEY->IsTrigger(DIK_0))
+	{
+		// 設置型プレゼントを飛ばす
+		CPresent::Create(GetVec3Position(), VEC3_ZERO, CPresent::TYPE_LAND);
+	}
+
 	// 過去位置の更新
 	UpdateOldPosition();
 

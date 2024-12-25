@@ -158,6 +158,7 @@
     <ClCompile Include="resource\actor.cpp" />
     <ClCompile Include="resource\anim2D.cpp" />
     <ClCompile Include="resource\anim3D.cpp" />
+    <ClCompile Include="resource\bomb.cpp" />
     <ClCompile Include="resource\camera.cpp" />
     <ClCompile Include="resource\char2D.cpp" />
     <ClCompile Include="resource\character.cpp" />
@@ -275,6 +276,7 @@
     <ClInclude Include="resource\actor.h" />
     <ClInclude Include="resource\anim2D.h" />
     <ClInclude Include="resource\anim3D.h" />
+    <ClInclude Include="resource\bomb.h" />
     <ClInclude Include="resource\camera.h" />
     <ClInclude Include="resource\char2D.h" />
     <ClInclude Include="resource\character.h" />

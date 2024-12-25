@@ -7,6 +7,7 @@
 //************************************************************
 //	インクルードファイル
 //************************************************************
+#include "main.h"
 #include "presentLand.h"
 #include "manager.h"
 #include "renderer.h"
@@ -18,20 +19,30 @@
 #include "sceneGame.h"
 #include "gameManager.h"
 #include "player.h"
+#include "enemy.h"
+#include "bomb.h"
 
 //************************************************************
 //	定数宣言
 //************************************************************
 namespace
 {
-	const float	GRAVITY = 3600.0f;	// 重力
+	const char* MODEL = "data\\MODEL\\PLAYER\\02_head.x";	// モデルの情報
+	const float	GRAVITY = 0.6f;	// 重力
 	const float	RADIUS = 20.0f;	// 半径
 	const float HEIGHT = 80.0f;	// 身長
 
 	// 飛行状態の定数
 	namespace fly
 	{
-		const float DEST_POS_Y = 600.0f;	// 目的の高さ
+		const float HEIGHT = 200.0f;	// 高さ
+		const float END_TIME = 1.0f;	// 終了までの時間
+	}
+
+	// 飛行状態の定数
+	namespace attack
+	{
+		const float TIME = 2.0f;	// タイム
 		const float ALPHA = 0.5f;	// 透明度
 	}
 }
@@ -43,7 +54,7 @@ CPresentLand::AFuncState CPresentLand::m_aFuncState[] =		// 状態更新関数リスト
 {
 	&CPresentLand::UpdateNone,	// 無し状態の更新
 	&CPresentLand::UpdateFly,	// 飛び状態の更新
-	&CPresentLand::UpdateFall,	// 落下状態の更新
+	&CPresentLand::UpdateAttack,	// 停止状態の更新
 };
 
 //************************************************************
@@ -53,9 +64,12 @@ CPresentLand::AFuncState CPresentLand::m_aFuncState[] =		// 状態更新関数リスト
 //	コンストラクタ
 //============================================================
 CPresentLand::CPresentLand() : CPresent(),
+m_fStateTime(0.0f),	// 状態の時間
+m_oldPos(VEC3_ZERO),	// 過去位置
+m_originPos(VEC3_ZERO),	// 初期位置
 m_destPos(VEC3_ZERO),	// 目的の位置
-m_move(VEC3_ZERO),		// 移動量
-m_state(STATE_NONE)		// 状態
+m_move(VEC3_ZERO),	// 移動量
+m_state(STATE_NONE)	// 状態
 {
 	// スタティックアサート
 	static_assert(NUM_ARRAY(m_aFuncState) == CPresentLand::STATE_MAX, "ERROR : State Count Mismatch");
@@ -74,6 +88,8 @@ CPresentLand::~CPresentLand()
 //============================================================
 HRESULT CPresentLand::Init()
 {
+	m_fStateTime = 0.0f;	// 状態の時間
+	m_oldPos = VEC3_ZERO;	// 過去位置
 	m_destPos = VEC3_ZERO;	// 目的の位置
 	m_move = VEC3_ZERO;		// 移動量
 	m_state = STATE_NONE;	// 状態
@@ -86,6 +102,9 @@ HRESULT CPresentLand::Init()
 		assert(false);
 		return E_FAIL;
 	}
+
+	// モデルの割り当て処理
+	BindModel(MODEL);
 
 	// 成功を返す
 	return S_OK;
@@ -105,6 +124,12 @@ void CPresentLand::Uninit()
 //============================================================
 void CPresentLand::Update(const float fDeltaTime)
 {
+	// 前回の位置を保存
+	m_oldPos = GetVec3Position();
+
+	// 速度調整処理
+	SpeedCalc();
+
 	// 状態処理
 	(this->*(m_aFuncState[m_state]))(fDeltaTime);
 }
@@ -155,19 +180,51 @@ float CPresentLand::GetHeight() const
 }
 
 //============================================================
+// 速度計算処理
+//============================================================
+void CPresentLand::SpeedCalc()
+{
+
+}
+
+//============================================================
+// フィールドの当たり判定
+//============================================================
+bool CPresentLand::FieldCollision()
+{
+	CStage* pStage = GET_MANAGER->GetStage();	// ステージ情報
+	VECTOR3 pos = GetVec3Position();	// 位置
+
+	// 地面・制限位置着地判定
+	if (pStage->LandFieldPosition(pos, m_oldPos, m_move)
+		|| pStage->LandLimitPosition(pos, m_move, 0.0f))
+	{ // プレイヤーが着地していた場合
+
+		// 位置を反映
+		SetVec3Position(pos);
+
+		// true を返す
+		return true;
+	}
+
+	// false を返す
+	return false;
+}
+
+//============================================================
 // 無し状態処理
 //============================================================
 void CPresentLand::UpdateNone(const float fDeltaTime)
 {
+	// 初期位置を設定する
+	m_originPos = GetVec3Position();
+
 	// プレイヤーがいない場合、抜ける
 	CPlayer* pPlayer = CScene::GetPlayer();
 	if (pPlayer == nullptr) { return; }
 
 	// 目的の位置を設定する
 	m_destPos = pPlayer->GetVec3Position();
-
-	// 高さを再設定する
-	m_destPos.y = fly::DEST_POS_Y;
 
 	// 飛び状態にする
 	m_state = STATE_FLY;
@@ -178,23 +235,46 @@ void CPresentLand::UpdateNone(const float fDeltaTime)
 //============================================================
 void CPresentLand::UpdateFly(const float fDeltaTime)
 {
-	// 透明度を設定する
-	SetAlpha(fly::ALPHA);
+	D3DXVECTOR3 pos = GetVec3Position();
+
+	// 放物線処理
+	pos = useful::GetParabola3D(m_originPos, m_destPos, fly::HEIGHT, fly::END_TIME, m_fStateTime);
+
+	// 飛んでいる時間を更新
+	m_fStateTime += fDeltaTime;
+
+	if (FieldCollision()) 
+	{ // 着地した場合
+
+		// 状態の時間を0にする
+		m_fStateTime = 0.0f;
+
+		// 攻撃状態にする
+		m_state = STATE_ATTACK;
+	}
+
+	// 位置を反映する
+	SetVec3Position(pos);
 }
 
 //============================================================
-// 落下状態処理
+// 停止状態処理
 //============================================================
-void CPresentLand::UpdateFall(const float fDeltaTime)
+void CPresentLand::UpdateAttack(const float fDeltaTime)
 {
-	D3DXVECTOR3 pos = GetVec3Position();
+	// 状態の時間を更新
+	m_fStateTime += fDeltaTime;
 
-	// 重力をかける
-	m_move.y += GRAVITY * fDeltaTime;
+	// フィールドの当たり判定
+	FieldCollision();
 
-	// 移動する
-	pos += m_move;
+	if (m_fStateTime >= attack::TIME)
+	{ // タイムが一定以上になった場合
 
-	// 位置を設定する
-	SetVec3Position(pos);
+		// 爆弾の生成処理
+		CBomb::Create(GetVec3Position());
+	}
+
+	// 透明度を設定
+	SetAlpha(attack::ALPHA);
 }
