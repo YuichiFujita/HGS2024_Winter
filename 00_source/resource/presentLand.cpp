@@ -17,6 +17,7 @@
 #include "stage.h"
 #include "sceneGame.h"
 #include "gameManager.h"
+#include "player.h"
 
 //************************************************************
 //	定数宣言
@@ -34,7 +35,9 @@ namespace
 //============================================================
 //	コンストラクタ
 //============================================================
-CPresentLand::CPresentLand() : CPresent()
+CPresentLand::CPresentLand() : CPresent(),
+m_destPos(VEC3_ZERO),	// 目的の位置
+m_state(STATE_NONE)		// 状態
 {
 
 }
@@ -52,6 +55,9 @@ CPresentLand::~CPresentLand()
 //============================================================
 HRESULT CPresentLand::Init()
 {
+	m_destPos = VEC3_ZERO;	// 目的の位置
+	m_state = STATE_NONE;	// 状態
+
 	// オブジェクトキャラクターの初期化
 	if (FAILED(CPresent::Init()))
 	{ // 初期化に失敗した場合
@@ -79,7 +85,8 @@ void CPresentLand::Uninit()
 //============================================================
 void CPresentLand::Update(const float fDeltaTime)
 {
-
+	// 状態処理
+	UpdateState();
 }
 
 //============================================================
@@ -125,4 +132,56 @@ float CPresentLand::GetHeight() const
 {
 	// 高さを返す
 	return HEIGHT;
+}
+
+//============================================================
+// 状態処理
+//============================================================
+void CPresentLand::UpdateState(void)
+{
+	switch (m_state)
+	{
+	case CPresentLand::STATE_NONE:
+
+		break;
+
+	case CPresentLand::STATE_FLY:
+
+		UpdateFly();
+		break;
+
+	case CPresentLand::STATE_FALL:
+
+		UpdateFall();
+		break;
+
+	default:
+
+		assert(false);
+		break;
+	}
+}
+
+//============================================================
+// 飛び状態の処理
+//============================================================
+void CPresentLand::UpdateFly(void)
+{
+	CPlayer* pPlayer = CScene::GetPlayer();
+
+	if (pPlayer == nullptr) { return; }
+
+	// 目的の位置を設定する
+	m_destPos = pPlayer->GetVec3Position();
+
+	// 目的の高さを再設定する
+	m_destPos.y = 600.0f;
+}
+
+//============================================================
+// 落下状態の処理
+//============================================================
+void CPresentLand::UpdateFall(void)
+{
+
 }

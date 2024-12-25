@@ -23,6 +23,14 @@ class CPresentBullet : public CPresent
 {
 public:
 
+	// 状態
+	enum EState
+	{
+		STATE_NONE = 0,	// 通常状態
+		STATE_SHOOT,	// 射撃状態
+		STATE_MAX		// この列挙型の総数
+	};
+
 	// コンストラクタ
 	CPresentBullet();
 
@@ -42,8 +50,8 @@ public:
 private:
 	// メンバ関数
 
-
 	// メンバ変数
+	EState m_state;		// 状態
 };
 
-#endif	// _PLAYER_H_
+#endif	// _PRESENT_BULLET_H_

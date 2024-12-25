@@ -28,7 +28,7 @@ public:
 	{
 		STATE_NONE = 0,		// 無し状態
 		STATE_FLY,			// 飛ぶ状態
-		STATE_FALL,			// 移動状態
+		STATE_FALL,			// 落下状態
 		STATE_MAX			// この列挙型の総数
 	};
 
@@ -50,9 +50,13 @@ public:
 
 private:
 	// メンバ関数
+	void UpdateState(void);
+	void UpdateFly(void);
+	void UpdateFall(void);
 
 	// メンバ変数
-	EState m_state;		// 状態
+	D3DXVECTOR3 m_destPos;	// 目的の位置
+	EState m_state;			// 状態
 };
 
-#endif	// _PLAYER_H_
+#endif	// _PRESENT_LAND_H_

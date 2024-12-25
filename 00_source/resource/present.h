@@ -69,4 +69,4 @@ private:
 	EType m_type;									// Ží—Þ
 };
 
-#endif	// _PLAYER_H_
+#endif	// _PRESENT_H_
