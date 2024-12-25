@@ -103,7 +103,7 @@ private:
 	// メンバ関数
 	EMotion UpdateNone(const float fDeltaTime);		// 何もしない状態時の更新
 	EMotion UpdateNormal(const float fDeltaTime);	// 通常状態時の更新
-	EMotion UpdateMove();							// 移動量/目標向きの更新
+	EMotion UpdateMove(const float fDeltaTime);		// 移動量/目標向きの更新
 	void UpdateOldPosition();						// 過去位置の更新
 	void UpdateGravity(const float fDeltaTime);		// 重力の更新
 	bool UpdateLanding(VECTOR3* pPos, const float fDeltaTime);	// 着地状況の更新

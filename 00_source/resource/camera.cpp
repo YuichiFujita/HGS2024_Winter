@@ -8,6 +8,7 @@
 //	インクルードファイル
 //************************************************************
 #include "camera.h"
+#include "main.h"
 #include "manager.h"
 #include "renderer.h"
 #include "sceneGame.h"
@@ -559,8 +560,9 @@ void CCamera::UpdateFollow(const float fDeltaTime)
 	diffPosV = m_camera.destPosV - m_camera.posV;	// 視点
 
 	// 現在位置を更新
-	m_camera.posR += diffPosR * follow::REV_POS;	// 注視点
-	m_camera.posV += diffPosV * follow::REV_POS;	// 視点
+	float fDeltaRate = fDeltaTime / (1.0f / (float)main::FPS);	// 経過時間の割合
+	m_camera.posR += diffPosR * follow::REV_POS * fDeltaRate;	// 注視点
+	m_camera.posV += diffPosV * follow::REV_POS * fDeltaRate;	// 視点
 }
 
 //============================================================
