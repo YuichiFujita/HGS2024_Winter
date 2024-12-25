@@ -51,6 +51,15 @@ public:
 		MOTION_MAX			// この列挙型の総数
 	};
 
+	// 状態
+	enum EState
+	{
+		STATE_NONE = 0,		// 無し
+		STATE_NORMAL,		// 普通状態
+		STATE_RUN,			// 走り状態
+		STATE_MAX			// この列挙型の総数
+	};
+
 	// コンストラクタ
 	CEnemy();
 
@@ -101,6 +110,7 @@ private:
 
 	// メンバ変数
 	CListManager<CEnemy>::AIterator m_iterator;	// イテレーター
+	EState m_state;		// 状態
 	VECTOR3	m_oldPos;	// 過去位置
 	VECTOR3	m_move;		// 移動量
 	VECTOR3	m_destRot;	// 目標向き
