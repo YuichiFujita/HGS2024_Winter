@@ -22,6 +22,7 @@
 #include "enemy.h"
 #include "bomb.h"
 #include "collision.h"
+#include "effect3D.h"
 
 //************************************************************
 //	定数宣言
@@ -33,6 +34,7 @@ namespace
 	const float	RADIUS = 40.0f;	// 半径
 	const float HEIGHT = 40.0f;	// 身長
 	const float DELETE_TIME = 5.0f;	// 終了タイム
+	const float DELETE_GRAVITY = 80.0f;	// 終了時の重力
 
 	// 飛行状態の定数
 	namespace fly
@@ -46,6 +48,15 @@ namespace
 	namespace sensor
 	{
 		const float RANGE = 100.0f;		// 範囲
+		const float JUMP = 500.0f;		// ジャンプ量
+	}
+
+	// エフェクト
+	namespace effect
+	{
+		const float RADIUS = 40.0f;		// 半径
+		const int LIFE = 20;			// 寿命
+		const float SUB_SIZE = 2.0f;	// 半径の減算量
 	}
 }
 
@@ -365,6 +376,9 @@ void CPresentLand::UpdateFly(const float fDeltaTime)
 
 	// 位置を反映する
 	SetVec3Position(pos);
+
+	// エフェクトを生成
+	CEffect3D::Create(pos, effect::RADIUS, CEffect3D::TYPE_NORMAL, effect::LIFE, VECTOR3(), VECTOR3(), color::Purple(), effect::SUB_SIZE);
 }
 
 //============================================================
@@ -377,6 +391,9 @@ void CPresentLand::UpdateSensor(const float fDeltaTime)
 
 	if (AttackSensor())
 	{ // 範囲内に入った場合
+
+		// 移動量を設定する
+		m_move.y = sensor::JUMP;
 
 		// 爆弾の生成処理
 		CBomb::Create(GetVec3Position());
@@ -396,6 +413,12 @@ void CPresentLand::UpdateDelete(const float fDeltaTime)
 {
 	// 状態の時間を更新
 	m_fStateTime += fDeltaTime;
+
+	// 移動する
+	D3DXVECTOR3 pos = GetVec3Position();
+	pos.y += m_move.y * fDeltaTime;
+	m_move.y -= DELETE_GRAVITY * fDeltaTime;
+	SetVec3Position(pos);
 
 	// フィールドの当たり判定
 	FieldCollision();
