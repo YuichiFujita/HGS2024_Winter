@@ -2,6 +2,7 @@
 //
 //	敵処理 [enemy.cpp]
 //	Author：小原立暉
+//	Adder ：藤田勇一
 //
 //============================================================
 //************************************************************
@@ -17,9 +18,7 @@
 #include "stage.h"
 #include "sceneGame.h"
 #include "gameManager.h"
-
 #include "player.h"
-
 #include "present.h"
 
 //************************************************************
@@ -27,12 +26,12 @@
 //************************************************************
 namespace
 {
-	const char* SETUP_TXT = "data\\CHARACTER\\player.txt";	// セットアップテキスト相対パス
+	const char* SETUP_TXT = "data\\CHARACTER\\santa_black.txt";	// セットアップテキスト相対パス
 	const int	PRIORITY = 3;		// プレイヤーの優先順位
 	const float	GRAVITY = 3600.0f;	// 重力
 	const float	RADIUS = 20.0f;	// 半径
 	const float HEIGHT = 80.0f;	// 身長
-	const float	REV_ROTA = 9.0f;		// 向き変更の補正係数
+	const float	REV_ROTA = 9.0f;	// 向き変更の補正係数
 	const float	JUMP_REV = 0.16f;	// 通常状態時の空中の移動量の減衰係数
 	const float	LAND_REV = 0.16f;	// 通常状態時の地上の移動量の減衰係数
 
@@ -46,6 +45,13 @@ namespace
 //	静的メンバ変数宣言
 //************************************************************
 CListManager<CEnemy>* CEnemy::m_pList = nullptr;	// オブジェクトリスト
+CEnemy::AFuncState CEnemy::m_aFuncState[] =			// 状態更新関数リスト
+{
+	&CEnemy::UpdateNone,	// 何もしない状態の更新
+	&CEnemy::UpdateIdol,	// 待機状態の更新
+	&CEnemy::UpdateJump,	// ジャンプ状態の更新
+	&CEnemy::UpdateAttack,	// 攻撃状態の更新
+};
 
 //************************************************************
 //	子クラス [CEnemy] のメンバ関数
@@ -54,13 +60,17 @@ CListManager<CEnemy>* CEnemy::m_pList = nullptr;	// オブジェクトリスト
 //	コンストラクタ
 //============================================================
 CEnemy::CEnemy() : CObjectChara(CObject::LABEL_ENEMY, CObject::DIM_3D, PRIORITY),
-m_state(STATE_NONE),	// 状態
-m_oldPos(VEC3_ZERO),	// 過去位置
-m_move(VEC3_ZERO),	// 移動量
-m_destRot(VEC3_ZERO),	// 目標向き
-m_bJump(false)			// ジャンプ状況
+m_state(STATE_NONE),		// 状態
+m_oldPos(VEC3_ZERO),		// 過去位置
+m_jumpPosStart(VEC3_ZERO),	// ジャンプ開始位置
+m_jumpPosEnd(VEC3_ZERO),	// ジャンプ終了位置
+m_move(VEC3_ZERO),			// 移動量
+m_destRot(VEC3_ZERO),		// 目標向き
+m_bJump(false),				// ジャンプ状況
+m_fStateTime(0.0f)			// 状態管理時間
 {
-
+	// スタティックアサート
+	static_assert(NUM_ARRAY(m_aFuncState) == CEnemy::STATE_MAX, "ERROR : State Count Mismatch");
 }
 
 //============================================================
@@ -77,11 +87,14 @@ CEnemy::~CEnemy()
 HRESULT CEnemy::Init()
 {
 	// メンバ変数を初期化
-	m_state = STATE_NONE;	// 状態
-	m_oldPos = VEC3_ZERO;	// 過去位置
-	m_move = VEC3_ZERO;	// 移動量
-	m_destRot = VEC3_ZERO;	// 目標向き
-	m_bJump = true;			// ジャンプ状況
+	m_state = STATE_IDOL;		// 状態
+	m_oldPos = VEC3_ZERO;		// 過去位置
+	m_jumpPosStart = VEC3_ZERO;	// ジャンプ開始位置
+	m_jumpPosEnd = VEC3_ZERO;	// ジャンプ終了位置
+	m_move = VEC3_ZERO;			// 移動量
+	m_destRot = VEC3_ZERO;		// 目標向き
+	m_bJump = true;				// ジャンプ状況
+	m_fStateTime = 0.0f;		// 状態管理時間
 
 	// オブジェクトキャラクターの初期化
 	if (FAILED(CObjectChara::Init()))
@@ -143,17 +156,11 @@ void CEnemy::Uninit()
 //============================================================
 void CEnemy::Update(const float fDeltaTime)
 {
-	if (GET_INPUTKEY->IsTrigger(DIK_0))
-	{
-		// 設置型プレゼントを飛ばす
-		CPresent::Create(GetVec3Position(), VEC3_ZERO, CPresent::TYPE_LAND);
-	}
-
 	// 過去位置の更新
 	UpdateOldPosition();
 
 	// 状態の更新
-	EMotion curMotion = UpdateState(fDeltaTime);
+	EMotion curMotion = (this->*(m_aFuncState[m_state]))(fDeltaTime);
 
 	// モーション・オブジェクトキャラクターの更新
 	UpdateMotion(curMotion, fDeltaTime);
@@ -184,37 +191,6 @@ void CEnemy::SetEnableDraw(const bool bDraw)
 {
 	// 引数の描画状況を設定
 	CObject::SetEnableDraw(bDraw);	// 自身
-}
-
-//============================================================
-//	状態の更新処理
-//============================================================
-CEnemy::EMotion CEnemy::UpdateState(const float fDeltaTime)
-{
-	EMotion curMotion = MOTION_IDOL;	// 現在のモーション
-
-	switch (m_state)
-	{
-	case CEnemy::STATE_NONE:
-
-		// 何もしない状態時の更新
-		curMotion = UpdateNone(fDeltaTime);
-		break;
-
-	case CEnemy::STATE_NORMAL:
-
-		// 通常状態の更新
-		curMotion = UpdateNormal(fDeltaTime);
-		break;
-
-	default:
-
-		assert(false);
-		break;
-	}
-
-	// 現在のモーションを返す
-	return curMotion;
 }
 
 //============================================================
@@ -286,6 +262,31 @@ float CEnemy::GetHeight() const
 }
 
 //============================================================
+//	状態の設定処理
+//============================================================
+void CEnemy::SetState(const EState state)
+{
+	// 引数状態の設定
+	m_state = state;
+
+	// タイマーの初期化
+	m_fStateTime = 0.0f;
+}
+
+//============================================================
+//	ジャンプの設定処理
+//============================================================
+void CEnemy::SetJump(const VECTOR3& rCurPos, const VECTOR3& rJumpPos)
+{
+	// ジャンプ開始/終了位置を保存
+	m_jumpPosStart = rCurPos;
+	m_jumpPosEnd = rJumpPos;
+
+	// ジャンプ状態にする
+	SetState(STATE_JUMP);
+}
+
+//============================================================
 //	何もしない状態時の更新処理
 //============================================================
 CEnemy::EMotion CEnemy::UpdateNone(const float fDeltaTime)
@@ -316,24 +317,12 @@ CEnemy::EMotion CEnemy::UpdateNone(const float fDeltaTime)
 }
 
 //============================================================
-//	通常状態時の更新処理
+//	待機状態時の更新処理
 //============================================================
-CEnemy::EMotion CEnemy::UpdateNormal(const float fDeltaTime)
+CEnemy::EMotion CEnemy::UpdateIdol(const float fDeltaTime)
 {
-	// 操作不可能な場合抜ける
-	CGameManager* pGameManager = CSceneGame::GetGameManager();	// ゲームマネージャー
-	if (pGameManager != nullptr)
-	{ // ゲームマネージャーがある場合
-
-		if (!pGameManager->IsControlOK()) { return MOTION_IDOL; }
-	}
-
-	EMotion curMotion = MOTION_IDOL;		// 現在のモーション
 	VECTOR3 posEnemy = GetVec3Position();	// プレイヤー位置
 	VECTOR3 rotEnemy = GetVec3Rotation();	// プレイヤー向き
-
-	// 移動操作
-	curMotion = UpdateMove(fDeltaTime);
 
 	// 重力の更新
 	UpdateGravity(fDeltaTime);
@@ -353,8 +342,81 @@ CEnemy::EMotion CEnemy::UpdateNormal(const float fDeltaTime)
 	// 向きを反映
 	SetVec3Rotation(rotEnemy);
 
+#if 1
+	// 経過時間を加算
+	m_fStateTime += fDeltaTime;
+	if (m_fStateTime >= 3.0f)
+	{ // 時間が経過しきった場合
+
+		// ジャンプ状態にする
+		SetJump(posEnemy, VEC3_ZERO);
+	}
+#endif
+
 	// 現在のモーションを返す
-	return curMotion;
+	return MOTION_IDOL;
+}
+
+//============================================================
+//	ジャンプ状態時の更新処理
+//============================================================
+CEnemy::EMotion CEnemy::UpdateJump(const float fDeltaTime)
+{
+	VECTOR3 posEnemy = GetVec3Position();	// プレイヤー位置
+	VECTOR3 rotEnemy = GetVec3Rotation();	// プレイヤー向き
+
+	// 経過時間を加算
+	m_fStateTime += fDeltaTime;
+
+	// ジャンプさせる
+	posEnemy = useful::GetParabola3D(m_jumpPosStart, m_jumpPosEnd, 1000.0f, 1.0f, m_fStateTime);
+	if (m_fStateTime >= 1.0f)
+	{ // 時間が経過しきった場合
+
+		// 攻撃状態にする
+		SetState(STATE_ATK);
+	}
+
+	// 位置を反映
+	SetVec3Position(posEnemy);
+
+	// 向きを反映
+	SetVec3Rotation(rotEnemy);
+
+	// 現在のモーションを返す
+	return MOTION_IDOL;
+}
+
+//============================================================
+//	攻撃状態時の更新処理
+//============================================================
+CEnemy::EMotion CEnemy::UpdateAttack(const float fDeltaTime)
+{
+	VECTOR3 posEnemy = GetVec3Position();	// プレイヤー位置
+	VECTOR3 rotEnemy = GetVec3Rotation();	// プレイヤー向き
+
+	// 経過時間を加算
+	m_fStateTime += fDeltaTime;
+
+	// ジャンプさせる
+	if (m_fStateTime >= 2.0f)
+	{ // 時間が経過しきった場合
+
+		// 設置型プレゼントを飛ばす
+		CPresent::Create(GetVec3Position(), VEC3_ZERO, CPresent::TYPE_BULLET);
+
+		// 待機状態にする
+		SetState(STATE_IDOL);
+	}
+
+	// 位置を反映
+	SetVec3Position(posEnemy);
+
+	// 向きを反映
+	SetVec3Rotation(rotEnemy);
+
+	// 現在のモーションを返す
+	return MOTION_IDOL;
 }
 
 //============================================================

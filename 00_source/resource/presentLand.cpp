@@ -31,6 +31,7 @@ namespace
 	const float	GRAVITY = 0.6f;	// 重力
 	const float	RADIUS = 20.0f;	// 半径
 	const float HEIGHT = 80.0f;	// 身長
+	const float DELETE_TIME = 5.0f;	// 終了タイム
 
 	// 飛行状態の定数
 	namespace fly
@@ -42,7 +43,7 @@ namespace
 	// 飛行状態の定数
 	namespace attack
 	{
-		const float TIME = 2.0f;	// タイム
+		const float TIME = 2.0f;	// 爆弾タイム
 		const float ALPHA = 0.5f;	// 透明度
 	}
 }
@@ -55,6 +56,7 @@ CPresentLand::AFuncState CPresentLand::m_aFuncState[] =		// 状態更新関数リスト
 	&CPresentLand::UpdateNone,	// 無し状態の更新
 	&CPresentLand::UpdateFly,	// 飛び状態の更新
 	&CPresentLand::UpdateAttack,	// 停止状態の更新
+	&CPresentLand::UpdateDelete,	// 消去状態の更新
 };
 
 //************************************************************
@@ -235,6 +237,9 @@ void CPresentLand::UpdateNone(const float fDeltaTime)
 //============================================================
 void CPresentLand::UpdateFly(const float fDeltaTime)
 {
+	// 透明度を設定
+	SetAlpha(attack::ALPHA);
+
 	D3DXVECTOR3 pos = GetVec3Position();
 
 	// 放物線処理
@@ -251,6 +256,9 @@ void CPresentLand::UpdateFly(const float fDeltaTime)
 
 		// 攻撃状態にする
 		m_state = STATE_ATTACK;
+
+		// 透明度をリセットする
+		SetAlpha(1.0f);
 	}
 
 	// 位置を反映する
@@ -273,8 +281,37 @@ void CPresentLand::UpdateAttack(const float fDeltaTime)
 
 		// 爆弾の生成処理
 		CBomb::Create(GetVec3Position());
+
+		// 状態タイムをリセットする
+		m_fStateTime = 0.0f;
+
+		// 消去状態にする
+		m_state = STATE_DELETE;
+	}
+}
+
+//============================================================
+// 削除状態処理
+//============================================================
+void CPresentLand::UpdateDelete(const float fDeltaTime)
+{
+	// 状態の時間を更新
+	m_fStateTime += fDeltaTime;
+
+	// フィールドの当たり判定
+	FieldCollision();
+
+	if (m_fStateTime >= DELETE_TIME)
+	{ // タイムが一定以上になった場合
+
+		// 終了処理
+		Uninit();
+
+		// 抜ける
+		return;
 	}
 
-	// 透明度を設定
-	SetAlpha(attack::ALPHA);
+	// 透明度を変更
+	float fRate = easing::Liner(m_fStateTime, 0.0f, DELETE_TIME);
+	SetAlpha(useful::RateToValue(fRate, 1.0f, 0.0f));
 }
