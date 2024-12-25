@@ -4,11 +4,41 @@
 #	Author : you
 #
 #==============================================================================
+
+SCRIPT			# この行は絶対消さないこと！
+
+#------------------------------------------------------------------------------
+# モデル数
+#------------------------------------------------------------------------------
+NUM_MODEL = 15
+
+#------------------------------------------------------------------------------
+# モデルファイル名
+#------------------------------------------------------------------------------
+MODEL_FILENAME = data/MODEL/SANTA_BLACK/00_waist.x		# [0]腰
+MODEL_FILENAME = data/MODEL/SANTA_BLACK/01_body.x		# [1]体
+MODEL_FILENAME = data/MODEL/SANTA_BLACK/02_head.x		# [2]腰
+MODEL_FILENAME = data/MODEL/SANTA_BLACK/03_armUL.x		# [2]腰
+MODEL_FILENAME = data/MODEL/SANTA_BLACK/04_armUR.x		# [2]腰
+MODEL_FILENAME = data/MODEL/SANTA_BLACK/05_armDL.x		# [2]腰
+MODEL_FILENAME = data/MODEL/SANTA_BLACK/06_armDR.x		# [2]腰
+MODEL_FILENAME = data/MODEL/SANTA_BLACK/07_handL.x		# [2]腰
+MODEL_FILENAME = data/MODEL/SANTA_BLACK/08_handR.x		# [2]腰
+MODEL_FILENAME = data/MODEL/SANTA_BLACK/09_legUL.x		# [2]腰
+MODEL_FILENAME = data/MODEL/SANTA_BLACK/10_legUR.x		# [2]腰
+MODEL_FILENAME = data/MODEL/SANTA_BLACK/11_legDL.x		# [2]腰
+MODEL_FILENAME = data/MODEL/SANTA_BLACK/12_legDR.x		# [2]腰
+MODEL_FILENAME = data/MODEL/SANTA_BLACK/13_footL.x		# [2]腰
+MODEL_FILENAME = data/MODEL/SANTA_BLACK/14_footR.x		# [2]腰
+
 #------------------------------------------------------------------------------
 #	キャラクター情報
 #------------------------------------------------------------------------------
 CHARACTERSET
 
+	MOVE = 3.0					# 移動量
+	JUMP = 10.25					# ジャンプ量
+	RADIUS = 20.0					# 半径
 	NUM_PARTS = 15
 
 	PARTSSET
@@ -2701,3 +2731,5 @@ MOTIONSET
 	END_KEYSET
 	
 END_MOTIONSET
+
+END_SCRIPT		# この行は絶対消さないこと！
