@@ -23,6 +23,15 @@ class CPresentBullet : public CPresent
 {
 public:
 
+	// 状態
+	enum EState
+	{
+		STATE_NONE = 0,	// 通常状態
+		STATE_SHOOT,	// 射撃状態
+		STATE_ATTACK,	// 攻撃状態
+		STATE_MAX		// この列挙型の総数
+	};
+
 	// コンストラクタ
 	CPresentBullet();
 
@@ -40,10 +49,19 @@ public:
 	float GetHeight() const override;					// 縦幅取得
 
 private:
-	// メンバ関数
+	// エイリアス定義
+	typedef void(CPresentBullet::* AFuncState)(const float);	// 状態更新関数ポインタ
 
+	// 関数配列
+	static AFuncState m_aFuncState[];	// 状態更新関数リスト
+
+	// メンバ関数
+	void UpdateNone(const float fDeltaTime);	// 無し状態処理
+	void UpdateShoot(const float fDeltaTime);	// 飛び状態処理
+	void UpdateAttack(const float fDeltaTime);	// 攻撃状態処理
 
 	// メンバ変数
+	EState m_state;		// 状態
 };
 
-#endif	// _PLAYER_H_
+#endif	// _PRESENT_BULLET_H_

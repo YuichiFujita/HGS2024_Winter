@@ -19,7 +19,7 @@
 #include "gameManager.h"
 
 #include "presentLand.h"
-#include "presentBulletCopy.h"
+#include "presentBullet.h"
 
 //************************************************************
 //	’è”éŒ¾
