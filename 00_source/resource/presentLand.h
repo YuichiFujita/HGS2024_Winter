@@ -28,7 +28,7 @@ public:
 	{
 		STATE_NONE = 0,		// 無し状態
 		STATE_FLY,			// 飛ぶ状態
-		STATE_FALL,			// 落下状態
+		STATE_STOP,			// 停止状態
 		STATE_MAX			// この列挙型の総数
 	};
 
@@ -57,16 +57,18 @@ private:
 
 	// メンバ関数
 	void SpeedCalc();							// 速度計算処理
+	bool FieldCollision();						// フィールドの当たり判定
 
 	void UpdateNone(const float fDeltaTime);	// 無し状態処理
 	void UpdateFly(const float fDeltaTime);		// 飛ぶ状態処理
-	void UpdateFall(const float fDeltaTime);	// 落下状態処理
+	void UpdateStop(const float fDeltaTime);	// 停止状態処理
 
 	// メンバ変数
 	float m_fFlyTime;			// 飛ぶ時間
-	D3DXVECTOR3 m_originPos;	// 初期位置
-	D3DXVECTOR3 m_destPos;		// 目的の位置
-	D3DXVECTOR3 m_move;			// 移動量
+	VECTOR3	m_oldPos;			// 過去位置
+	VECTOR3 m_originPos;		// 初期位置
+	VECTOR3 m_destPos;			// 目的の位置
+	VECTOR3 m_move;				// 移動量
 	EState m_state;				// 状態
 };
 

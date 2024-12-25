@@ -19,8 +19,6 @@
 #include "sceneGame.h"
 #include "gameManager.h"
 
-#include "presentLand.h"
-
 //************************************************************
 //	’è”éŒ¾
 //************************************************************
@@ -155,11 +153,6 @@ void CPlayer::Uninit()
 //============================================================
 void CPlayer::Update(const float fDeltaTime)
 {
-	if (GET_INPUTKEY->IsTrigger(DIK_0))
-	{
-		CPresent::Create(VECTOR3(600.0f, 0.0f, 0.0f), VEC3_ZERO, CPresent::TYPE_LAND);
-	}
-
 	// ‰ß‹ˆÊ’u‚ÌXV
 	UpdateOldPosition();
 
