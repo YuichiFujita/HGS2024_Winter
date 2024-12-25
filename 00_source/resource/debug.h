@@ -53,6 +53,7 @@ private:
 	void ChangeFillMode();		// 塗りつぶしモード変更
 	void ChangeDisp2D();		// 2Dオブジェクト表示変更
 	void ChangeDispPause();		// ポーズ表示変更
+	void ChangeEdit();			// エディット変更
 	void TransResult();			// リザルト遷移
 
 	// メンバ変数

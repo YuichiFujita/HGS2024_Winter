@@ -411,6 +411,12 @@
     <ClCompile Include="resource\presentBullet.cpp">
       <Filter>ingame\Present</Filter>
     </ClCompile>
+    <ClCompile Include="resource\editManager.cpp">
+      <Filter>outgame</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\actor.cpp">
+      <Filter>ingame</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource\anim2D.h">
@@ -745,6 +751,12 @@
     </ClInclude>
     <ClInclude Include="resource\presentBullet.h">
       <Filter>ingame\Present</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\editManager.h">
+      <Filter>outgame</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\actor.h">
+      <Filter>ingame</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

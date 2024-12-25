@@ -21,6 +21,10 @@ class CMultiValue;	// マルチ数字クラス
 class CTimerUI;		// タイマーUIクラス
 #endif
 
+#ifdef _DEBUG
+class CEditManager;	// エディットマネージャークラス
+#endif // _DEBUG
+
 //************************************************************
 //	クラス定義
 //************************************************************
@@ -44,6 +48,10 @@ public:
 	inline void SetEnableControlOK(const bool bOK)	{ m_bControlOK = bOK; }		// 操作可能フラグ設定
 	inline bool IsControlOK() const					{ return m_bControlOK; }	// 操作可能フラグ取得
 
+#ifdef _DEBUG
+	void ChangeEnableEdit();	// エディットモード変更
+#endif // DEBUG
+
 	// 静的メンバ関数
 	static CGameManager* Create();	// 生成
 	static void Release(CGameManager*& prGameManager);	// 破棄
@@ -57,6 +65,10 @@ private:
 #endif
 	CGameState* m_pState;	// 状態
 	bool m_bControlOK;		// 操作可能フラグ
+
+#ifdef _DEBUG
+	CEditManager* m_pEditManager;	// エディットマネージャー
+#endif // DEBUG
 };
 
 #endif	// _GAMEMANAGER_H_

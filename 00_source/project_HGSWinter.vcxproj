@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="resource\actor.cpp" />
     <ClCompile Include="resource\anim2D.cpp" />
     <ClCompile Include="resource\anim3D.cpp" />
     <ClCompile Include="resource\camera.cpp" />
@@ -165,6 +166,7 @@
     <ClCompile Include="resource\debug.cpp" />
     <ClCompile Include="resource\debugproc.cpp" />
     <ClCompile Include="resource\deltaTime.cpp" />
+    <ClCompile Include="resource\editManager.cpp" />
     <ClCompile Include="resource\effect2D.cpp" />
     <ClCompile Include="resource\effect3D.cpp" />
     <ClCompile Include="resource\enemy.cpp" />
@@ -270,6 +272,7 @@
     <ClCompile Include="resource\wave.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource\actor.h" />
     <ClInclude Include="resource\anim2D.h" />
     <ClInclude Include="resource\anim3D.h" />
     <ClInclude Include="resource\camera.h" />
@@ -280,6 +283,7 @@
     <ClInclude Include="resource\debug.h" />
     <ClInclude Include="resource\debugproc.h" />
     <ClInclude Include="resource\deltaTime.h" />
+    <ClInclude Include="resource\editManager.h" />
     <ClInclude Include="resource\effect2D.h" />
     <ClInclude Include="resource\effect3D.h" />
     <ClInclude Include="resource\enemy.h" />
