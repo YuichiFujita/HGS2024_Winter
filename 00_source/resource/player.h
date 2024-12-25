@@ -94,9 +94,11 @@ public:
 	float GetHeight() const;			// 縦幅取得
 
 private:
+	// エイリアス定義
+	typedef EMotion(CPlayer::*AFuncState)(const float);	// 状態更新関数ポインタ
+
 	// 関数配列
-	typedef EMotion(CPlayer::*AFuncState)(const float);	// プレイヤー関数ポインタ
-	static AFuncState m_aFuncState[];					// 関数リスト
+	static AFuncState m_aFuncState[];	// 状態更新関数リスト
 
 	// メンバ関数
 	EMotion UpdateNone(const float fDeltaTime);		// 何もしない状態時の更新
