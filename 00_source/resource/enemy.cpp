@@ -39,12 +39,12 @@ namespace
 	const float	JUMP_TIME = 0.65f;		// ジャンプ時間
 	const float	CHANGE_ATK = 700.0f;	// 攻撃変更距離
 
-	const float LAND_NUM_TIME = 50.0f;		// 設置型プレゼントが増える基準
+	const float LAND_NUM_TIME = 40.0f;		// 設置型プレゼントが増える基準
 	const int LAND_NUM_MAX = 3;				// 設置型プレゼントの最大数
 	const float LAND_NUM_RANGE = 100.0f;	// 設置型プレゼントの範囲
 
-	const float BULLET_NUM_TIME = 6.0f;	// 弾型プレゼントが増える基準
-	const float BULLET_ROT_RANGE = D3DX_PI * 0.5f;		// 弾型プレゼントの向きの範囲
+	const float BULLET_NUM_TIME = 30.0f;	// 弾型プレゼントが増える基準
+	const float BULLET_ROT_RANGE = D3DX_PI * 0.1f;		// 弾型プレゼントの向きの範囲
 
 	namespace motion
 	{
@@ -547,7 +547,7 @@ void CEnemy::BulletAttack(const float fDeltaTime)
 	{ // 発射数が偶数の場合
 
 		// 加算向きを減算
-		fAddRot -= BULLET_ROT_RANGE * 0.5f;
+		fAddRot -= BULLET_ROT_RANGE * 0.2f;
 		useful::NormalizeRot(fAddRot);    // 向き正規化
 	}
 
