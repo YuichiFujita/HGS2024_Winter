@@ -21,6 +21,8 @@ class CMultiValue;	// マルチ数字クラス
 class CTimerUI;		// タイマーUIクラス
 #endif
 
+class CObject2D;	// オブジェクト2Dクラス
+
 #ifdef _DEBUG
 class CEditManager;	// エディットマネージャークラス
 #endif // _DEBUG
@@ -44,6 +46,7 @@ public:
 	void Update(const float fDeltaTime);		// 更新
 	HRESULT ChangeState(CGameState* pState);	// 状態変更
 	void TransResult();		// リザルト画面遷移
+	void TimerStart();		// タイマー計測開始
 	bool IsNormal() const;	// 通常状態確認
 	inline void SetEnableControlOK(const bool bOK)	{ m_bControlOK = bOK; }		// 操作可能フラグ設定
 	inline bool IsControlOK() const					{ return m_bControlOK; }	// 操作可能フラグ取得
@@ -67,6 +70,7 @@ private:
 #else TIMER
 	CTimerUI* m_pTimer;		// タイマー情報
 #endif
+	CObject2D* m_pTitle;	// タイトル情報
 	CGameState* m_pState;	// 状態
 	bool m_bControlOK;		// 操作可能フラグ
 

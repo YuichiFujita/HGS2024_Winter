@@ -12,6 +12,7 @@
 #include "manager.h"
 #include "renderer.h"
 #include "sceneGame.h"
+#include "gameManager.h"
 #include "player.h"
 
 //************************************************************
@@ -48,9 +49,11 @@ namespace
 	// 追従カメラ情報
 	namespace follow
 	{
-		const VECTOR3 ROT		= VECTOR3(D3DX_PI * 0.71f, 0.0f, 0.0f);	// 向き
-		const float DISTANCE	= 1100.0f;	// 追従カメラの距離
-		const float REV_POS		= 0.6f;		// カメラ位置の補正係数
+		const VECTOR3 ROT	= VECTOR3(D3DX_PI * 0.71f, 0.0f, 0.0f);	// 向き
+		const float MAX_TIME = 60.0f;	// 近くなり切る時間
+		const float MAX_DIS	= 1100.0f;	// 追従カメラの最大距離
+		const float MIN_DIS	= 700.0f;	// 追従カメラの最小距離
+		const float REV_POS	= 0.6f;		// カメラ位置の補正係数
 	}
 
 	// 操作カメラ情報
@@ -442,8 +445,14 @@ void CCamera::InitFollow()
 	//----------------------------------------------------
 	//	距離の更新
 	//----------------------------------------------------
+	float fCurGameTime = CSceneGame::GetGameManager()->GetGameTime();	// 現在の経過時間
+
+	// 経過時間から割合を計算
+	float fRate = easing::InCubic(fCurGameTime, 0.0f, follow::MAX_TIME);
+	useful::LimitNum(fRate, 0.0f, 1.0f);
+
 	// 距離の設定
-	m_camera.fDis = m_camera.fDestDis = follow::DISTANCE;
+	m_camera.fDis = m_camera.fDestDis = useful::RateToValue(fRate, follow::MAX_DIS, follow::MIN_DIS);
 
 	//----------------------------------------------------
 	//	位置の更新
@@ -538,8 +547,14 @@ void CCamera::UpdateFollow(const float fDeltaTime)
 	//----------------------------------------------------
 	//	距離の更新
 	//----------------------------------------------------
+	float fCurGameTime = CSceneGame::GetGameManager()->GetGameTime();	// 現在の経過時間
+
+	// 経過時間から割合を計算
+	float fRate = easing::InCubic(fCurGameTime, 0.0f, follow::MAX_TIME);
+	useful::LimitNum(fRate, 0.0f, 1.0f);
+
 	// 距離の設定
-	m_camera.fDis = m_camera.fDestDis = follow::DISTANCE;
+	m_camera.fDis = m_camera.fDestDis = useful::RateToValue(fRate, follow::MAX_DIS, follow::MIN_DIS);
 
 	//----------------------------------------------------
 	//	位置の更新

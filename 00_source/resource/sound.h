@@ -29,6 +29,8 @@ public:
 		LABEL_NONE = NONE_IDX,	// ƒ‰ƒxƒ‹–³‚µ
 		LABEL_BGM_GENERAL,		// BGM (”Ä—p)
 		LABEL_SE_BALLCHIME,		// BALL“ü—ÍŒø‰Ê‰¹
+		LABEL_SE_THROW_TOP,		// ã“Š‚°
+		LABEL_SE_THROW_SIDE,	// ‰¡“Š‚°
 		LABEL_MAX				// ‚±‚Ì—ñ‹“Œ^‚Ì‘”
 	};
 
