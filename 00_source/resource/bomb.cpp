@@ -30,8 +30,8 @@ namespace
 	const int	PRIORITY = 3;	// 爆弾の優先順位
 	const float	DEST_RANGE = 130.0f;	// 目的位置の範囲
 	const float RADIUS = 80.0f;	// 半径
-	const float FLY_HEIGHT = 90.0f;	// 飛ぶときの最高到達点
-	const float FLY_TIME = 1.0f;	// 飛ぶ時間
+	const float FLY_HEIGHT = 100.0f;	// 飛ぶときの最高到達点
+	const float FLY_TIME = 0.8f;	// 飛ぶ時間
 	const float DAMAGE_TIME = 1.5f;	// ダメージ時間
 }
 
@@ -295,6 +295,9 @@ void CBomb::UpdateFly(const float fDeltaTime)
 
 	if (pos.y < posOld.y)
 	{ // 下がり始めたとき
+
+		// 爆発の音
+		PLAY_SOUND(CSound::LABEL_SE_PRESENT_BOMB);
 
 		// 爆発のパーティクルを出す
 		CParticle3D::Create(CParticle3D::TYPE_SMALL_EXPLOSION, pos);

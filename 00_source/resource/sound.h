@@ -36,6 +36,9 @@ public:
 		LABEL_SE_THROW_SIDE,	// 横投げ
 		LABEL_SE_JUMP,			// ジャンプ
 		LABEL_SE_LANDING,		// 着地
+		LABEL_SE_PRESENT_BOMB,	// 爆発
+		LABEL_SE_START,			// 開始
+		LABEL_SE_CHAR_FEED,		// 文字送り（一音）
 		LABEL_MAX				// この列挙型の総数
 	};
 

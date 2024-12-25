@@ -30,7 +30,7 @@ namespace
 {
 	const char* MODEL = "data\\MODEL\\PRESENT\\PresentBag.x";	// モデル
 	const float	RADIUS = 50.0f;	// 半径
-	const float HEIGHT = 80.0f;	// 身長
+	const float HEIGHT = 30.0f;	// 身長
 	const float SPEED = 570.0f;	// 速度
 	const float	REV_ROTA = 0.06f;	// 向き変更の補正係数
 	const float SUB_SPEED = 230.0f;	// 速度の減算量
@@ -44,9 +44,9 @@ namespace
 	// エフェクト
 	namespace effect
 	{
-		const float RADIUS = 20.0f;		// 半径
-		const int LIFE = 10;			// 寿命
-		const float SUB_SIZE = 0.1f;	// 半径の減算量
+		const float RADIUS = 35.0f;		// 半径
+		const int LIFE = 15;			// 寿命
+		const float SUB_SIZE = 2.3f;	// 半径の減算量
 	}
 }
 
@@ -227,8 +227,10 @@ void CPresentBullet::Collision()
 	VECTOR3 pos = GetVec3Position();
 	VECTOR3 sizeMaxPlayer = VECTOR3(pPlayer->GetRadius(), pPlayer->GetHeight(), pPlayer->GetRadius());
 	VECTOR3 sizeMinPlayer = VECTOR3(pPlayer->GetRadius(), 0.0f, pPlayer->GetRadius());
+	VECTOR3 sizeMaxBullet = VECTOR3(RADIUS, HEIGHT, RADIUS);
+	VECTOR3 sizeMinBullet = VECTOR3(RADIUS, 0.0f, RADIUS);
 
-	if (collision::Box3D(pos, pPlayer->GetVec3Position(), sizeMaxPlayer, GetModelData().vtxMax, sizeMinPlayer, -GetModelData().vtxMin))
+	if (collision::Box3D(pos, pPlayer->GetVec3Position(), sizeMaxPlayer, sizeMaxBullet, sizeMinPlayer, sizeMinBullet))
 	{ // 当たった場合
 
 		// ヒット処理
@@ -268,7 +270,7 @@ void CPresentBullet::UpdateHoming(const float fDeltaTime)
 	m_fStateTime -= fDeltaTime;
 
 	// エフェクトを生成する
-	CEffect3D::Create(pos, effect::RADIUS, CEffect3D::TYPE_NORMAL, effect::LIFE, VECTOR3(), VECTOR3(), color::Purple(), effect::SUB_SIZE);
+	CEffect3D::Create(pos, effect::RADIUS, CEffect3D::TYPE_NORMAL, effect::LIFE, VECTOR3(), VECTOR3(), color::Red(), effect::SUB_SIZE);
 }
 
 //============================================================
@@ -300,7 +302,7 @@ void CPresentBullet::UpdateMove(const float fDeltaTime)
 	}
 
 	// エフェクトを生成する
-	CEffect3D::Create(pos, effect::RADIUS, CEffect3D::TYPE_NORMAL, effect::LIFE, VECTOR3(), VECTOR3(), color::Purple(), effect::SUB_SIZE);
+	CEffect3D::Create(pos, effect::RADIUS, CEffect3D::TYPE_NORMAL, effect::LIFE, VECTOR3(), VECTOR3(), color::Red(), effect::SUB_SIZE);
 }
 
 //============================================================
