@@ -49,7 +49,7 @@ namespace
 	namespace sensor
 	{
 		const float RANGE = 100.0f;		// 範囲
-		const float JUMP = 500.0f;		// ジャンプ量
+		const float JUMP = 200.0f;		// ジャンプ量
 	}
 
 	// エフェクト
@@ -383,6 +383,7 @@ void CPresentLand::UpdateFly(const float fDeltaTime)
 		SetAlpha(1.0f);
 
 		// 警告ポリゴンを NULL にする
+		m_pWarning->Uninit();
 		m_pWarning = nullptr;
 	}
 
