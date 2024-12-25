@@ -29,7 +29,7 @@ namespace
 	{
 		const char*		TEXTURE	= "data\\TEXTURE\\timer_title000.png";	// テクスチャパス
 		const VECTOR3	POS		= VECTOR3(SCREEN_CENT.x, 120.0f, 0.0f);	// 位置
-		const float		HEIGHT	= 120.0f;	// 縦幅
+		const float		HEIGHT	= 140.0f;	// 縦幅
 	}
 
 	namespace rank
