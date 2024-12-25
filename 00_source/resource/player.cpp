@@ -26,13 +26,18 @@ namespace
 {
 	const char*	SETUP_TXT	= "data\\CHARACTER\\player.txt";	// セットアップテキスト相対パス
 	const int	PRIORITY	= 3;		// プレイヤーの優先順位
-	const float	MOVE		= 2.0f;		// 移動量
+	const float	MOVE		= 1.5f;		// 移動量
 	const float	GRAVITY		= 3600.0f;	// 重力
 	const float	RADIUS		= 20.0f;	// 半径
 	const float HEIGHT		= 80.0f;	// 身長
-	const float	REV_ROTA	= 12.0f;	// 向き変更の補正係数
-	const float	JUMP_REV	= 8.0f;		// 通常状態時の空中の移動量の減衰係数
-	const float	LAND_REV	= 8.0f;		// 通常状態時の地上の移動量の減衰係数
+	const float	REV_ROTA	= 0.25f;	// 向き変更の補正係数
+	const float	JUMP_REV	= 0.18f;	// 通常状態時の空中の移動量の減衰係数
+	const float	LAND_REV	= 0.18f;	// 通常状態時の地上の移動量の減衰係数
+
+	namespace camera
+	{
+		const CCamera::SSwing HIT_SWING = CCamera::SSwing(8.0f, 1.8f, 0.14f);	// ヒット時のカメラ揺れ
+	}
 
 	namespace motion
 	{
@@ -48,6 +53,7 @@ CPlayer::AFuncState CPlayer::m_aFuncState[] =		// 状態更新関数リスト
 {
 	&CPlayer::UpdateNone,	// 何もしない状態の更新
 	&CPlayer::UpdateNormal,	// 通常状態の更新
+	&CPlayer::UpdateDeath,	// 死亡状態の更新
 };
 
 //************************************************************
@@ -235,6 +241,31 @@ CListManager<CPlayer>* CPlayer::GetList()
 }
 
 //============================================================
+//	ヒット処理
+//============================================================
+bool CPlayer::Hit()
+{
+	// 死んでる場合抜ける
+	if (IsDeath()) { return false; }
+
+	// カメラ揺れを設定
+	GET_MANAGER->GetCamera()->SetSwing(camera::HIT_SWING);
+
+	// 死亡状態にする
+	SetState(STATE_DEATH);
+
+	CGameManager* pGameManager = CSceneGame::GetGameManager();	// ゲームマネージャー
+	if (pGameManager != nullptr)
+	{ // ゲームマネージャーがある場合
+
+		// リザルト画面に遷移する
+		pGameManager->TransResult();
+	}
+
+	return true;
+}
+
+//============================================================
 //	状態の設定処理
 //============================================================
 void CPlayer::SetState(const EState state)
@@ -305,7 +336,7 @@ CPlayer::EMotion CPlayer::UpdateNone(const float fDeltaTime)
 	// 向きを反映
 	SetVec3Rotation(rotPlayer);
 
-	// 現在のモーションを返す
+	// 待機モーションを返す
 	return MOTION_IDOL;
 }
 
@@ -353,6 +384,41 @@ CPlayer::EMotion CPlayer::UpdateNormal(const float fDeltaTime)
 
 	// 現在のモーションを返す
 	return curMotion;
+}
+
+//============================================================
+//	死亡状態時の更新処理
+//============================================================
+CPlayer::EMotion CPlayer::UpdateDeath(const float fDeltaTime)
+{
+	VECTOR3 posPlayer = GetVec3Position();	// プレイヤー位置
+	VECTOR3 rotPlayer = GetVec3Rotation();	// プレイヤー向き
+
+	// 重力の更新
+	UpdateGravity(fDeltaTime);
+
+	// 位置更新
+	UpdatePosition(&posPlayer, fDeltaTime);
+
+	// 着地判定
+	UpdateLanding(&posPlayer, fDeltaTime);
+
+	// 位置補正
+	CStage* pStage = GET_MANAGER->GetStage();	// ステージ情報
+	pStage->LimitPosition(posPlayer, RADIUS);
+
+	// 向き更新
+	UpdateRotation(&rotPlayer, fDeltaTime);
+
+	// 位置を反映
+	SetVec3Position(posPlayer);
+
+	// 向きを反映
+	SetVec3Rotation(rotPlayer);
+
+	// 死亡モーションを返す
+	//return MOTION_DEATH;	// TODO：死亡できたら変更
+	return MOTION_IDOL;
 }
 
 //============================================================
@@ -556,7 +622,7 @@ void CPlayer::UpdateRotation(VECTOR3* pRot, const float fDeltaTime)
 	useful::NormalizeRot(fDiffRot);
 
 	// 向きの更新
-	pRot->y += fDiffRot * fDeltaTime * REV_ROTA * fDeltaRate;
+	pRot->y += fDiffRot * REV_ROTA * fDeltaRate;
 
 	// 向きの正規化
 	useful::NormalizeRot(pRot->y);
