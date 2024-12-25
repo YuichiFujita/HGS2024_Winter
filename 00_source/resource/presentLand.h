@@ -49,10 +49,16 @@ public:
 	float GetHeight() const override;					// 縦幅取得
 
 private:
+	// エイリアス定義
+	typedef void(CPresentLand::* AFuncState)(const float);	// 状態更新関数ポインタ
+
+	// 関数配列
+	static AFuncState m_aFuncState[];	// 状態更新関数リスト
+
 	// メンバ関数
-	void UpdateState(const float fDeltaTime);
-	void UpdateFly(const float fDeltaTime);
-	void UpdateFall(const float fDeltaTime);
+	void UpdateNone(const float fDeltaTime);	// 無し状態処理
+	void UpdateFly(const float fDeltaTime);		// 飛ぶ状態処理
+	void UpdateFall(const float fDeltaTime);	// 落下状態処理
 
 	// メンバ変数
 	D3DXVECTOR3 m_destPos;	// 目的の位置

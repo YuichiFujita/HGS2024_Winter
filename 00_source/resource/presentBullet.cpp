@@ -29,14 +29,26 @@ namespace
 }
 
 //************************************************************
+// 静的メンバ変数宣言
+//************************************************************
+CPresentBullet::AFuncState CPresentBullet::m_aFuncState[] =		// 状態更新関数リスト
+{
+	&CPresentBullet::UpdateNone,	// 無し状態の更新
+	&CPresentBullet::UpdateShoot,	// 射撃状態の更新
+	&CPresentBullet::UpdateAttack,	// 攻撃状態の更新
+};
+
+//************************************************************
 //	子クラス [CPresentBullet] のメンバ関数
 //************************************************************
 //============================================================
 //	コンストラクタ
 //============================================================
-CPresentBullet::CPresentBullet() : CPresent()
+CPresentBullet::CPresentBullet() : CPresent(),
+m_state(STATE_NONE)		// 状態
 {
-
+	// スタティックアサート
+	static_assert(NUM_ARRAY(m_aFuncState) == CPresentBullet::STATE_MAX, "ERROR : State Count Mismatch");
 }
 
 //============================================================
@@ -79,7 +91,8 @@ void CPresentBullet::Uninit()
 //============================================================
 void CPresentBullet::Update(const float fDeltaTime)
 {
-
+	// 状態処理
+	(this->*(m_aFuncState[m_state]))(fDeltaTime);
 }
 
 //============================================================
@@ -125,4 +138,28 @@ float CPresentBullet::GetHeight() const
 {
 	// 高さを返す
 	return HEIGHT;
+}
+
+//============================================================
+// 状態の更新処理
+//============================================================
+void CPresentBullet::UpdateNone(const float fDeltaTime)
+{
+
+}
+
+//============================================================
+// 射撃状態処理
+//============================================================
+void CPresentBullet::UpdateShoot(const float fDeltaTime)
+{
+
+}
+
+//============================================================
+// 攻撃状態処理
+//============================================================
+void CPresentBullet::UpdateAttack(const float fDeltaTime)
+{
+
 }

@@ -28,6 +28,7 @@ public:
 	{
 		STATE_NONE = 0,	// 通常状態
 		STATE_SHOOT,	// 射撃状態
+		STATE_ATTACK,	// 攻撃状態
 		STATE_MAX		// この列挙型の総数
 	};
 
@@ -48,7 +49,16 @@ public:
 	float GetHeight() const override;					// 縦幅取得
 
 private:
+	// エイリアス定義
+	typedef void(CPresentBullet::* AFuncState)(const float);	// 状態更新関数ポインタ
+
+	// 関数配列
+	static AFuncState m_aFuncState[];	// 状態更新関数リスト
+
 	// メンバ関数
+	void UpdateNone(const float fDeltaTime);	// 無し状態処理
+	void UpdateShoot(const float fDeltaTime);	// 飛び状態処理
+	void UpdateAttack(const float fDeltaTime);	// 攻撃状態処理
 
 	// メンバ変数
 	EState m_state;		// 状態

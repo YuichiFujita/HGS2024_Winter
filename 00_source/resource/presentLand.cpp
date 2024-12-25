@@ -37,6 +37,16 @@ namespace
 }
 
 //************************************************************
+// 静的メンバ変数宣言
+//************************************************************
+CPresentLand::AFuncState CPresentLand::m_aFuncState[] =		// 状態更新関数リスト
+{
+	&CPresentLand::UpdateNone,	// 無し状態の更新
+	&CPresentLand::UpdateFly,	// 飛び状態の更新
+	&CPresentLand::UpdateFall,	// 落下状態の更新
+};
+
+//************************************************************
 //	子クラス [CPresentLand] のメンバ関数
 //************************************************************
 //============================================================
@@ -47,7 +57,8 @@ m_destPos(VEC3_ZERO),	// 目的の位置
 m_move(VEC3_ZERO),		// 移動量
 m_state(STATE_NONE)		// 状態
 {
-
+	// スタティックアサート
+	static_assert(NUM_ARRAY(m_aFuncState) == CPresentLand::STATE_MAX, "ERROR : State Count Mismatch");
 }
 
 //============================================================
@@ -95,7 +106,7 @@ void CPresentLand::Uninit()
 void CPresentLand::Update(const float fDeltaTime)
 {
 	// 状態処理
-	UpdateState(fDeltaTime);
+	(this->*(m_aFuncState[m_state]))(fDeltaTime);
 }
 
 //============================================================
@@ -144,35 +155,26 @@ float CPresentLand::GetHeight() const
 }
 
 //============================================================
-// 状態処理
+// 無し状態処理
 //============================================================
-void CPresentLand::UpdateState(const float fDeltaTime)
+void CPresentLand::UpdateNone(const float fDeltaTime)
 {
-	switch (m_state)
-	{
-	case CPresentLand::STATE_NONE:
+	// プレイヤーがいない場合、抜ける
+	CPlayer* pPlayer = CScene::GetPlayer();
+	if (pPlayer == nullptr) { return; }
 
-		break;
+	// 目的の位置を設定する
+	m_destPos = pPlayer->GetVec3Position();
 
-	case CPresentLand::STATE_FLY:
+	// 高さを再設定する
+	m_destPos.y = fly::DEST_POS_Y;
 
-		UpdateFly(fDeltaTime);
-		break;
-
-	case CPresentLand::STATE_FALL:
-
-		UpdateFall(fDeltaTime);
-		break;
-
-	default:
-
-		assert(false);
-		break;
-	}
+	// 飛び状態にする
+	m_state = STATE_FLY;
 }
 
 //============================================================
-// 飛び状態の処理
+// 飛び状態処理
 //============================================================
 void CPresentLand::UpdateFly(const float fDeltaTime)
 {
@@ -191,7 +193,7 @@ void CPresentLand::UpdateFly(const float fDeltaTime)
 }
 
 //============================================================
-// 落下状態の処理
+// 落下状態処理
 //============================================================
 void CPresentLand::UpdateFall(const float fDeltaTime)
 {
