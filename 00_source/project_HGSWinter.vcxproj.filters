@@ -76,6 +76,9 @@
     <Filter Include="shader">
       <UniqueIdentifier>{7802df47-284e-428b-bacd-10c28e8da035}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ingame\Present">
+      <UniqueIdentifier>{52f857d1-378a-4495-aaad-3370fd1df085}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="resource\camera.cpp">
@@ -396,11 +399,11 @@
     <ClCompile Include="resource\player.cpp">
       <Filter>ingame</Filter>
     </ClCompile>
-    <ClCompile Include="present.cpp">
-      <Filter>ingame</Filter>
-    </ClCompile>
     <ClCompile Include="enemy.cpp">
       <Filter>ingame</Filter>
+    </ClCompile>
+    <ClCompile Include="present.cpp">
+      <Filter>ingame\Present</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -725,11 +728,11 @@
     <ClInclude Include="resource\player.h">
       <Filter>ingame</Filter>
     </ClInclude>
-    <ClInclude Include="present.h">
-      <Filter>ingame</Filter>
-    </ClInclude>
     <ClInclude Include="enemy.h">
       <Filter>ingame</Filter>
+    </ClInclude>
+    <ClInclude Include="present.h">
+      <Filter>ingame\Present</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
