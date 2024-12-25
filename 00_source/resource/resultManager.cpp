@@ -11,6 +11,8 @@
 #include "resultState.h"
 #include "manager.h"
 #include "retention.h"
+#include "object2D.h"
+#include "scrollString2D.h"
 
 #ifdef SCORE
 #include "multiValue.h"
@@ -23,12 +25,45 @@
 //************************************************************
 namespace
 {
+	namespace rank
+	{
+		const char*	FONT = "data\\FONT\\JFドット東雲ゴシック14.ttf";	// フォントパス
+		const int	PRIORITY	= 6;			// テキストの優先順位
+		const bool	ITALIC		= false;		// イタリック
+		const float	HEIGHT		= 42.0f;		// 文字縦幅
+		const float	WAIT_TIME	= 0.15f;		// 文字表示の待機時間
+		const EAlignX ALIGN_X	= XALIGN_LEFT;	// 横配置
+		const EAlignY ALIGN_Y	= YALIGN_TOP;	// 縦配置
+		const VECTOR3 POS		= VECTOR3(600.0f, 285.0f, 0.0f);	// 位置
+	}
+
+	namespace cont
+	{
+		const char*		TEXTURE	= "data\\TEXTURE\\continue000.png";		// テクスチャパス
+		const VECTOR3	POS		= VECTOR3(SCREEN_CENT.x, 425.0f, 0.0f);	// 位置
+		const float		WIDTH	= 600.0f;	// 横幅
+	}
+
+	namespace select
+	{
+		const char* TEXTURE[] =	// テクスチャパス
+		{
+			"data\\TEXTURE\\continueSelect000.png",	// YES
+			"data\\TEXTURE\\continueSelect001.png",	// NO
+		};
+		const VECTOR3	POS		= VECTOR3(SCREEN_CENT.x - 260.0f, 525.0f, 0.0f);	// 位置
+		const VECTOR3	OFFSET	= VECTOR3(260.0f * 2.0f, 0.0f, 0.0f);	// オフセット
+		const float		WIDTH	= 420.0f;				// 横幅
+		const COLOR		COL_DEFAULT	= color::White();	// 通常色
+		const COLOR		COL_CHOICE	= color::Yellow();	// 選択色
+	}
+
 #ifdef SCORE
 	namespace score
 	{
 		const CValue::EType TYPE = CValue::TYPE_NORMAL;	// 数字種類
-		const float DIGIT	= 8;			// スコア桁数
-		const VECTOR3 POS	= SCREEN_CENT;	// スコア位置
+		const float DIGIT	= 8;						// スコア桁数
+		const VECTOR3 POS	= VECTOR3(SCREEN_CENT.x, 240.0f, 0.0f);	// スコア位置
 		const VECTOR3 SIZE	= VECTOR3(52.8f, 62.4f, 0.0f) * 1.4f;	// スコア数字大きさ
 		const VECTOR3 SPACE	= VECTOR3(SIZE.x * 0.85f, 0.0f, 0.0f);	// スコア数字空白
 	}
@@ -36,7 +71,7 @@ namespace
 	namespace time
 	{
 		const CValue::EType TYPE = CValue::TYPE_NORMAL;	// 数字種類
-		const VECTOR3 POS		 = SCREEN_CENT;			// タイマー位置
+		const VECTOR3 POS		 = VECTOR3(SCREEN_CENT.x, 240.0f, 0.0f);		// タイマー位置
 		const VECTOR3 VAL_SIZE	 = VECTOR3(52.8f, 62.4f, 0.0f) * 1.4f;			// タイマー数字大きさ
 		const VECTOR3 PART_SIZE	 = VECTOR3(27.3f, 62.4f, 0.0f) * 1.2f;			// タイマー区切り大きさ
 		const VECTOR3 VAL_SPACE	 = VECTOR3(VAL_SIZE.x * 0.85f, 0.0f, 0.0f);		// タイマー数字空白
@@ -52,14 +87,19 @@ namespace
 //	コンストラクタ
 //============================================================
 CResultManager::CResultManager() :
+	m_pUpdateRank	(nullptr),	// ランキング更新情報
+	m_pContinue		(nullptr),	// コンテニュー情報
 #ifdef SCORE
-	m_pScore	(nullptr),	// スコア情報
+	m_pScore		(nullptr),	// スコア情報
 #else TIMER
-	m_pTime		(nullptr),	// タイム情報
+	m_pTime			(nullptr),	// タイム情報
 #endif
-	m_pState	(nullptr)	// 状態
+	m_pState		(nullptr),	// 状態
+	m_nCurSelect	(0),		// 現在の選択肢
+	m_nOldSelect	(0)			// 前回の選択肢
 {
-
+	// メンバ変数をクリア
+	memset(&m_apSelect[0], 0, sizeof(m_apSelect));	// 選択肢情報
 }
 
 //============================================================
@@ -78,12 +118,17 @@ HRESULT CResultManager::Init()
 	CRetention* pRetention = GET_MANAGER->GetRetention();	// データ保存マネージャー
 
 	// メンバ変数を初期化
+	memset(&m_apSelect[0], 0, sizeof(m_apSelect));	// 選択肢情報
+	m_pUpdateRank	= nullptr;	// ランキング更新情報
+	m_pContinue		= nullptr;	// コンテニュー情報
 #ifdef SCORE
-	m_pScore = nullptr;	// スコア情報
+	m_pScore		= nullptr;	// スコア情報
 #else TIMER
-	m_pTime = nullptr;	// タイム情報
+	m_pTime			= nullptr;	// タイム情報
 #endif
-	m_pState = nullptr;	// 状態
+	m_pState		= nullptr;	// 状態
+	m_nCurSelect	= 0;		// 現在の選択肢
+	m_nOldSelect	= 0;		// 前回の選択肢
 
 	// 通常状態にする
 	ChangeState(new CResultStateNormal);
@@ -125,6 +170,76 @@ HRESULT CResultManager::Init()
 	}
 #endif
 
+	const int nUpdateIdx = pRetention->GetUpdateRankIdx();	// ランキング更新インデックス
+	if (nUpdateIdx > NONE_IDX)
+	{ // ランキングが更新されている場合
+
+		// 更新文字列を作成
+		const std::string sRank = std::to_string(nUpdateIdx + 1);		// 更新順位文字列
+		const std::string sUpdate = "ランキング" + sRank + "位更新";	// 更新文字列
+
+		// ランキング更新の生成
+		m_pUpdateRank = CScrollString2D::Create
+		( // 引数
+			rank::FONT,			// フォントパス
+			rank::ITALIC,		// イタリック
+			sUpdate,			// 表示文字列
+			rank::POS,			// 原点位置
+			rank::WAIT_TIME,	// 文字表示の待機時間
+			rank::HEIGHT,		// 文字縦幅
+			rank::ALIGN_X,		// 横配置
+			rank::ALIGN_Y		// 縦配置
+		);
+		if (m_pUpdateRank == nullptr)
+		{ // 生成に失敗した場合
+
+			assert(false);
+			return E_FAIL;
+		}
+
+		// 文字送りを開始する
+		m_pUpdateRank->SetEnableScroll(true);
+
+		// 文字送り時の再生SEを設定
+		//m_pUpdateRank->SetScrollSE(CSound::LABEL_SE_TEXT01);
+	}
+
+	// コンテニューの生成
+	m_pContinue = CObject2D::Create(cont::POS);
+	if (m_pContinue == nullptr)
+	{ // 生成に失敗した場合
+
+		assert(false);
+		return E_FAIL;
+	}
+
+	// コンテニューテクスチャの割当
+	m_pContinue->BindTexture(cont::TEXTURE);
+
+	// コンテニュー大きさの設定
+	float fContinueHeight = useful::GetTexHeightFromAspect(cont::WIDTH, cont::TEXTURE);	// テクスチャ基準の縦幅
+	m_pContinue->SetVec3Size(VECTOR3(cont::WIDTH, fContinueHeight, 0.0f));
+
+	for (int i = 0; i < SELECT_MAX; i++)
+	{ // 選択肢の総数分繰り返す
+
+		// 選択肢の生成
+		m_apSelect[i] = CObject2D::Create(select::POS + (select::OFFSET * (float)i));
+		if (m_apSelect[i] == nullptr)
+		{ // 生成に失敗した場合
+
+			assert(false);
+			return E_FAIL;
+		}
+
+		// 選択肢テクスチャの割当
+		m_apSelect[i]->BindTexture(select::TEXTURE[i]);
+
+		// 選択肢大きさの設定
+		float fSelectHeight = useful::GetTexHeightFromAspect(select::WIDTH, select::TEXTURE[i]);	// テクスチャ基準の縦幅
+		m_apSelect[i]->SetVec3Size(VECTOR3(select::WIDTH, fSelectHeight, 0.0f));
+	}
+
 	return S_OK;
 }
 
@@ -143,6 +258,19 @@ void CResultManager::Uninit()
 	// タイムの終了
 	//SAFE_UNINIT(m_pTimer);
 #endif
+
+	// ランキング更新の終了
+	SAFE_UNINIT(m_pUpdateRank);
+
+	// コンテニューの終了
+	SAFE_UNINIT(m_pContinue);
+
+	for (int i = 0; i < SELECT_MAX; i++)
+	{ // 選択肢の総数分繰り返す
+
+		// 選択肢の終了
+		SAFE_UNINIT(m_apSelect[i]);
+	}
 }
 
 //============================================================
@@ -154,10 +282,32 @@ void CResultManager::Update(const float fDeltaTime)
 	assert(m_pState != nullptr);
 	m_pState->Update(fDeltaTime);
 
-	if (input::Decide())
-	{
-		// ランキング画面に遷移する
-		TransRanking();
+	CFade* pFade = GET_MANAGER->GetFade();	// フェード情報
+	if (!pFade->IsFade())
+	{ // フェードしていない場合
+
+		if (IsEndScroll())
+		{ // 文字送りが終わっている場合
+
+			// 選択の更新
+			UpdateSelect();
+
+			// 決定の更新
+			UpdateDecide();
+		}
+	}
+
+	// ランキング更新の更新
+	if (m_pUpdateRank != nullptr) { m_pUpdateRank->Update(fDeltaTime); }
+
+	// コンテニューの更新
+	if (m_pContinue != nullptr) { m_pContinue->Update(fDeltaTime); }
+
+	for (int i = 0; i < SELECT_MAX; i++)
+	{ // 選択肢の総数分繰り返す
+
+		// 選択肢の更新
+		if (m_apSelect[i] != nullptr) { m_apSelect[i]->Update(fDeltaTime); }
 	}
 
 #ifdef SCORE
@@ -196,6 +346,22 @@ HRESULT CResultManager::ChangeState(CResultState* pState)
 	}
 
 	return S_OK;
+}
+
+//============================================================
+//	ゲーム画面遷移処理
+//============================================================
+void CResultManager::TransGame()
+{
+	// フェード中の場合抜ける
+	if (GET_MANAGER->GetFade()->IsFade()) { return; }
+
+	// ランキング更新情報の初期化
+	CRetention* pRetention = GET_MANAGER->GetRetention();	// データ保存マネージャー
+	pRetention->SetUpdateRankIdx(NONE_IDX);
+
+	// ゲーム画面に遷移する
+	GET_MANAGER->SetLoadScene(CScene::MODE_GAME);
 }
 
 //============================================================
@@ -250,4 +416,73 @@ void CResultManager::Release(CResultManager*& prResultManager)
 
 	// メモリ開放
 	SAFE_DELETE(prResultManager);
+}
+
+//============================================================
+//	選択の更新処理
+//============================================================
+void CResultManager::UpdateSelect()
+{
+	// 前回の選択肢を保存
+	m_nOldSelect = m_nCurSelect;
+
+	// 選択肢操作
+	CInputKeyboard* pKey = GET_INPUTKEY;	// キーボード情報
+	if (pKey->IsTrigger(DIK_LEFT))
+	{
+		// 左に選択をずらす
+		m_nCurSelect = (m_nCurSelect + 1) % SELECT_MAX;
+	}
+	if (pKey->IsTrigger(DIK_RIGHT))
+	{
+		// 右に選択をずらす
+		m_nCurSelect = (m_nCurSelect + (SELECT_MAX - 1)) % SELECT_MAX;
+	}
+
+	// 前回の選択要素の色を白色に設定
+	m_apSelect[m_nOldSelect]->SetColor(select::COL_DEFAULT);
+
+	// 現在の選択要素の色を黄色に設定
+	m_apSelect[m_nCurSelect]->SetColor(select::COL_CHOICE);
+}
+
+//============================================================
+//	決定の更新処理
+//============================================================
+void CResultManager::UpdateDecide()
+{
+	if (input::Decide())
+	{
+		// 選択肢に応じて遷移先を変更
+		switch (m_nCurSelect)
+		{ // 現在の選択肢ごとの処理
+		case SELECT_CONTINUE:
+		{
+			// ゲーム画面に遷移する
+			TransGame();
+			break;
+		}
+		case SELECT_RANKING:
+		{
+			// ランキング画面に遷移する
+			TransRanking();
+			break;
+		}
+		default:
+			assert(false);
+			break;
+		}
+	}
+}
+
+//============================================================
+//	文字送り終了フラグの取得処理
+//============================================================
+bool CResultManager::IsEndScroll() const
+{
+	// 文字が未生成の場合文字送り終了済みとする
+	if (m_pUpdateRank == nullptr) { return true; }
+	
+	// 文字送り終了フラグを返す
+	return m_pUpdateRank->IsEndScroll();
 }

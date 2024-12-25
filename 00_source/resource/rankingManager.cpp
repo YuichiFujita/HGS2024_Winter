@@ -236,7 +236,7 @@ void CRankingManager::Update(const float fDeltaTime)
 	if (input::Decide())
 	{
 		// タイトル画面に遷移する
-		GET_MANAGER->SetLoadScene(CScene::MODE_TITLE);
+		TransTitle();
 	}
 
 	for (int i = 0; i < MAX_RANK; i++)
@@ -282,6 +282,22 @@ HRESULT CRankingManager::ChangeState(CRankingState* pState)
 	}
 
 	return S_OK;
+}
+
+//============================================================
+//	タイトル画面遷移処理
+//============================================================
+void CRankingManager::TransTitle()
+{
+	// フェード中の場合抜ける
+	if (GET_MANAGER->GetFade()->IsFade()) { return; }
+
+	// ランキング更新情報の初期化
+	CRetention* pRetention = GET_MANAGER->GetRetention();	// データ保存マネージャー
+	pRetention->SetUpdateRankIdx(NONE_IDX);
+
+	// ゲーム画面に遷移する
+	GET_MANAGER->SetLoadScene(CScene::MODE_TITLE);
 }
 
 //============================================================

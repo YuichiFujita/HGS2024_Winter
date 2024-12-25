@@ -94,8 +94,11 @@ public:
 	float GetHeight() const;			// 縦幅取得
 
 private:
+	// 関数配列
+	typedef EMotion(CPlayer::*AFuncState)(const float);	// プレイヤー関数ポインタ
+	static AFuncState m_aFuncState[];					// 関数リスト
+
 	// メンバ関数
-	EMotion UpdateState(const float fDeltaTime);	// 状態更新
 	EMotion UpdateNone(const float fDeltaTime);		// 何もしない状態時の更新
 	EMotion UpdateNormal(const float fDeltaTime);	// 通常状態時の更新
 	EMotion UpdateMove();							// 移動量/目標向きの更新
