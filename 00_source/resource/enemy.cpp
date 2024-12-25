@@ -21,6 +21,7 @@
 #include "player.h"
 #include "presentLand.h"
 #include "presentBullet.h"
+#include "shadow.h"
 
 //************************************************************
 //	定数宣言
@@ -70,6 +71,7 @@ CEnemy::AFuncState CEnemy::m_aFuncState[] =			// 状態更新関数リスト
 //	コンストラクタ
 //============================================================
 CEnemy::CEnemy() : CObjectChara(CObject::LABEL_ENEMY, CObject::DIM_3D, PRIORITY),
+m_pShadow(nullptr),		// 影
 m_state(STATE_IDOL),		// 状態
 m_oldPos(VEC3_ZERO),		// 過去位置
 m_jumpPosStart(VEC3_ZERO),	// ジャンプ開始位置
@@ -97,6 +99,7 @@ CEnemy::~CEnemy()
 HRESULT CEnemy::Init()
 {
 	// メンバ変数を初期化
+	m_pShadow = nullptr;		// 影
 	m_state = STATE_IDOL;		// 状態
 	m_oldPos = VEC3_ZERO;		// 過去位置
 	m_jumpPosStart = VEC3_ZERO;	// ジャンプ開始位置
@@ -120,6 +123,9 @@ HRESULT CEnemy::Init()
 
 	// 初期モーションの割当
 	SetMotion(MOTION_IDOL);
+
+	// 影の生成
+	m_pShadow = CShadow::Create(CShadow::TEXTURE_NORMAL, VECTOR3(70.0f, 0.0f, 70.0f), this);
 
 	if (m_pList == nullptr)
 	{ // リストマネージャーが存在しない場合
@@ -238,6 +244,9 @@ CEnemy* CEnemy::Create
 		// 向きを設定
 		pEnemy->SetVec3Rotation(rRot);
 		pEnemy->m_destRot = rRot;	// 目標向きも同一の向きにする
+
+		// 影位置の修正
+		pEnemy->m_pShadow->SetDrawInfo();
 
 		// 確保したアドレスを返す
 		return pEnemy;
