@@ -34,14 +34,14 @@ namespace
 
 	namespace rank
 	{
-		const char*	FONT = "data\\FONT\\JFドット東雲ゴシック14.ttf";	// フォントパス
+		const char*	FONT = "data\\FONT\\DelaSuko Gothic One.ttf";	// フォントパス
 		const int	PRIORITY	= 6;			// テキストの優先順位
 		const bool	ITALIC		= false;		// イタリック
-		const float	HEIGHT		= 82.0f;		// 文字縦幅
+		const float	HEIGHT		= 100.0f;		// 文字縦幅
 		const float	WAIT_TIME	= 0.15f;		// 文字表示の待機時間
 		const EAlignX ALIGN_X	= XALIGN_LEFT;	// 横配置
 		const EAlignY ALIGN_Y	= YALIGN_TOP;	// 縦配置
-		const VECTOR3 POS		= VECTOR3(500.0f, 305.0f, 0.0f);	// 位置
+		const VECTOR3 POS		= VECTOR3(500.0f, 325.0f, 0.0f);	// 位置
 	}
 
 	namespace cont
@@ -459,12 +459,17 @@ void CResultManager::UpdateSelect()
 
 	// 選択肢操作
 	CInputKeyboard* pKey = GET_INPUTKEY;	// キーボード情報
-	if (pKey->IsTrigger(DIK_LEFT))
+	CInputPad* pPad = GET_INPUTPAD;			// パッド情報
+	if (pKey->IsTrigger(DIK_LEFT)
+	||  pKey->IsTrigger(DIK_A)
+	||  pPad->IsTrigger(CInputPad::KEY_LEFT))
 	{
 		// 左に選択をずらす
 		m_nCurSelect = (m_nCurSelect + 1) % SELECT_MAX;
 	}
-	if (pKey->IsTrigger(DIK_RIGHT))
+	if (pKey->IsTrigger(DIK_RIGHT)
+	||  pKey->IsTrigger(DIK_D)
+	||  pPad->IsTrigger(CInputPad::KEY_RIGHT))
 	{
 		// 右に選択をずらす
 		m_nCurSelect = (m_nCurSelect + (SELECT_MAX - 1)) % SELECT_MAX;

@@ -16,9 +16,7 @@
 // 操作空間
 namespace input
 {
-	bool Decide();		// 確定操作
-	bool Cancel();		// キャンセル操作
-	bool FieldMenu();	// フィールドメニュー操作
+	bool Decide();	// 確定操作
 }
 
 #endif	// _INPUT_MANAGER_H_
