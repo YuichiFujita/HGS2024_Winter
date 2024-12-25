@@ -34,6 +34,9 @@ namespace
 	const float	REV_ROTA = 9.0f;	// 向き変更の補正係数
 	const float	JUMP_REV = 0.16f;	// 通常状態時の空中の移動量の減衰係数
 	const float	LAND_REV = 0.16f;	// 通常状態時の地上の移動量の減衰係数
+	const float	JUMP_HEIGHT = 1000.0f;	// ジャンプの最高到達点
+	const float	JUMP_TIME = 0.65f;		// ジャンプ時間
+	const float	CHANGE_ATK = 700.0f;	// 攻撃変更距離
 
 	namespace motion
 	{
@@ -47,7 +50,6 @@ namespace
 CListManager<CEnemy>* CEnemy::m_pList = nullptr;	// オブジェクトリスト
 CEnemy::AFuncState CEnemy::m_aFuncState[] =			// 状態更新関数リスト
 {
-	&CEnemy::UpdateNone,	// 何もしない状態の更新
 	&CEnemy::UpdateIdol,	// 待機状態の更新
 	&CEnemy::UpdateJump,	// ジャンプ状態の更新
 	&CEnemy::UpdateAttack,	// 攻撃状態の更新
@@ -60,7 +62,7 @@ CEnemy::AFuncState CEnemy::m_aFuncState[] =			// 状態更新関数リスト
 //	コンストラクタ
 //============================================================
 CEnemy::CEnemy() : CObjectChara(CObject::LABEL_ENEMY, CObject::DIM_3D, PRIORITY),
-m_state(STATE_NONE),		// 状態
+m_state(STATE_IDOL),		// 状態
 m_oldPos(VEC3_ZERO),		// 過去位置
 m_jumpPosStart(VEC3_ZERO),	// ジャンプ開始位置
 m_jumpPosEnd(VEC3_ZERO),	// ジャンプ終了位置
@@ -262,6 +264,29 @@ float CEnemy::GetHeight() const
 }
 
 //============================================================
+//	待機時間の計算処理
+//============================================================
+float CEnemy::CalcIdolTime()
+{
+	float fCurGameTime = CSceneGame::GetGameManager()->GetGameTime();	// 現在の経過時間
+
+	// 経過時間から待機時間を早くする
+	float fRate = easing::InCubic(fCurGameTime, 0.0f, 10.0f);
+
+	// 
+	return useful::RateToValue(fRate, 2.0f, 0.5f);
+}
+
+//============================================================
+//	攻撃モーションフラグ取得処理
+//============================================================
+bool CEnemy::IsAttack()
+{
+	// 攻撃モーション中かを返す
+	return (MOTION_ATK_UP || MOTION_ATK_SIDE);
+}
+
+//============================================================
 //	状態の設定処理
 //============================================================
 void CEnemy::SetState(const EState state)
@@ -287,37 +312,29 @@ void CEnemy::SetJump(const VECTOR3& rCurPos, const VECTOR3& rJumpPos)
 }
 
 //============================================================
-//	何もしない状態時の更新処理
+//	攻撃の設定処理
 //============================================================
-CEnemy::EMotion CEnemy::UpdateNone(const float fDeltaTime)
+void CEnemy::SetAttack(const VECTOR3& rCurPos, const VECTOR3& rPlayerPos)
 {
-	VECTOR3 posEnemy = GetVec3Position();	// プレイヤー位置
-	VECTOR3 rotEnemy = GetVec3Rotation();	// プレイヤー向き
+	// 二点間の距離を計算
+	float fDisPlayer = sqrtf((rCurPos.x - rPlayerPos.x) * (rCurPos.x - rPlayerPos.x)
+						   + (rCurPos.z - rPlayerPos.z) * (rCurPos.z - rPlayerPos.z));
 
-	// 重力の更新
-	UpdateGravity(fDeltaTime);
+	if (fDisPlayer > CHANGE_ATK)
+	{ // 遠い場合
 
-	// 位置更新
-	UpdatePosition(&posEnemy, fDeltaTime);
+		// 上投げモーションにする
+		SetMotion(MOTION_ATK_UP);
+	}
+	else
+	{ // 近い場合
 
-	// 着地判定
-	UpdateLanding(&posEnemy, fDeltaTime);
+		// 横投げモーションにする
+		SetMotion(MOTION_ATK_SIDE);
+	}
 
-	// 位置補正
-	CStage* pStage = GET_MANAGER->GetStage();	// ステージ情報
-	pStage->LimitPosition(posEnemy, RADIUS);
-
-	// 向き更新
-	UpdateRotation(&rotEnemy, fDeltaTime);
-
-	// 位置を反映
-	SetVec3Position(posEnemy);
-
-	// 向きを反映
-	SetVec3Rotation(rotEnemy);
-
-	// 現在のモーションを返す
-	return MOTION_IDOL;
+	// 攻撃状態にする
+	SetState(STATE_ATK);
 }
 
 //============================================================
@@ -325,8 +342,10 @@ CEnemy::EMotion CEnemy::UpdateNone(const float fDeltaTime)
 //============================================================
 CEnemy::EMotion CEnemy::UpdateIdol(const float fDeltaTime)
 {
-	VECTOR3 posEnemy = GetVec3Position();	// プレイヤー位置
-	VECTOR3 rotEnemy = GetVec3Rotation();	// プレイヤー向き
+	CPlayer* pPlayer = CScene::GetPlayer();			// プレイヤー情報
+	VECTOR3 posPlayer = pPlayer->GetVec3Position();	// プレイヤー位置
+	VECTOR3 posEnemy = GetVec3Position();	// 敵位置
+	VECTOR3 rotEnemy = GetVec3Rotation();	// 敵向き
 
 	// 重力の更新
 	UpdateGravity(fDeltaTime);
@@ -341,25 +360,26 @@ CEnemy::EMotion CEnemy::UpdateIdol(const float fDeltaTime)
 	CStage* pStage = GET_MANAGER->GetStage();	// ステージ情報
 	pStage->LimitPosition(posEnemy, RADIUS);
 
+	// 目標向きを設定
+	m_destRot.y = atan2f(posEnemy.x - posPlayer.x, posEnemy.z - posPlayer.z);
+
 	// 向き更新
 	UpdateRotation(&rotEnemy, fDeltaTime);
+
+	// 経過時間を加算
+	m_fStateTime += fDeltaTime;
+	if (m_fStateTime >= CalcIdolTime())
+	{ // 時間が経過しきった場合
+
+		// ジャンプ状態にする
+		SetJump(posEnemy, GET_MANAGER->GetStage()->GetRandomPositionInLimit(RADIUS));
+	}
 
 	// 位置を反映
 	SetVec3Position(posEnemy);
 
 	// 向きを反映
 	SetVec3Rotation(rotEnemy);
-
-#if 1
-	// 経過時間を加算
-	m_fStateTime += fDeltaTime;
-	if (m_fStateTime >= 0.5f)
-	{ // 時間が経過しきった場合
-
-		// ジャンプ状態にする
-		SetJump(posEnemy, GET_MANAGER->GetStage()->GetRandomPositionInLimit(RADIUS));
-	}
-#endif
 
 	// 現在のモーションを返す
 	return MOTION_IDOL;
@@ -370,24 +390,31 @@ CEnemy::EMotion CEnemy::UpdateIdol(const float fDeltaTime)
 //============================================================
 CEnemy::EMotion CEnemy::UpdateJump(const float fDeltaTime)
 {
-	VECTOR3 posEnemy = GetVec3Position();	// プレイヤー位置
-	VECTOR3 rotEnemy = GetVec3Rotation();	// プレイヤー向き
+	VECTOR3 posEnemy = GetVec3Position();	// 敵位置
+	VECTOR3 rotEnemy = GetVec3Rotation();	// 敵向き
 
 	// 経過時間を加算
 	m_fStateTime += fDeltaTime;
 
 	// ジャンプさせる
-	posEnemy = useful::GetParabola3D(m_jumpPosStart, m_jumpPosEnd, 1000.0f, 1.0f, m_fStateTime);
-	if (m_fStateTime >= 1.0f)
+	posEnemy = useful::GetParabola3D(m_jumpPosStart, m_jumpPosEnd, JUMP_HEIGHT, JUMP_TIME, m_fStateTime);
+	if (m_fStateTime >= JUMP_TIME)
 	{ // 時間が経過しきった場合
 
 		// 攻撃状態にする
-		SetState(STATE_ATK);
+		CPlayer* pPlayer = CScene::GetPlayer();	// プレイヤー情報
+		SetAttack(posEnemy, pPlayer->GetVec3Position());
 	}
 
 	// 位置補正
 	CStage* pStage = GET_MANAGER->GetStage();	// ステージ情報
 	pStage->LimitPosition(posEnemy, RADIUS);
+
+	// 目標向きを設定
+	m_destRot.y = atan2f(m_jumpPosStart.x - m_jumpPosEnd.x, m_jumpPosStart.z - m_jumpPosEnd.z);
+
+	// 向き更新
+	UpdateRotation(&rotEnemy, fDeltaTime);
 
 	// 位置を反映
 	SetVec3Position(posEnemy);
@@ -404,26 +431,52 @@ CEnemy::EMotion CEnemy::UpdateJump(const float fDeltaTime)
 //============================================================
 CEnemy::EMotion CEnemy::UpdateAttack(const float fDeltaTime)
 {
-	VECTOR3 posEnemy = GetVec3Position();	// プレイヤー位置
-	VECTOR3 rotEnemy = GetVec3Rotation();	// プレイヤー向き
+	CPlayer* pPlayer = CScene::GetPlayer();			// プレイヤー情報
+	VECTOR3 posPlayer = pPlayer->GetVec3Position();	// プレイヤー位置
+	VECTOR3 posEnemy = GetVec3Position();	// 敵位置
+	VECTOR3 rotEnemy = GetVec3Rotation();	// 敵向き
 
-	// 経過時間を加算
-	m_fStateTime += fDeltaTime;
+	// 攻撃モーションじゃない場合エラー
+	assert(IsAttack());
 
 	// 攻撃させる
-	if (m_fStateTime >= 0.0f)
-	{ // 時間が経過しきった場合
+	if (GetMotionComboFrame() == GetMotionWholeCounter())
+	{ // コンボフレームの瞬間の場合
 
-		// 設置型プレゼントを飛ばす
-		CPresent::Create(GetVec3Position(), VEC3_ZERO, CPresent::TYPE_BULLET);
+		switch (GetMotionType())
+		{ // モーション種類ごとの処理
+		case MOTION_ATK_UP:
 
-		// 待機状態にする
-		SetState(STATE_IDOL);
+			// 設置型プレゼントを飛ばす
+			CPresent::Create(GetVec3Position(), VEC3_ZERO, CPresent::TYPE_LAND);
+			break;
+
+		case MOTION_ATK_SIDE:
+
+			// 設置型プレゼントを飛ばす
+			CPresent::Create(GetVec3Position(), VEC3_ZERO, CPresent::TYPE_BULLET);
+			break;
+		};
 	}
+
+	// 重力の更新
+	UpdateGravity(fDeltaTime);
+
+	// 位置更新
+	UpdatePosition(&posEnemy, fDeltaTime);
+
+	// 着地判定
+	UpdateLanding(&posEnemy, fDeltaTime);
 
 	// 位置補正
 	CStage* pStage = GET_MANAGER->GetStage();	// ステージ情報
 	pStage->LimitPosition(posEnemy, RADIUS);
+
+	// 目標向きを設定
+	m_destRot.y = atan2f(posEnemy.x - posPlayer.x, posEnemy.z - posPlayer.z);
+
+	// 向き更新
+	UpdateRotation(&rotEnemy, fDeltaTime);
 
 	// 位置を反映
 	SetVec3Position(posEnemy);
@@ -442,27 +495,6 @@ void CEnemy::UpdateOldPosition()
 {
 	// 過去位置を更新
 	m_oldPos = GetVec3Position();
-}
-
-//============================================================
-//	移動量/目標向きの更新処理
-//============================================================
-CEnemy::EMotion CEnemy::UpdateMove(const float fDeltaTime)
-{
-	CPlayer* pPlayer = CScene::GetPlayer();
-
-	if (pPlayer == nullptr) { return MOTION_IDOL; }
-
-	// 方向を定める
-	D3DXVECTOR3 pos = GetVec3Position();
-	D3DXVECTOR3 posPlayer = pPlayer->GetVec3Position();
-	float fAngle = atan2f(posPlayer.x - pos.x, posPlayer.z - pos.z);
-
-	// 目的の向きを反映
-	m_destRot.y = fAngle;
-
-	// 移動モーションを返す
-	return MOTION_WALK;
 }
 
 //============================================================
@@ -595,7 +627,16 @@ void CEnemy::UpdateMotion(int nMotion, const float fDeltaTime)
 	case MOTION_IDOL:
 		break;
 
-	case MOTION_WALK:
+	case MOTION_ATK_UP:
+	case MOTION_ATK_SIDE:
+
+		if (IsMotionFinish())
+		{ // モーションが終了した場合
+
+			// 待機状態にする
+			SetMotion(MOTION_IDOL, motion::BLEND_FRAME_OTHER);
+			SetState(STATE_IDOL);
+		}
 		break;
 	}
 }

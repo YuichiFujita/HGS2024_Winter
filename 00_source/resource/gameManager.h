@@ -48,6 +48,10 @@ public:
 	inline void SetEnableControlOK(const bool bOK)	{ m_bControlOK = bOK; }		// 操作可能フラグ設定
 	inline bool IsControlOK() const					{ return m_bControlOK; }	// 操作可能フラグ取得
 
+#ifdef TIMER
+	float GetGameTime() const;	// タイム取得
+#endif
+
 #ifdef _DEBUG
 	void ChangeEnableEdit();	// エディットモード変更
 #endif // DEBUG
