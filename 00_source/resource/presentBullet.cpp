@@ -30,8 +30,8 @@
 namespace
 {
 	const char* MODEL = "data\\MODEL\\PRESENT\\PresentBag.x";	// モデル
-	const float	RADIUS = 50.0f;	// 半径
-	const float HEIGHT = 30.0f;	// 身長
+	const float	RADIUS = 37.0f;	// 半径
+	const float HEIGHT = 60.0f;	// 身長
 	const float SPEED = 570.0f;	// 速度
 	const float	REV_ROTA = 0.06f;	// 向き変更の補正係数
 	const float SUB_SPEED = 230.0f;	// 速度の減算量
@@ -241,7 +241,7 @@ void CPresentBullet::Collision()
 	VECTOR3 sizeMaxPlayer = VECTOR3(pPlayer->GetRadius(), pPlayer->GetHeight(), pPlayer->GetRadius());
 	VECTOR3 sizeMinPlayer = VECTOR3(pPlayer->GetRadius(), 0.0f, pPlayer->GetRadius());
 	VECTOR3 sizeMaxBullet = VECTOR3(RADIUS, HEIGHT, RADIUS);
-	VECTOR3 sizeMinBullet = VECTOR3(RADIUS, 0.0f, RADIUS);
+	VECTOR3 sizeMinBullet = VECTOR3(RADIUS, HEIGHT, RADIUS);
 
 	if (collision::Box3D(pos, pPlayer->GetVec3Position(), sizeMaxPlayer, sizeMaxBullet, sizeMinPlayer, sizeMinBullet))
 	{ // 当たった場合
