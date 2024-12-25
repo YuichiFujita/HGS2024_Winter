@@ -42,7 +42,7 @@ namespace
 //	静的メンバ変数宣言
 //************************************************************
 CListManager<CPlayer>* CPlayer::m_pList = nullptr;	// オブジェクトリスト
-CPlayer::AFuncState CPlayer::m_aFuncState[] =		// 状態関数配列
+CPlayer::AFuncState CPlayer::m_aFuncState[] =		// 状態更新関数リスト
 {
 	&CPlayer::UpdateNone,	// 何もしない状態の更新
 	&CPlayer::UpdateNormal,	// 通常状態の更新
