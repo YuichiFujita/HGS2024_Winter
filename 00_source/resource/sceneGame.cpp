@@ -118,7 +118,7 @@ void CSceneGame::Uninit()
 void CSceneGame::Update(const float fDeltaTime)
 {
 	// フェード中の場合抜ける
-	if (GET_MANAGER->GetFade()->IsFade()) { return; }
+	//if (GET_MANAGER->GetFade()->IsFade()) { return; }
 
 	// ゲームマネージャーの更新
 	assert(m_pGameManager != nullptr);

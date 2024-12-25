@@ -21,6 +21,7 @@
 
 #include "player.h"
 #include "enemy.h"
+#include "camera.h"
 
 #ifdef _DEBUG
 #include "editManager.h"
@@ -58,6 +59,11 @@ namespace
 		const char*		TEXTURE	= "data\\TEXTURE\\timer_title000.png";	// テクスチャパス
 		const VECTOR3	POS		= VECTOR3(350.0f, timer::POS.y, 0.0f);	// 位置
 		const float		HEIGHT	= timer::VAL_SIZE.y;	// 縦幅
+	}
+
+	namespace camera
+	{
+		const CCamera::SSwing HIT_SWING = CCamera::SSwing(8.0f, 1.8f, 0.14f);	// ヒット時のカメラ揺れ
 	}
 }
 
@@ -299,8 +305,10 @@ void CGameManager::TransResult()
 	pRetention->SetUpdateRankIdx(CRankingManager::SetRank(fTime));	// ランキング更新インデックスの保存
 #endif
 
+	GET_MANAGER->GetCamera()->SetSwing(camera::HIT_SWING);
+
 	// リザルト画面に遷移する
-	GET_MANAGER->SetLoadScene(CScene::MODE_RESULT, 3.0f);
+	GET_MANAGER->SetLoadScene(CScene::MODE_RESULT, 1.0f);
 }
 
 //============================================================

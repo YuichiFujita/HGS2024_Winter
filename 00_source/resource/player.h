@@ -50,6 +50,7 @@ public:
 	{
 		MOTION_IDOL = 0,	// 待機モーション
 		MOTION_WALK,		// 歩行モーション
+		MOTION_DEATH,		// 死亡モーション
 		MOTION_MAX			// この列挙型の総数
 	};
 
