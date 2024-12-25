@@ -11,6 +11,7 @@
 #include "manager.h"
 #include "renderer.h"
 #include "sceneGame.h"
+#include "player.h"
 
 //************************************************************
 //	定数宣言
@@ -46,10 +47,9 @@ namespace
 	// 追従カメラ情報
 	namespace follow
 	{
-		const VECTOR3 ROT		= VECTOR3(HALF_PI, 0.0f, 0.0f);	// 向き
-		const float DISTANCE	= 100.0f;	// 追従カメラの距離
-		const float REV_POS		= 1.0f;		// カメラ位置の補正係数
-		const float REV_ROT		= 1.0f;		// カメラ向きの補正係数
+		const VECTOR3 ROT		= VECTOR3(D3DX_PI * 0.71f, 0.0f, 0.0f);	// 向き
+		const float DISTANCE	= 1100.0f;	// 追従カメラの距離
+		const float REV_POS		= 0.6f;		// カメラ位置の補正係数
 	}
 
 	// 操作カメラ情報
@@ -503,25 +503,16 @@ void CCamera::UpdateFollow(const float fDeltaTime)
 	//----------------------------------------------------
 	//	向きの更新
 	//----------------------------------------------------
-	VECTOR3 diffRot = VEC3_ZERO;	// 差分向き
-
-	// 目標向きの設定
-	m_camera.destRot = none::ROT;
+	// 向きの設定
+	m_camera.rot = m_camera.destRot = follow::ROT;
+	useful::NormalizeRot(m_camera.rot);		// 向きを正規化
 	useful::NormalizeRot(m_camera.destRot);	// 目標向きを正規化
-
-	// 差分向きの計算
-	diffRot = m_camera.destRot - m_camera.rot;
-	useful::NormalizeRot(diffRot);			// 差分向きを正規化
-
-	// 現在向きの更新
-	m_camera.rot += diffRot * none::REV_ROT;
-	useful::NormalizeRot(m_camera.rot);		// 現在向きを正規化
 
 	//----------------------------------------------------
 	//	距離の更新
 	//----------------------------------------------------
 	// 距離の設定
-	m_camera.fDis = m_camera.fDestDis = none::DISTANCE;
+	m_camera.fDis = m_camera.fDestDis = follow::DISTANCE;
 
 	//----------------------------------------------------
 	//	位置の更新
@@ -530,7 +521,7 @@ void CCamera::UpdateFollow(const float fDeltaTime)
 	VECTOR3 diffPosR = VEC3_ZERO;	// 注視点の差分位置
 
 	// 注視点の更新
-	m_camera.destPosR = none::POSR;
+	m_camera.destPosR = CScene::GetPlayer()->GetVec3Position();
 
 	// 視点の更新
 	m_camera.destPosV.x = m_camera.destPosR.x + ((-m_camera.fDis * sinf(m_camera.rot.x)) * sinf(m_camera.rot.y));
@@ -542,9 +533,8 @@ void CCamera::UpdateFollow(const float fDeltaTime)
 	diffPosV = m_camera.destPosV - m_camera.posV;	// 視点
 
 	// 現在位置を更新
-	m_camera.posR += diffPosR * none::REV_POS;	// 注視点
-	m_camera.posV += diffPosV * none::REV_POS;	// 視点
-
+	m_camera.posR += diffPosR * follow::REV_POS;	// 注視点
+	m_camera.posV += diffPosV * follow::REV_POS;	// 視点
 }
 
 //============================================================
