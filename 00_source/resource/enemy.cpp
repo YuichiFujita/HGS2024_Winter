@@ -303,6 +303,10 @@ CEnemy::EMotion CEnemy::UpdateNone(const float fDeltaTime)
 	// 着地判定
 	UpdateLanding(&posEnemy, fDeltaTime);
 
+	// 位置補正
+	CStage* pStage = GET_MANAGER->GetStage();	// ステージ情報
+	pStage->LimitPosition(posEnemy, RADIUS);
+
 	// 向き更新
 	UpdateRotation(&rotEnemy, fDeltaTime);
 
@@ -333,6 +337,10 @@ CEnemy::EMotion CEnemy::UpdateIdol(const float fDeltaTime)
 	// 着地判定
 	UpdateLanding(&posEnemy, fDeltaTime);
 
+	// 位置補正
+	CStage* pStage = GET_MANAGER->GetStage();	// ステージ情報
+	pStage->LimitPosition(posEnemy, RADIUS);
+
 	// 向き更新
 	UpdateRotation(&rotEnemy, fDeltaTime);
 
@@ -345,11 +353,11 @@ CEnemy::EMotion CEnemy::UpdateIdol(const float fDeltaTime)
 #if 1
 	// 経過時間を加算
 	m_fStateTime += fDeltaTime;
-	if (m_fStateTime >= 3.0f)
+	if (m_fStateTime >= 0.5f)
 	{ // 時間が経過しきった場合
 
 		// ジャンプ状態にする
-		SetJump(posEnemy, VEC3_ZERO);
+		SetJump(posEnemy, GET_MANAGER->GetStage()->GetRandomPositionInLimit(RADIUS));
 	}
 #endif
 
@@ -377,6 +385,10 @@ CEnemy::EMotion CEnemy::UpdateJump(const float fDeltaTime)
 		SetState(STATE_ATK);
 	}
 
+	// 位置補正
+	CStage* pStage = GET_MANAGER->GetStage();	// ステージ情報
+	pStage->LimitPosition(posEnemy, RADIUS);
+
 	// 位置を反映
 	SetVec3Position(posEnemy);
 
@@ -398,8 +410,8 @@ CEnemy::EMotion CEnemy::UpdateAttack(const float fDeltaTime)
 	// 経過時間を加算
 	m_fStateTime += fDeltaTime;
 
-	// ジャンプさせる
-	if (m_fStateTime >= 2.0f)
+	// 攻撃させる
+	if (m_fStateTime >= 0.0f)
 	{ // 時間が経過しきった場合
 
 		// 設置型プレゼントを飛ばす
@@ -408,6 +420,10 @@ CEnemy::EMotion CEnemy::UpdateAttack(const float fDeltaTime)
 		// 待機状態にする
 		SetState(STATE_IDOL);
 	}
+
+	// 位置補正
+	CStage* pStage = GET_MANAGER->GetStage();	// ステージ情報
+	pStage->LimitPosition(posEnemy, RADIUS);
 
 	// 位置を反映
 	SetVec3Position(posEnemy);
