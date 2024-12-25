@@ -16,6 +16,7 @@
 #include "present.h"
 
 class CWarning;
+class CShadow;
 
 //************************************************************
 //	クラス定義
@@ -79,6 +80,7 @@ private:
 	void UpdateDelete(const float fDeltaTime);	// 削除状態処理
 
 	// メンバ変数
+	CShadow* m_pShadow;	// 影
 	float m_fStateTime;			// 状態の時間
 	VECTOR3	m_oldPos;			// 過去位置
 	VECTOR3 m_originPos;		// 初期位置
