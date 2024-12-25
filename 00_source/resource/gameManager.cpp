@@ -255,7 +255,7 @@ void CGameManager::TransResult()
 #endif
 
 	// ƒŠƒUƒ‹ƒg‰æ–Ê‚É‘JˆÚ‚·‚é
-	GET_MANAGER->SetLoadScene(CScene::MODE_RESULT);
+	GET_MANAGER->SetLoadScene(CScene::MODE_RESULT, 3.0f);
 }
 
 //============================================================
