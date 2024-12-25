@@ -21,7 +21,7 @@ namespace
 	const VECTOR3	POS = SCREEN_CENT;	// 位置
 	const float		WIDTH = 620.0f;		// 横幅
 	const float		SCALE_TIME = 0.8f;	// 演出時間
-	const float		ALPHA_TIME = 4.0f;	// 演出時間
+	const float		ALPHA_TIME = 2.5f;	// 演出時間
 }
 
 //************************************************************
@@ -100,7 +100,7 @@ void CStart::Update(const float fDeltaTime)
 	SetVec3Size(VECTOR3(fWidth, fTitleHeight, 0.0f));
 
 	// 線形保管で透明度調整
-	float fAlpha = EaseOutBack(1.0f, 0.0f, SCALE_TIME, ALPHA_TIME, m_fStateTime);
+	float fAlpha = EasingCubicInOut(1.0f, 0.0f, SCALE_TIME, ALPHA_TIME, m_fStateTime);
 
 	// 透明度の設定
 	SetAlpha(fAlpha);

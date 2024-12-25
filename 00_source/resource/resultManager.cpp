@@ -25,23 +25,30 @@
 //************************************************************
 namespace
 {
+	namespace title
+	{
+		const char*		TEXTURE	= "data\\TEXTURE\\timer_title000.png";	// テクスチャパス
+		const VECTOR3	POS		= VECTOR3(SCREEN_CENT.x, 120.0f, 0.0f);	// 位置
+		const float		HEIGHT	= 140.0f;	// 縦幅
+	}
+
 	namespace rank
 	{
 		const char*	FONT = "data\\FONT\\JFドット東雲ゴシック14.ttf";	// フォントパス
 		const int	PRIORITY	= 6;			// テキストの優先順位
 		const bool	ITALIC		= false;		// イタリック
-		const float	HEIGHT		= 42.0f;		// 文字縦幅
+		const float	HEIGHT		= 82.0f;		// 文字縦幅
 		const float	WAIT_TIME	= 0.15f;		// 文字表示の待機時間
 		const EAlignX ALIGN_X	= XALIGN_LEFT;	// 横配置
 		const EAlignY ALIGN_Y	= YALIGN_TOP;	// 縦配置
-		const VECTOR3 POS		= VECTOR3(600.0f, 285.0f, 0.0f);	// 位置
+		const VECTOR3 POS		= VECTOR3(500.0f, 305.0f, 0.0f);	// 位置
 	}
 
 	namespace cont
 	{
 		const char*		TEXTURE	= "data\\TEXTURE\\continue000.png";		// テクスチャパス
-		const VECTOR3	POS		= VECTOR3(SCREEN_CENT.x, 425.0f, 0.0f);	// 位置
-		const float		WIDTH	= 600.0f;	// 横幅
+		const VECTOR3	POS		= VECTOR3(SCREEN_CENT.x, 445.0f, 0.0f);	// 位置
+		const float		WIDTH	= 700.0f;	// 横幅
 	}
 
 	namespace select
@@ -51,9 +58,9 @@ namespace
 			"data\\TEXTURE\\continueSelect000.png",	// YES
 			"data\\TEXTURE\\continueSelect001.png",	// NO
 		};
-		const VECTOR3	POS		= VECTOR3(SCREEN_CENT.x - 260.0f, 525.0f, 0.0f);	// 位置
-		const VECTOR3	OFFSET	= VECTOR3(260.0f * 2.0f, 0.0f, 0.0f);	// オフセット
-		const float		WIDTH	= 380.0f;				// 横幅
+		const VECTOR3	POS		= VECTOR3(SCREEN_CENT.x - 160.0f, 585.0f, 0.0f);	// 位置
+		const VECTOR3	OFFSET	= VECTOR3(160.0f * 2.0f, 0.0f, 0.0f);	// オフセット
+		const float		WIDTH	= 340.0f;				// 横幅
 		const COLOR		COL_DEFAULT	= color::White();	// 通常色
 		const COLOR		COL_CHOICE	= color::Yellow();	// 選択色
 	}
@@ -72,8 +79,8 @@ namespace
 	{
 		const CValue::EType TYPE = CValue::TYPE_NORMAL;	// 数字種類
 		const VECTOR3 POS		 = VECTOR3(SCREEN_CENT.x, 240.0f, 0.0f);		// タイマー位置
-		const VECTOR3 VAL_SIZE	 = VECTOR3(52.8f, 62.4f, 0.0f) * 1.4f;			// タイマー数字大きさ
-		const VECTOR3 PART_SIZE	 = VECTOR3(27.3f, 62.4f, 0.0f) * 1.2f;			// タイマー区切り大きさ
+		const VECTOR3 VAL_SIZE	 = VECTOR3(52.8f, 62.4f, 0.0f) * 1.4f * 1.6f;			// タイマー数字大きさ
+		const VECTOR3 PART_SIZE	 = VECTOR3(27.3f, 62.4f, 0.0f) * 1.2f * 1.6f;			// タイマー区切り大きさ
 		const VECTOR3 VAL_SPACE	 = VECTOR3(VAL_SIZE.x * 0.85f, 0.0f, 0.0f);		// タイマー数字空白
 		const VECTOR3 PART_SPACE = VECTOR3(PART_SIZE.x * 0.85f, 0.0f, 0.0f);	// タイマー区切り空白
 	}
@@ -94,6 +101,7 @@ CResultManager::CResultManager() :
 #else TIMER
 	m_pTime			(nullptr),	// タイム情報
 #endif
+	m_pTitle		(nullptr),	// タイトル情報
 	m_pState		(nullptr),	// 状態
 	m_nCurSelect	(0),		// 現在の選択肢
 	m_nOldSelect	(0)			// 前回の選択肢
@@ -126,12 +134,32 @@ HRESULT CResultManager::Init()
 #else TIMER
 	m_pTime			= nullptr;	// タイム情報
 #endif
+	m_pTitle		= nullptr;	// タイトル情報
 	m_pState		= nullptr;	// 状態
 	m_nCurSelect	= 0;		// 現在の選択肢
 	m_nOldSelect	= 0;		// 前回の選択肢
 
 	// 通常状態にする
 	ChangeState(new CResultStateNormal);
+
+	// タイトルの生成
+	m_pTitle = CObject2D::Create(title::POS);
+	if (m_pTitle == nullptr)
+	{ // 生成に失敗した場合
+
+		assert(false);
+		return E_FAIL;
+	}
+
+	// 自動ラベルを設定
+	m_pTitle->SetLabel(CObject::LABEL_UI);
+
+	// タイトルテクスチャの割当
+	m_pTitle->BindTexture(title::TEXTURE);
+
+	// タイトル大きさの設定
+	float fTitleWidth = useful::GetTexWidthFromAspect(title::HEIGHT, title::TEXTURE);	// テクスチャ基準の横幅
+	m_pTitle->SetVec3Size(VECTOR3(fTitleWidth, title::HEIGHT, 0.0f));
 
 #ifdef SCORE
 	// スコアの生成
@@ -202,6 +230,9 @@ HRESULT CResultManager::Init()
 
 		// 文字送り時の再生SEを設定
 		//m_pUpdateRank->SetScrollSE(CSound::LABEL_SE_TEXT01);
+
+		// 色を黄色にする
+		m_pUpdateRank->SetColor(color::Yellow());
 	}
 
 	// コンテニューの生成

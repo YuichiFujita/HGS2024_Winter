@@ -55,7 +55,7 @@ namespace
 
 	namespace title
 	{
-		const char*		TEXTURE	= "data\\TEXTURE\\timer_title000.png";		// テクスチャパス
+		const char*		TEXTURE	= "data\\TEXTURE\\timer_title000.png";	// テクスチャパス
 		const VECTOR3	POS		= VECTOR3(350.0f, timer::POS.y, 0.0f);	// 位置
 		const float		HEIGHT	= timer::VAL_SIZE.y;	// 縦幅
 	}

@@ -49,6 +49,7 @@ namespace
 		SSoundInfo("data\\SE\\landing.wav", 0),			// ’…’nŒø‰Ê‰¹
 		SSoundInfo("data\\SE\\PresentBomb.wav", 0),		// ”š’eŒø‰Ê‰¹
 		SSoundInfo("data\\SE\\Start.wav", 0),			// ŠJŽnŒø‰Ê‰¹
+		SSoundInfo("data\\SE\\CharFeed.wav", 0),		// •¶Žš‘—‚èŒø‰Ê‰¹
 	};
 }
 
