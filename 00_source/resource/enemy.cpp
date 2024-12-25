@@ -317,6 +317,9 @@ void CEnemy::SetJump(const VECTOR3& rCurPos, const VECTOR3& rJumpPos)
 
 	// ジャンプ状態にする
 	SetState(STATE_JUMP);
+
+	// ジャンプの音
+	PLAY_SOUND(CSound::LABEL_SE_JUMP);
 }
 
 //============================================================
@@ -422,6 +425,9 @@ CEnemy::EMotion CEnemy::UpdateJump(const float fDeltaTime)
 	posEnemy = useful::GetParabola3D(m_jumpPosStart, m_jumpPosEnd, JUMP_HEIGHT, JUMP_TIME, m_fStateTime);
 	if (m_fStateTime >= JUMP_TIME)
 	{ // 時間が経過しきった場合
+
+		// 着地の音
+		PLAY_SOUND(CSound::LABEL_SE_LANDING);
 
 		// 攻撃状態にする
 		CPlayer* pPlayer = CScene::GetPlayer();	// プレイヤー情報
