@@ -7,7 +7,7 @@
 //************************************************************
 //	インクルードファイル
 //************************************************************
-#include "presentCopy.h"
+#include "present.h"
 #include "manager.h"
 #include "renderer.h"
 #include "sound.h"
@@ -18,7 +18,7 @@
 #include "sceneGame.h"
 #include "gameManager.h"
 
-#include "presentLandCopy.h"
+#include "presentLand.h"
 
 //************************************************************
 //	定数宣言

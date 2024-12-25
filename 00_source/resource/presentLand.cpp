@@ -7,7 +7,7 @@
 //************************************************************
 //	インクルードファイル
 //************************************************************
-#include "presentLandCopy.h"
+#include "presentLand.h"
 #include "manager.h"
 #include "renderer.h"
 #include "sound.h"

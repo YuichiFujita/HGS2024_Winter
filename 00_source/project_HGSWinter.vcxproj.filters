@@ -399,13 +399,13 @@
     <ClCompile Include="resource\player.cpp">
       <Filter>ingame</Filter>
     </ClCompile>
-    <ClCompile Include="resource\enemyCopy.cpp">
+    <ClCompile Include="resource\enemy.cpp">
       <Filter>ingame</Filter>
     </ClCompile>
-    <ClCompile Include="resource\presentCopy.cpp">
+    <ClCompile Include="resource\present.cpp">
       <Filter>ingame\Present</Filter>
     </ClCompile>
-    <ClCompile Include="resource\presentLandCopy.cpp">
+    <ClCompile Include="resource\presentLand.cpp">
       <Filter>ingame\Present</Filter>
     </ClCompile>
   </ItemGroup>
@@ -731,13 +731,13 @@
     <ClInclude Include="resource\player.h">
       <Filter>ingame</Filter>
     </ClInclude>
-    <ClInclude Include="resource\enemyCopy.h">
+    <ClInclude Include="resource\enemy.h">
       <Filter>ingame</Filter>
     </ClInclude>
-    <ClInclude Include="resource\presentCopy.h">
+    <ClInclude Include="resource\present.h">
       <Filter>ingame\Present</Filter>
     </ClInclude>
-    <ClInclude Include="resource\presentLandCopy.h">
+    <ClInclude Include="resource\presentLand.h">
       <Filter>ingame\Present</Filter>
     </ClInclude>
   </ItemGroup>
