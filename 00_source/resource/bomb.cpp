@@ -296,6 +296,9 @@ void CBomb::UpdateFly(const float fDeltaTime)
 	if (pos.y < posOld.y)
 	{ // 下がり始めたとき
 
+		// 爆発の音
+		PLAY_SOUND(CSound::LABEL_SE_PRESENT_BOMB);
+
 		// 爆発のパーティクルを出す
 		CParticle3D::Create(CParticle3D::TYPE_SMALL_EXPLOSION, pos);
 

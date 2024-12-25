@@ -47,6 +47,8 @@ namespace
 		SSoundInfo("data\\SE\\ThrowSide.wav", 0),		// 横投げ効果音
 		SSoundInfo("data\\SE\\jump.wav", 0),			// ジャンプ効果音
 		SSoundInfo("data\\SE\\landing.wav", 0),			// 着地効果音
+		SSoundInfo("data\\SE\\PresentBomb.wav", 0),		// 爆弾効果音
+		SSoundInfo("data\\SE\\Start.wav", 0),			// 開始効果音
 	};
 }
 
