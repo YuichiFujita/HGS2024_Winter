@@ -426,6 +426,9 @@
     <ClCompile Include="resource\gameStateStart.cpp">
       <Filter>state\game</Filter>
     </ClCompile>
+    <ClCompile Include="resource\shadow.cpp">
+      <Filter>ingame</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource\anim2D.h">
@@ -775,6 +778,9 @@
     </ClInclude>
     <ClInclude Include="resource\gameStateStart.h">
       <Filter>state\game</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\shadow.h">
+      <Filter>ingame</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
