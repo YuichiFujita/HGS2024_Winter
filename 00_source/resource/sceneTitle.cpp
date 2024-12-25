@@ -60,15 +60,12 @@ HRESULT CSceneTitle::Init()
 		return E_FAIL;
 	}
 
-	// TODO：カメラ設定
-#if 0
-	// 固定カメラにする
+	// 回転カメラにする
 	CCamera* pCamera = GET_MANAGER->GetCamera();	// カメラ情報
-	pCamera->SetState(CCamera::STATE_NONE);			// 固定状態を設定
-#endif
+	pCamera->SetState(CCamera::STATE_ROTATE);		// 回転状態を設定
 
 	// BGMの再生
-	PLAY_SOUND(CSound::LABEL_BGM_GENERAL);
+	PLAY_SOUND(CSound::LABEL_BGM_TITLE_000);
 
 	return S_OK;
 }

@@ -9,16 +9,19 @@
 //************************************************************
 #include "start.h"
 
+#include "manager.h"
+#include "sound.h"
+
 //************************************************************
 //	定数宣言
 //************************************************************
 namespace
 {
-	const char*		TEXTURE = "data\\TEXTURE\\title000.png";	// テクスチャパス
+	const char*		TEXTURE = "data\\TEXTURE\\start000.png";	// テクスチャパス
 	const VECTOR3	POS = SCREEN_CENT;	// 位置
 	const float		WIDTH = 620.0f;		// 横幅
 	const float		SCALE_TIME = 0.8f;	// 演出時間
-	const float		ALPHA_TIME = 2.0f;	// 演出時間
+	const float		ALPHA_TIME = 4.0f;	// 演出時間
 }
 
 //************************************************************
@@ -74,6 +77,9 @@ HRESULT CStart::Init()
 //============================================================
 void CStart::Uninit()
 {
+	// 開始の音
+	PLAY_SOUND(CSound::LABEL_SE_START);
+
 	// オブジェクト2Dの終了
 	CObject2D::Uninit();
 }

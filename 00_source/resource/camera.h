@@ -26,6 +26,7 @@ public:
 	enum EState
 	{
 		STATE_NONE = 0,	// 固定状態
+		STATE_ROTATE,	// 回転状態
 		STATE_FOLLOW,	// 追従状態
 		STATE_CONTROL,	// 操作状態
 		STATE_MAX		// この列挙型の総数
@@ -148,9 +149,11 @@ private:
 
 	// メンバ関数
 	void InitNone();	// 固定カメラ初期化
+	void InitRotate();	// 回転カメラ初期化
 	void InitFollow();	// 追従カメラ初期化
 	void InitControl();	// 操作カメラ初期化
 	void UpdateNone(const float fDeltaTime);	// 固定カメラ更新
+	void UpdateRotate(const float fDeltaTime);	// 回転カメラ更新
 	void UpdateFollow(const float fDeltaTime);	// 追従カメラ更新
 	void UpdateControl(const float fDeltaTime);	// 操作カメラ更新
 	void UpdateMove();		// 位置更新
