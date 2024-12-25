@@ -15,6 +15,8 @@
 //************************************************************
 #include "objectChara.h"
 
+class CShadow;
+
 //************************************************************
 //	クラス定義
 //************************************************************
@@ -119,6 +121,7 @@ private:
 
 	// メンバ変数
 	CListManager<CPlayer>::AIterator m_iterator;	// イテレーター
+	CShadow* m_pShadow;	// 影
 	VECTOR3	m_oldPos;	// 過去位置
 	VECTOR3	m_move;		// 移動量
 	VECTOR3	m_destRot;	// 目標向き
