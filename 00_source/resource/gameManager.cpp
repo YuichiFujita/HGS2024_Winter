@@ -45,13 +45,20 @@ namespace
 	{
 		const float TIME_START	 = 0.0f;				// 開始時間
 		const CValue::EType TYPE = CValue::TYPE_NORMAL;	// 数字種類
-		const VECTOR3 POS		 = SCREEN_CENT;			// タイマー位置
+		const VECTOR3 POS		 = VECTOR3(740.0f, 50.0f, 0.0f);				// タイマー位置
 		const VECTOR3 VAL_SIZE	 = VECTOR3(52.8f, 62.4f, 0.0f) * 1.4f;			// タイマー数字大きさ
 		const VECTOR3 PART_SIZE	 = VECTOR3(27.3f, 62.4f, 0.0f) * 1.2f;			// タイマー区切り大きさ
 		const VECTOR3 VAL_SPACE	 = VECTOR3(VAL_SIZE.x * 0.85f, 0.0f, 0.0f);		// タイマー数字空白
 		const VECTOR3 PART_SPACE = VECTOR3(PART_SIZE.x * 0.85f, 0.0f, 0.0f);	// タイマー区切り空白
 	}
 #endif
+
+	namespace title
+	{
+		const char*		TEXTURE	= "data\\TEXTURE\\timer_title000.png";		// テクスチャパス
+		const VECTOR3	POS		= VECTOR3(350.0f, timer::POS.y, 0.0f);	// 位置
+		const float		HEIGHT	= timer::VAL_SIZE.y;	// 縦幅
+	}
 }
 
 //************************************************************
@@ -69,6 +76,7 @@ CGameManager::CGameManager() :
 #else TIMER
 	m_pTimer	 (nullptr),	// タイマー情報
 #endif
+	m_pTitle	 (nullptr),	// タイトル情報
 	m_pState	 (nullptr),	// 状態
 	m_bControlOK (false)	// 操作可能フラグ
 {
@@ -97,6 +105,7 @@ HRESULT CGameManager::Init()
 #else TIMER
 	m_pTimer	 = nullptr;	// タイマー情報
 #endif
+	m_pTitle	 = nullptr;	// タイトル情報
 	m_pState	 = nullptr;	// 状態
 	m_bControlOK = true;	// 操作可能フラグ
 
@@ -139,10 +148,26 @@ HRESULT CGameManager::Init()
 		assert(false);
 		return E_FAIL;
 	}
-
-	// タイマーの計測開始
-	m_pTimer->Start();
 #endif
+
+	// タイトルの生成
+	m_pTitle = CObject2D::Create(title::POS);
+	if (m_pTitle == nullptr)
+	{ // 生成に失敗した場合
+
+		assert(false);
+		return E_FAIL;
+	}
+
+	// 自動ラベルを設定
+	m_pTitle->SetLabel(CObject::LABEL_UI);
+
+	// タイトルテクスチャの割当
+	m_pTitle->BindTexture(title::TEXTURE);
+
+	// タイトル大きさの設定
+	float fTitleWidth = useful::GetTexWidthFromAspect(title::HEIGHT, title::TEXTURE);	// テクスチャ基準の横幅
+	m_pTitle->SetVec3Size(VECTOR3(fTitleWidth, title::HEIGHT, 0.0f));
 
 	// プレイヤーの生成
 	if (CPlayer::Create(VECTOR3(0.0f, 0.0f, -300.0f), VECTOR3(0.0f, D3DX_PI, 0.0f)) == nullptr)
@@ -276,6 +301,15 @@ void CGameManager::TransResult()
 
 	// リザルト画面に遷移する
 	GET_MANAGER->SetLoadScene(CScene::MODE_RESULT, 3.0f);
+}
+
+//============================================================
+//	タイマーの計測開始処理
+//============================================================
+void CGameManager::TimerStart()
+{
+	// タイマーの計測開始
+	m_pTimer->Start();
 }
 
 //============================================================
