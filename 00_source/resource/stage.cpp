@@ -17,6 +17,7 @@
 #include "scenery.h"
 #include "sky.h"
 #include "liquid.h"
+#include "actor.h"
 
 //************************************************************
 //	定数宣言
@@ -147,6 +148,15 @@ HRESULT CStage::BindStage(const char* pPath)
 				assert(false);
 				return E_FAIL;
 			}
+
+			// アクターの読込
+			else if (FAILED(LoadActor(&aString[0], pFile)))
+			{ // 読み込みに失敗した場合
+
+				// 失敗を返す
+				assert(false);
+				return E_FAIL;
+			}
 		}
 		
 		// ファイルを閉じる
@@ -244,6 +254,20 @@ void CStage::DeleteStage()
 
 			// 液体の終了
 			SAFE_UNINIT(rLiquid);
+		}
+	}
+
+	// アクターの全破棄
+	CListManager<CActor>* pListActor = CActor::GetList();
+	if (pListActor != nullptr)
+	{ // 一つでもアクターがある場合
+
+		std::list<CActor*> list = pListActor->GetList();
+		for (auto& rActor : list)
+		{ // 全要素数分繰り返す
+
+			// アクターの終了
+			SAFE_UNINIT(rActor);
 		}
 	}
 }
@@ -1318,6 +1342,92 @@ HRESULT CStage::LoadLiquid(const char* pString, FILE *pFile)
 				}
 			}
 		} while (strcmp(&aString[0], "END_STAGE_LIQUIDSET") != 0);	// 読み込んだ文字列が END_STAGE_LIQUIDSET ではない場合ループ
+	}
+
+	// 成功を返す
+	return S_OK;
+}
+
+//============================================================
+//	アクター情報の読込処理
+//============================================================
+HRESULT CStage::LoadActor(const char* pString, FILE* pFile)
+{
+	char aString[128];			// テキストの文字列の代入用
+	int nType = 0;				// 種類の代入用
+	VECTOR3 pos = VEC3_ZERO;	// 位置の代入用
+	VECTOR3 rot = VEC3_ZERO;	// 向きの代入用
+	VECTOR3 scale = VEC3_ONE;	// 拡大率の代入用
+
+	if (pString == nullptr || pFile == nullptr)
+	{ // 文字列・ファイルが存在しない場合
+
+		// 失敗を返す
+		assert(false);
+		return E_FAIL;
+	}
+
+	// アクターの設定
+	if (strcmp(pString, "STAGE_ACTORSET") == 0)
+	{ // 読み込んだ文字列が STAGE_ACTORSET の場合
+
+		do
+		{ // 読み込んだ文字列が END_STAGE_ACTORSET ではない場合ループ
+
+			// ファイルから文字列を読み込む
+			fscanf(pFile, "%s", &aString[0]);
+
+			if (strcmp(&aString[0], "ACTORSET") == 0)
+			{ // 読み込んだ文字列が ACTORSET の場合
+
+				do
+				{ // 読み込んだ文字列が END_ACTORSET ではない場合ループ
+
+					// ファイルから文字列を読み込む
+					fscanf(pFile, "%s", &aString[0]);
+
+					if (strcmp(&aString[0], "TYPE") == 0)
+					{ // 読み込んだ文字列が TYPE の場合
+
+						fscanf(pFile, "%s", &aString[0]);	// = を読み込む (不要)
+						fscanf(pFile, "%d", &nType);		// 種類を読み込む
+					}
+					else if (strcmp(&aString[0], "POS") == 0)
+					{ // 読み込んだ文字列が POS の場合
+
+						fscanf(pFile, "%s", &aString[0]);	// = を読み込む (不要)
+						fscanf(pFile, "%f", &pos.x);		// 位置Xを読み込む
+						fscanf(pFile, "%f", &pos.y);		// 位置Yを読み込む
+						fscanf(pFile, "%f", &pos.z);		// 位置Zを読み込む
+					}
+					else if (strcmp(&aString[0], "ROT") == 0)
+					{ // 読み込んだ文字列が ROT の場合
+
+						fscanf(pFile, "%s", &aString[0]);	// = を読み込む (不要)
+						fscanf(pFile, "%f", &rot.x);		// 向きXを読み込む
+						fscanf(pFile, "%f", &rot.y);		// 向きYを読み込む
+						fscanf(pFile, "%f", &rot.z);		// 向きZを読み込む
+					}
+					else if (strcmp(&aString[0], "SCALE") == 0)
+					{ // 読み込んだ文字列が SCALE の場合
+
+						fscanf(pFile, "%s", &aString[0]);	// = を読み込む (不要)
+						fscanf(pFile, "%f", &scale.x);		// 拡大率Xを読み込む
+						fscanf(pFile, "%f", &scale.y);		// 拡大率Yを読み込む
+						fscanf(pFile, "%f", &scale.z);		// 拡大率Zを読み込む
+					}
+				} while (strcmp(&aString[0], "END_ACTORSET") != 0);	// 読み込んだ文字列が END_ACTORSET ではない場合ループ
+
+				// アクターの生成
+				if (CActor::Create((CActor::EType)nType, pos, rot, scale) == nullptr)
+				{ // 確保に失敗した場合
+
+					// 失敗を返す
+					assert(false);
+					return E_FAIL;
+				}
+			}
+		} while (strcmp(&aString[0], "END_STAGE_ACTORSET") != 0);	// 読み込んだ文字列が END_STAGE_ACTORSET ではない場合ループ
 	}
 
 	// 成功を返す

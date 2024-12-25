@@ -71,6 +71,7 @@ void CCharacter::Uninit()
 		for (auto& rMotionInfo : rMap.second.infoMotion.vecMotion)
 		{ // モーション情報の要素数分繰り返す
 
+
 			for (auto& rKeyInfo : rMotionInfo.vecKey)
 			{ // キー情報の要素数分繰り返す
 
