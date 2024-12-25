@@ -327,12 +327,18 @@ void CEnemy::SetAttack(const VECTOR3& rCurPos, const VECTOR3& rPlayerPos)
 	if (fDisPlayer > CHANGE_ATK)
 	{ // 遠い場合
 
+		// 上投げの音
+		PLAY_SOUND(CSound::LABEL_SE_THROW_TOP);
+
 		// 上投げモーションにする
 		SetMotion(MOTION_ATK_UP);
 	}
 	else
 	{ // 近い場合
 
+		// 横投げの音
+		PLAY_SOUND(CSound::LABEL_SE_THROW_SIDE);
+		
 		// 横投げモーションにする
 		SetMotion(MOTION_ATK_SIDE);
 	}
