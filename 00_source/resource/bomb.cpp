@@ -23,7 +23,12 @@
 //************************************************************
 namespace
 {
-	const int	PRIORITY = 3;		// 爆弾の優先順位
+	const char* MODEL = "data\\MODEL\\PLAYER\\01_body.x";	// モデル
+	const int	DEST_POS_RAND = 400;	// 目的位置のランダム値
+	const int	PRIORITY = 3;	// 爆弾の優先順位
+	const float RADIUS = 60.0f;	// 半径
+	const float FLY_HEIGHT = 60.0f;	// 飛ぶときの最高到達点
+	const float FLY_TIME = 1.0f;	// 飛ぶ時間
 }
 
 //************************************************************
@@ -37,7 +42,11 @@ CListManager<CBomb>* CBomb::m_pList = nullptr;	// オブジェクトリスト
 //============================================================
 //	コンストラクタ
 //============================================================
-CBomb::CBomb() : CObjectModel(CObject::LABEL_PRESENT, CObject::DIM_3D, PRIORITY)
+CBomb::CBomb() : CObjectModel(CObject::LABEL_BOMB, CObject::DIM_3D, PRIORITY),
+m_fFlyTime(0.0f),	// 飛ぶ時間
+m_oldPos(VEC3_ZERO),	// 過去位置
+m_originPos(VEC3_ZERO),	// 初期位置
+m_destPos(VEC3_ZERO)	// 目的位置
 {
 
 }
@@ -55,6 +64,11 @@ CBomb::~CBomb()
 //============================================================
 HRESULT CBomb::Init()
 {
+	m_fFlyTime = 0.0f;	// 飛ぶ時間
+	m_oldPos = VEC3_ZERO;	// 過去位置
+	m_originPos = VEC3_ZERO;	// 初期位置
+	m_destPos = VEC3_ZERO;	// 目的位置
+
 	// オブジェクトキャラクターの初期化
 	if (FAILED(CObjectModel::Init()))
 	{ // 初期化に失敗した場合
@@ -63,6 +77,9 @@ HRESULT CBomb::Init()
 		assert(false);
 		return E_FAIL;
 	}
+
+	// モデルの割り当て処理
+	BindModel(MODEL);
 
 	if (m_pList == nullptr)
 	{ // リストマネージャーが存在しない場合
@@ -109,7 +126,13 @@ void CBomb::Uninit()
 //============================================================
 void CBomb::Update(const float fDeltaTime)
 {
+	// 飛ぶ処理
+	Fly(fDeltaTime);
 
+	if (FieldCollision())
+	{ // 着地した場合
+
+	}
 }
 
 //============================================================
@@ -140,9 +163,18 @@ void CBomb::SetEnableDraw(const bool bDraw)
 }
 
 //============================================================
+// 半径取得
+//============================================================
+float CBomb::GetRadius() const
+{
+	// 半径を返す
+	return RADIUS;
+}
+
+//============================================================
 //	生成処理
 //============================================================
-CBomb* Create(const VECTOR3& rPos)
+CBomb* CBomb::Create(const VECTOR3& rPos)
 {
 	// 爆弾の生成
 	CBomb* pPresent = new CBomb;
@@ -166,6 +198,10 @@ CBomb* Create(const VECTOR3& rPos)
 
 		// 位置を設定
 		pPresent->SetVec3Position(rPos);
+		pPresent->m_originPos = rPos;
+
+		// 目的位置設定処理
+		pPresent->SetDestPos();
 
 		// 確保したアドレスを返す
 		return pPresent;
@@ -179,4 +215,59 @@ CListManager<CBomb>* CBomb::GetList()
 {
 	// オブジェクトリストを返す
 	return m_pList;
+}
+
+//============================================================
+// 目的位置の設定処理
+//============================================================
+void CBomb::SetDestPos()
+{
+	D3DXVECTOR3 pos = GetVec3Position();		// 位置
+
+	// 目的の位置を設定
+	m_destPos.x = pos.x + (float)(rand() % DEST_POS_RAND - (int)(DEST_POS_RAND * 0.5f));
+	m_destPos.y = 0.0f;
+	m_destPos.z = pos.z + (float)(rand() % DEST_POS_RAND - (int)(DEST_POS_RAND * 0.5f));
+}
+
+//============================================================
+// フィールドの当たり判定
+//============================================================
+bool CBomb::FieldCollision()
+{
+	CStage* pStage = GET_MANAGER->GetStage();	// ステージ情報
+	VECTOR3 pos = GetVec3Position();	// 位置
+	VECTOR3 move = VEC3_ZERO;			// 引数用変数
+
+	// 地面・制限位置着地判定
+	if (pStage->LandFieldPosition(pos, m_oldPos, move)
+		|| pStage->LandLimitPosition(pos, move, 0.0f))
+	{ // プレイヤーが着地していた場合
+
+		// 位置を反映
+		SetVec3Position(pos);
+
+		// true を返す
+		return true;
+	}
+
+	// false を返す
+	return false;
+}
+
+//============================================================
+// 飛行処理
+//============================================================
+void CBomb::Fly(const float fDeltaTime)
+{
+	D3DXVECTOR3 pos = GetVec3Position();
+
+	// 放物線処理
+	pos = useful::GetParabola3D(m_originPos, m_destPos, m_destPos.y + FLY_HEIGHT, FLY_TIME, m_fFlyTime);
+
+	// 飛んでいる時間を更新
+	m_fFlyTime += fDeltaTime;
+
+	// 位置を反映する
+	SetVec3Position(pos);
 }

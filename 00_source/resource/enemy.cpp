@@ -143,8 +143,11 @@ void CEnemy::Uninit()
 //============================================================
 void CEnemy::Update(const float fDeltaTime)
 {
-	// 設置型プレゼントを飛ばす
-	//CPresent::Create(GetVec3Position(), VEC3_ZERO, CPresent::TYPE_LAND);
+	if (GET_INPUTKEY->IsTrigger(DIK_0))
+	{
+		// 設置型プレゼントを飛ばす
+		CPresent::Create(GetVec3Position(), VEC3_ZERO, CPresent::TYPE_LAND);
+	}
 
 	// 過去位置の更新
 	UpdateOldPosition();
