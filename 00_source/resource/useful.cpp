@@ -216,7 +216,7 @@ VECTOR3 useful::GetParabola3D
 
 	// Œo‰ßŠÔ‚ÌŠ„‡‚ğŒvZ
 	float fTimeRate = fCurTime / fEndTime;
-	fTimeRate = useful::LimitNum(fTimeRate, 0.0f, 1.0f);	// Š„‡‚ğ•â³
+	useful::LimitNum(fTimeRate, 0.0f, 1.0f);	// Š„‡‚ğ•â³
 
 	// XZ•½–Ê‚ğŒvZ
 	pos.x = rPosStart.x + (rPosEnd.x - rPosStart.x) * fTimeRate;
