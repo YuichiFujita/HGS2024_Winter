@@ -46,8 +46,8 @@ private:
 
 	// メンバ関数
 	void SetDestPos();	// 目的位置の設定処理
-	bool FieldCollision();	// フィールドの当たり判定
-	void Fly(const float fDeltaTime);	// 飛行処理
+	void FieldCollision();	// フィールドの当たり判定
+	bool Fly(const float fDeltaTime);	// 飛行処理
 
 	// 静的メンバ変数
 	static CListManager<CBomb>* m_pList;	// オブジェクトリスト

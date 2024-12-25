@@ -17,6 +17,8 @@
 #include "stage.h"
 #include "sceneGame.h"
 #include "gameManager.h"
+#include "player.h"
+#include "particle3D.h"
 
 //************************************************************
 //	定数宣言
@@ -24,8 +26,8 @@
 namespace
 {
 	const char* MODEL = "data\\MODEL\\PLAYER\\01_body.x";	// モデル
-	const int	DEST_POS_RAND = 600;	// 目的位置のランダム値
 	const int	PRIORITY = 3;	// 爆弾の優先順位
+	const float	DEST_RANGE = 100.0f;	// 目的位置の範囲
 	const float RADIUS = 60.0f;	// 半径
 	const float FLY_HEIGHT = 90.0f;	// 飛ぶときの最高到達点
 	const float FLY_TIME = 1.0f;	// 飛ぶ時間
@@ -126,13 +128,11 @@ void CBomb::Uninit()
 //============================================================
 void CBomb::Update(const float fDeltaTime)
 {
-	// 飛ぶ処理
-	Fly(fDeltaTime);
+	// 爆発した場合、破棄する
+	if (Fly(fDeltaTime)) { Uninit(); return; }
 
-	if (FieldCollision())
-	{ // 着地した場合
-
-	}
+	// 地面との当たり判定
+	FieldCollision();
 }
 
 //============================================================
@@ -222,18 +222,17 @@ CListManager<CBomb>* CBomb::GetList()
 //============================================================
 void CBomb::SetDestPos()
 {
-	D3DXVECTOR3 pos = GetVec3Position();		// 位置
-
 	// 目的の位置を設定
-	m_destPos.x = pos.x + (float)(rand() % DEST_POS_RAND - (int)(DEST_POS_RAND * 0.5f));
+	VECTOR3 pos = GetVec3Position();
+	m_destPos.x = pos.x + sinf(useful::RandomRot()) * DEST_RANGE;
 	m_destPos.y = 0.0f;
-	m_destPos.z = pos.z + (float)(rand() % DEST_POS_RAND - (int)(DEST_POS_RAND * 0.5f));
+	m_destPos.z = pos.z + cosf(useful::RandomRot()) * DEST_RANGE;
 }
 
 //============================================================
 // フィールドの当たり判定
 //============================================================
-bool CBomb::FieldCollision()
+void CBomb::FieldCollision()
 {
 	CStage* pStage = GET_MANAGER->GetStage();	// ステージ情報
 	VECTOR3 pos = GetVec3Position();	// 位置
@@ -246,28 +245,33 @@ bool CBomb::FieldCollision()
 
 		// 位置を反映
 		SetVec3Position(pos);
-
-		// true を返す
-		return true;
 	}
-
-	// false を返す
-	return false;
 }
 
 //============================================================
 // 飛行処理
 //============================================================
-void CBomb::Fly(const float fDeltaTime)
+bool CBomb::Fly(const float fDeltaTime)
 {
-	D3DXVECTOR3 pos = GetVec3Position();
+	D3DXVECTOR3 pos = GetVec3Position();	// 現在の位置
+	D3DXVECTOR3 posOld = GetVec3Position();	// 保存用の位置
 
 	// 放物線処理
 	pos = useful::GetParabola3D(m_originPos, m_destPos, m_destPos.y + FLY_HEIGHT, FLY_TIME, m_fFlyTime);
+
+	if (pos.y < posOld.y)
+	{ // 下がり始めたとき
+
+		// 爆発のパーティクルを出す
+		CParticle3D::Create(CParticle3D::TYPE_SMALL_EXPLOSION, pos);
+		return true;
+	}
 
 	// 飛んでいる時間を更新
 	m_fFlyTime += fDeltaTime;
 
 	// 位置を反映する
 	SetVec3Position(pos);
+
+	return false;
 }
