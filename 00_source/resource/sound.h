@@ -31,6 +31,8 @@ public:
 		LABEL_SE_BALLCHIME,		// BALL“ü—ÍŒø‰Ê‰¹
 		LABEL_SE_THROW_TOP,		// ã“Š‚°
 		LABEL_SE_THROW_SIDE,	// ‰¡“Š‚°
+		LABEL_SE_JUMP,			// ƒWƒƒƒ“ƒv
+		LABEL_SE_LANDING,		// ’…’n
 		LABEL_MAX				// ‚±‚Ì—ñ‹“Œ^‚Ì‘”
 	};
 

@@ -42,6 +42,8 @@ namespace
 		SSoundInfo("data\\SE\\snd_ballchime.wav", 0),	// BALL“ü—ÍŒø‰Ê‰¹
 		SSoundInfo("data\\SE\\ThrowTop.wav", 0),		// ã“Š‚°Œø‰Ê‰¹
 		SSoundInfo("data\\SE\\ThrowSide.wav", 0),		// ‰¡“Š‚°Œø‰Ê‰¹
+		SSoundInfo("data\\SE\\jump.wav", 0),			// ƒWƒƒƒ“ƒvŒø‰Ê‰¹
+		SSoundInfo("data\\SE\\landing.wav", 0),			// ’…’nŒø‰Ê‰¹
 	};
 }
 
