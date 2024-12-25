@@ -178,16 +178,6 @@ void CPresentLand::UpdateNone(const float fDeltaTime)
 //============================================================
 void CPresentLand::UpdateFly(const float fDeltaTime)
 {
-	CPlayer* pPlayer = CScene::GetPlayer();
-
-	if (pPlayer == nullptr) { return; }
-
-	// 目的の位置を設定する
-	m_destPos = pPlayer->GetVec3Position();
-
-	// 目的の高さを再設定する
-	m_destPos.y = fly::DEST_POS_Y;
-
 	// 透明度を設定する
 	SetAlpha(fly::ALPHA);
 }
