@@ -24,13 +24,20 @@
 //************************************************************
 namespace
 {
+	namespace title
+	{
+		const char*		TEXTURE	= "data\\TEXTURE\\ranking_title000.png";	// テクスチャパス
+		const VECTOR3	POS		= VECTOR3(SCREEN_CENT.x, 80.0f, 0.0f);		// 位置
+		const float		HEIGHT	= 140.0f;	// 縦幅
+	}
+
 	namespace rank
 	{
 		const char*		TEXTURE = "data\\TEXTURE\\ranking000.png";			// テクスチャパス
 		const POSGRID2	PTRN	= POSGRID2(CRankingManager::MAX_RANK, 1);	// テクスチャ分割数
-		const VECTOR3	POS		= VECTOR3(370.0f, 160.0f, 0.0f);			// 位置
+		const VECTOR3	POS		= VECTOR3(290.0f, 190.0f, 0.0f);			// 位置
 		const VECTOR3	OFFSET	= VECTOR3(0.0f, 112.0f, 0.0f);				// オフセット
-		const float		WIDTH	= 160.0f;	// 横幅
+		const float		WIDTH	= 160.0f * 1.3f;	// 横幅
 	}
 
 #ifdef SCORE
@@ -47,16 +54,16 @@ namespace
 		const VECTOR3 SPACE	 = VECTOR3(SIZE.x * 0.85f, 0.0f, 0.0f);	// スコア数字空白
 	}
 #else TIMER
-	const float	RANK_INIT[CRankingManager::MAX_RANK] = { 150.0f, 180.0f, 210.0f, 240.0f, 270.0f };	// 初期ランキング
+	const float	RANK_INIT[CRankingManager::MAX_RANK] = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };	// 初期ランキング
 	const char*	RANK_PATH	= "data\\BIN\\rank_time.bin";	// ランキングパス
 	const COLOR	COL_UPDATE	= color::Yellow();	// ランキング更新色
 	namespace time
 	{
 		const CValue::EType TYPE = CValue::TYPE_NORMAL;	// 数字種類
-		const VECTOR3 POS		 = VECTOR3(740.0f, 160.0f, 0.0f);				// タイマー位置
+		const VECTOR3 POS		 = VECTOR3(720.0f, 190.0f, 0.0f);				// タイマー位置
 		const VECTOR3 OFFSET	 = VECTOR3(0.0f, 112.0f, 0.0f);					// タイマーオフセット
-		const VECTOR3 VAL_SIZE	 = VECTOR3(52.8f, 62.4f, 0.0f) * 1.4f;			// タイマー数字大きさ
-		const VECTOR3 PART_SIZE	 = VECTOR3(27.3f, 62.4f, 0.0f) * 1.2f;			// タイマー区切り大きさ
+		const VECTOR3 VAL_SIZE	 = VECTOR3(52.8f, 62.4f, 0.0f) * 1.4f * 1.3f;			// タイマー数字大きさ
+		const VECTOR3 PART_SIZE	 = VECTOR3(27.3f, 62.4f, 0.0f) * 1.2f * 1.3f;			// タイマー区切り大きさ
 		const VECTOR3 VAL_SPACE	 = VECTOR3(VAL_SIZE.x * 0.85f, 0.0f, 0.0f);		// タイマー数字空白
 		const VECTOR3 PART_SPACE = VECTOR3(PART_SIZE.x * 0.85f, 0.0f, 0.0f);	// タイマー区切り空白
 	}
@@ -113,6 +120,25 @@ HRESULT CRankingManager::Init()
 	float aRankArray[MAX_RANK];	// ランキング数値配列
 	LoadRank(RANK_PATH, &aRankArray[0]);
 #endif
+
+	// タイトルの生成
+	m_pTitle = CObject2D::Create(title::POS);
+	if (m_pTitle == nullptr)
+	{ // 生成に失敗した場合
+
+		assert(false);
+		return E_FAIL;
+	}
+
+	// 自動ラベルを設定
+	m_pTitle->SetLabel(CObject::LABEL_UI);
+
+	// タイトルテクスチャの割当
+	m_pTitle->BindTexture(title::TEXTURE);
+
+	// タイトル大きさの設定
+	float fTitleWidth = useful::GetTexWidthFromAspect(title::HEIGHT, title::TEXTURE);	// テクスチャ基準の横幅
+	m_pTitle->SetVec3Size(VECTOR3(fTitleWidth, title::HEIGHT, 0.0f));
 
 	for (int i = 0; i < MAX_RANK; i++)
 	{ // ランキング上位表示数分繰り返す
@@ -521,7 +547,7 @@ int CRankingManager::SetRank(const float fNewTime)
 		}
 	}
 
-	if (fNewTime < aRank[nLowIdx])
+	if (fNewTime > aRank[nLowIdx])
 	{ // 最下位の時間より速い場合
 
 		// ランキングのソート
@@ -559,7 +585,7 @@ int CRankingManager::SortRank(const float fNewTime, float* pRankArray)
 		for (int nCntSort = nCntKeep + 1; nCntSort < MAX_RANK; nCntSort++)
 		{ // 入れ替える値の総数 -nCntKeep分繰り返す
 
-			if (pRankArray[nCurMinIdx] > pRankArray[nCntSort])
+			if (pRankArray[nCurMinIdx] < pRankArray[nCntSort])
 			{ // 最小値に設定されている値より、現在の値のほうが小さい場合
 
 				// 現在の要素番号を最小値に設定
