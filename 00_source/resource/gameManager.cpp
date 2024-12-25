@@ -101,7 +101,7 @@ HRESULT CGameManager::Init()
 	m_bControlOK = true;	// 操作可能フラグ
 
 	// 通常状態にする
-	ChangeState(new CGameStateNormal);
+	ChangeState(new CGameStateStart);
 
 #ifdef SCORE
 	// スコアの生成
@@ -145,7 +145,7 @@ HRESULT CGameManager::Init()
 #endif
 
 	// プレイヤーの生成
-	if (CPlayer::Create(VEC3_ZERO, VEC3_ZERO) == nullptr)
+	if (CPlayer::Create(VECTOR3(0.0f, 0.0f, -300.0f), VECTOR3(0.0f, D3DX_PI, 0.0f)) == nullptr)
 	{ // 生成に失敗した場合
 
 		assert(false);
@@ -153,7 +153,7 @@ HRESULT CGameManager::Init()
 	}
 
 	// 敵の生成
-	if (CEnemy::Create(VEC3_ZERO, VEC3_ZERO) == nullptr)
+	if (CEnemy::Create(VECTOR3(0.0f, 0.0f, 300.0f), VECTOR3(0.0f, 0.0f, 0.0f)) == nullptr)
 	{ // 生成に失敗した場合
 
 		assert(false);

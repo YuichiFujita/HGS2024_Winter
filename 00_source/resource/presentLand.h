@@ -49,6 +49,14 @@ public:
 	float GetRadius() const override;					// 半径取得
 	float GetHeight() const override;					// 縦幅取得
 
+	// 静的メンバ関数
+	static CPresentLand* Create	// 生成
+	( // 引数
+		const VECTOR3& rPos,	// 位置
+		const VECTOR3& rRot,	// 向き
+		const float fRange		// 範囲
+	);
+
 private:
 	// エイリアス定義
 	typedef void(CPresentLand::* AFuncState)(const float);	// 状態更新関数ポインタ
@@ -57,10 +65,11 @@ private:
 	static AFuncState m_aFuncState[];	// 状態更新関数リスト
 
 	// メンバ関数
-	void SpeedCalc();							// 速度計算処理
-	bool FieldCollision();						// フィールドの当たり判定
-	bool AttackSensor();						// センサー判定
-	void Collision();							// 当たり判定
+	void SetDestPos(const float fRange);		// 目的の位置処理
+	void SpeedCalc();		// 速度計算処理
+	bool FieldCollision();	// フィールドの当たり判定
+	bool AttackSensor();	// センサー判定
+	void Collision();		// 当たり判定
 
 	void UpdateNone(const float fDeltaTime);	// 無し状態処理
 	void UpdateFly(const float fDeltaTime);		// 飛ぶ状態処理

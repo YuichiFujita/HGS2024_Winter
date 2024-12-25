@@ -186,6 +186,72 @@ float CPresentLand::GetHeight() const
 }
 
 //============================================================
+// 生成処理
+//============================================================
+CPresentLand* CPresentLand::Create
+( // 引数
+	const VECTOR3& rPos,	// 位置
+	const VECTOR3& rRot,	// 向き
+	const float fRange		// 範囲
+)
+{
+	// プレゼントの生成
+	CPresentLand* pPresent = new CPresentLand;
+
+	if (pPresent == nullptr)
+	{ // 生成に失敗した場合
+
+		return nullptr;
+	}
+	else
+	{ // 生成に成功した場合
+
+		// プレゼントの初期化
+		if (FAILED(pPresent->Init()))
+		{ // 初期化に失敗した場合
+
+			// プレゼントの破棄
+			SAFE_DELETE(pPresent);
+			return nullptr;
+		}
+
+		// 位置を設定
+		pPresent->SetVec3Position(rPos);
+
+		// 向きを設定
+		pPresent->SetVec3Rotation(rRot);
+
+		// 目的位置設定処理
+		pPresent->SetDestPos(fRange);
+
+		// 確保したアドレスを返す
+		return pPresent;
+	}
+}
+
+//============================================================
+// 目的の位置処理
+//============================================================
+void CPresentLand::SetDestPos(const float fRange)
+{
+	// プレイヤーがいない場合、抜ける
+	CPlayer* pPlayer = CScene::GetPlayer();
+	if (pPlayer == nullptr) { return; }
+
+	VECTOR3 posPlayer = pPlayer->GetVec3Position();
+	float fAngle = useful::RandomRot();
+
+	// 目的の位置を設定する
+	m_destPos.x = posPlayer.x + sinf(fAngle) * fRange;
+	m_destPos.y = posPlayer.y;
+	m_destPos.z = posPlayer.z + cosf(fAngle) * fRange;
+
+	// 位置補正
+	CStage* pStage = GET_MANAGER->GetStage();	// ステージ情報
+	pStage->LimitPosition(m_destPos, RADIUS);
+}
+
+//============================================================
 // 速度計算処理
 //============================================================
 void CPresentLand::SpeedCalc()
@@ -263,13 +329,6 @@ void CPresentLand::UpdateNone(const float fDeltaTime)
 {
 	// 初期位置を設定する
 	m_originPos = GetVec3Position();
-
-	// プレイヤーがいない場合、抜ける
-	CPlayer* pPlayer = CScene::GetPlayer();
-	if (pPlayer == nullptr) { return; }
-
-	// 目的の位置を設定する
-	m_destPos = pPlayer->GetVec3Position();
 
 	// 飛び状態にする
 	m_state = STATE_FLY;
