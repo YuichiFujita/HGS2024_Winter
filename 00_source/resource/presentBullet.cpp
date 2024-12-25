@@ -22,6 +22,7 @@
 #include "particle3D.h"
 #include "collision.h"
 #include "effect3D.h"
+#include "shadow.h"
 
 //************************************************************
 //	定数宣言
@@ -67,6 +68,7 @@ CPresentBullet::AFuncState CPresentBullet::m_aFuncState[] =		// 状態更新関数リス
 //	コンストラクタ
 //============================================================
 CPresentBullet::CPresentBullet() : CPresent(),
+m_pShadow(nullptr),		// 影
 m_state(STATE_HOMING),	// 状態
 m_destRot(VEC3_ZERO),	// 目的の向き
 m_fStateTime(0.0f),		// 状態時間
@@ -89,6 +91,7 @@ CPresentBullet::~CPresentBullet()
 //============================================================
 HRESULT CPresentBullet::Init()
 {
+	m_pShadow = nullptr;		// 影
 	m_fStateTime = 1.0f;	// 状態時間
 	m_fSpeed = SPEED;		// 速度
 
@@ -104,6 +107,9 @@ HRESULT CPresentBullet::Init()
 	// モデルの割り当て処理
 	BindModel(MODEL);
 
+	// 影の生成
+	m_pShadow = CShadow::Create(CShadow::TEXTURE_NORMAL, VECTOR3(90.0f, 0.0f, 90.0f), this);
+
 	// 成功を返す
 	return S_OK;
 }
@@ -113,6 +119,10 @@ HRESULT CPresentBullet::Init()
 //============================================================
 void CPresentBullet::Uninit()
 {
+	// 影を消す
+	m_pShadow->Uninit();
+	m_pShadow = nullptr;
+
 	// オブジェクトキャラクターの終了
 	CPresent::Uninit();
 }
@@ -209,6 +219,9 @@ CPresentBullet* CPresentBullet::Create
 		// 向きを設定
 		pPresent->SetVec3Rotation(VECTOR3(0.0f, fRotY, 0.0f));
 
+		// 影位置の修正
+		pPresent->m_pShadow->SetDrawInfo();
+
 		// 確保したアドレスを返す
 		return pPresent;
 	}
@@ -302,7 +315,7 @@ void CPresentBullet::UpdateMove(const float fDeltaTime)
 	}
 
 	// エフェクトを生成する
-	CEffect3D::Create(pos, effect::RADIUS, CEffect3D::TYPE_NORMAL, effect::LIFE, VECTOR3(), VECTOR3(), color::Red(), effect::SUB_SIZE);
+	CEffect3D::Create(VECTOR3(pos.x + sinf(rot.y + (D3DX_PI * 0.5f)) * 30.0f,pos.y, pos.z + cosf(rot.y + (D3DX_PI * 0.5f)) * 30.0f), effect::RADIUS, CEffect3D::TYPE_NORMAL, effect::LIFE, VECTOR3(), VECTOR3(), color::Red(), effect::SUB_SIZE);
 }
 
 //============================================================
