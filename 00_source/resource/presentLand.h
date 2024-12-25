@@ -28,7 +28,7 @@ public:
 	{
 		STATE_NONE = 0,		// 無し状態
 		STATE_FLY,			// 飛ぶ状態
-		STATE_ATTACK,		// 攻撃状態
+		STATE_SENSOR,		// センサー状態
 		STATE_DELETE,		// 削除状態
 		STATE_MAX			// この列挙型の総数
 	};
@@ -59,10 +59,11 @@ private:
 	// メンバ関数
 	void SpeedCalc();							// 速度計算処理
 	bool FieldCollision();						// フィールドの当たり判定
+	bool AttackSensor();						// センサー判定
 
 	void UpdateNone(const float fDeltaTime);	// 無し状態処理
 	void UpdateFly(const float fDeltaTime);		// 飛ぶ状態処理
-	void UpdateAttack(const float fDeltaTime);	// 攻撃状態処理
+	void UpdateSensor(const float fDeltaTime);	// センサー状態処理
 	void UpdateDelete(const float fDeltaTime);	// 削除状態処理
 
 	// メンバ変数
